@@ -1,3 +1,7 @@
 <resources>
-    <string name="app_name">Omni Wallet App</string>
+    <string name="app_name">Omni Wallet</string>
+
+    <string name="welcome_to_wallet_app">Chào mừng bạn đến với \nOmni Wallet</string>
+    <string name="label_intro_1">Omni Wallet là một ví an toàn được hàng triệu người tin dùng, giúp tất cả mọi người tiếp cận dễ dàng với thế giới web3.</string>
+    <string name="start">Bắt đầu</string>
 </resources>
