@@ -4,4 +4,25 @@
     <string name="welcome_to_wallet_app">Chào mừng bạn đến với \nOmni Wallet</string>
     <string name="label_intro_1">Omni Wallet là một ví an toàn được hàng triệu người tin dùng, giúp tất cả mọi người tiếp cận dễ dàng với thế giới web3.</string>
     <string name="start">Bắt đầu</string>
+    <string name="label_add_wallet_1">Hãy sở hữu một ví thông minh!</string>
+    <string name="label_add_wallet_2">Việc mở tài khoản ví điện tử và liên kết rất dễ dàng. Việc thanh toán thông qua ví điện tử cũng rất đơn giản, bớt phức tạp hơn và nhanh chóng hơn. Omni Wallet sẽ mang đến trải nghiệm tuyệt vời dành cho bạn.</string>
+
+    <string name="t_and_c">Bằng cách tiếp tục, bạn đồng ý với <u>Điều khoản và Điều kiện.</u></string>
+
+    <string name="wallet_settings">Cài đặt ví</string>
+    <string name="create_wallet_or_import_wallet">Nhập một ví có sẵn hoặc tạo mới</string>
+
+    <string name="label_create_wallet">Tạo một ví mới</string>
+    <string name="label_import_private_key">Nhập bằng khóa cá nhân</string>
+    <string name="label_import_secret_recovery_phrase">Sử dụng cụm từ khôi phục bí mật</string>
+
+    <string name="label_input_recovery_phrase">Nhập cụm từ bí mật</string>
+    <string name="hint_input_recovery_phrase">Nhập cụm từ bí mật của bạn</string>
+    <string name="confirm_password">Xác nhận mật khẩu</string>
+    <string name="new_password">Mật khẩu mới</string>
+    <string name="unlock_by_fingerprint">Mở khóa với Fingerprint ID?</string>
+    <string name="add">Thêm</string>
+    <string name="input">Nhập</string>
+    <string name="least_8_character">Phải dài ít nhất 8 ký tự</string>
+
 </resources>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_add_wallet"
+    app:startDestination="@id/addWalletFragment">
+
+    <fragment
+        android:id="@+id/addWalletFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.AddWalletFragment"
+        android:label="fragment_add_wallet"
+        tools:layout="@layout/fragment_add_wallet" >
+        <action
+            android:id="@+id/action_addWalletFragment_to_importPhraseFragment"
+            app:destination="@id/importPhraseFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_addWalletFragment_to_importKeyFragment"
+            app:destination="@id/importKeyFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/importKeyFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.importWallet.ImportKeyFragment"
+        android:label="fragment_import_key"
+        tools:layout="@layout/fragment_import_key" />
+    <fragment
+        android:id="@+id/importPhraseFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.importWallet.ImportPhraseFragment"
+        android:label="fragment_import_phrase"
+        tools:layout="@layout/fragment_import_phrase" />
+</navigation>

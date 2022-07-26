@@ -1,4 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources xmlns:tools="http://schemas.android.com/tools">
 
+    <style name="themeShowLoadingDialog">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="android:windowBackground">@color/zxing_transparent</item>
+        <item name="android:fitsSystemWindows">false</item>
+    </style>
+
 </resources>

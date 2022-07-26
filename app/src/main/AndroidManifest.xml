@@ -3,10 +3,11 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.example.omniwalletapp">
 
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.INTERNET" />
 
     <application
-        android:name=".App"
+        android:name=".base.App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -16,6 +17,9 @@
         android:supportsRtl="true"
         android:theme="@style/OmniWalletApp"
         tools:targetApi="31">
+        <activity
+            android:name=".ui.addWallet.AddWalletActivity"
+            android:exported="false" />
 
         <meta-data
             android:name="design_width_in_dp"
@@ -25,21 +29,18 @@
             android:value="640" />
 
         <activity
-            android:name=".IntroActivity"
-            android:theme="@style/splashScreenTheme"
-            android:exported="true">
+            android:name=".ui.intro.IntroActivity"
+            android:exported="true"
+            android:theme="@style/splashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
         <activity
-            android:name=".MainActivity"
-            android:exported="false">
-
-        </activity>
+            android:name=".ui.home.HomeActivity"
+            android:exported="false"></activity>
     </application>
 
 </manifest>
