@@ -20,9 +20,31 @@
     <string name="hint_input_recovery_phrase">Nhập cụm từ bí mật của bạn</string>
     <string name="confirm_password">Xác nhận mật khẩu</string>
     <string name="new_password">Mật khẩu mới</string>
+    <string name="password">Mật khẩu</string>
     <string name="unlock_by_fingerprint">Mở khóa với Fingerprint ID?</string>
     <string name="add">Thêm</string>
     <string name="input">Nhập</string>
     <string name="least_8_character">Phải dài ít nhất 8 ký tự</string>
+    <string name="remember">Ghi nhớ</string>
+    <string name="label_create_password">Tạo mật khẩu</string>
+    <string name="label_create_password2">Mở mật khẩu này sẽ chỉ mở khóa Omni Wallet của bạn trên thiết bị này.</string>
+
+    <string name="wallet_security">Bảo mật ví</string>
+
+    <string name="label_wallet_security1">Viết Cụm từ khôi phục bí mật ra</string>
+    <string name="label_wallet_security2">Đây là Cụm từ khôi phục bí mật của bạn. Hãy viết nó ra giấy và cất giữ ở nơi an toàn. Bạn sẽ được đề nghị nhập lại cụm từ này (theo đúng thứ tự) ở bước kế tiếp.</string>
+
+    <string name="label_confirm_recovery_phrase1">Xác nhận cụm từ khôi phục bí mật</string>
+    <string name="label_confirm_recovery_phrase2">Chọn mỗi từ theo đúng thứ tự đã được hiển thị cho bạn.</string>
+
+    <string name="label_continue">Tiếp tục</string>
+    <string name="complete_to_backup">Hoàn thành sao lưu</string>
+    <string name="welcome_back">Chào mừng bạn trở lại!</string>
+    <string name="unlock">Mở khóa</string>
+
+    <string name="label_login_1">Ví không mở khóa? Bạn có thể XÓA ví hiện tại và cài đặt ví mới</string>
+    <string name="reset_wallet">Cài lại ví</string>
+
+
 
 </resources>

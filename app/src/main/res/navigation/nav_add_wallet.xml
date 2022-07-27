@@ -24,6 +24,13 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_addWalletFragment_to_createPassFragment"
+            app:destination="@id/createPassFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/importKeyFragment"
@@ -35,4 +42,51 @@
         android:name="com.example.omniwalletapp.ui.addWallet.importWallet.ImportPhraseFragment"
         android:label="fragment_import_phrase"
         tools:layout="@layout/fragment_import_phrase" />
+    <fragment
+        android:id="@+id/createPassFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.CreatePassFragment"
+        android:label="fragment_create_pass"
+        tools:layout="@layout/fragment_create_pass" >
+        <action
+            android:id="@+id/action_createPassFragment_to_memorizePhraseFragment"
+            app:destination="@id/memorizePhraseFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/memorizePhraseFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.MemorizePhraseFragment"
+        android:label="fragment_memorize_phrase"
+        tools:layout="@layout/fragment_memorize_phrase" >
+        <action
+            android:id="@+id/action_memorizePhraseFragment_to_confirmPhraseFragment"
+            app:destination="@id/confirmPhraseFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmPhraseFragment"
+        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.ConfirmPhraseFragment"
+        android:label="fragment_confirm_phrase"
+        tools:layout="@layout/fragment_confirm_phrase" >
+        <action
+            android:id="@+id/action_confirmPhraseFragment_to_loginLaterFragment"
+            app:destination="@id/loginLaterFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right"
+            app:launchSingleTop="true"
+            app:popUpTo="@+id/nav_add_wallet"
+            app:popUpToInclusive="true" />
+    </fragment>
+    <fragment
+        android:id="@+id/loginLaterFragment"
+        android:name="com.example.omniwalletapp.ui.login.LoginLaterFragment"
+        android:label="fragment_login_later"
+        tools:layout="@layout/fragment_login_later" />
 </navigation>

@@ -3,6 +3,7 @@ package com.example.omniwalletapp.ui.addWallet
 import android.content.Context
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
@@ -33,6 +34,10 @@ class AddWalletActivity : BaseActivity() {
 //                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
             }
         }
+    }
+
+    fun initToolbar(isShow:Boolean=true){
+        binding.toolbarAddWallet.root.isVisible=isShow
     }
 
     private fun getForegroundFragment(): Fragment? {

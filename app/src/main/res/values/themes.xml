@@ -16,7 +16,8 @@
         <item name="android:fontFamily">@font/quicksand</item>
     </style>
 
-    <style name="splashScreenTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
+    <style name="splashScreenTheme" parent="OmniWalletApp">
+        <item name="android:statusBarColor">@color/transparent</item>
         <item name="android:windowBackground">@drawable/splash_image</item>
     </style>
 </resources>

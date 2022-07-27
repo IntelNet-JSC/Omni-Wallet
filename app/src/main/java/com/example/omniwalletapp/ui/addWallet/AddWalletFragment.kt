@@ -19,7 +19,9 @@ class AddWalletFragment : BaseFragment<FragmentAddWalletBinding, AddWalletViewMo
 
     override fun initControl() {
         binding.btnAddWallet.setOnClickListener {
-            showLoadingDialog()
+            navigate(
+                AddWalletFragmentDirections.actionAddWalletFragmentToCreatePassFragment()
+            )
         }
 
         binding.btnImportPrivate.setOnClickListener {
