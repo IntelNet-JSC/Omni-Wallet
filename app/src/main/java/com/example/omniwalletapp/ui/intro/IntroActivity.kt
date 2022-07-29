@@ -5,6 +5,7 @@ import android.os.Bundle
 import com.example.omniwalletapp.base.BaseActivity
 import com.example.omniwalletapp.databinding.ActivityIntroBinding
 import com.example.omniwalletapp.ui.addWallet.AddWalletActivity
+import com.example.omniwalletapp.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 class IntroActivity : BaseActivity() {

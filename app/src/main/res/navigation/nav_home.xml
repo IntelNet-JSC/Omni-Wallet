@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/nav_home"
+    app:startDestination="@id/homeFragment">
+
+    <fragment
+        android:id="@+id/homeFragment"
+        android:name="com.example.omniwalletapp.ui.home.HomeFragment"
+        android:label="fragment_home"
+        tools:layout="@layout/fragment_home" >
+        <action
+            android:id="@+id/action_homeFragment_to_addNetworkFragment"
+            app:destination="@id/addNetworkFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_addTokenFragment"
+            app:destination="@id/addTokenFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/addNetworkFragment"
+        android:name="com.example.omniwalletapp.ui.home.network.AddNetworkFragment"
+        android:label="fragment_add_network"
+        tools:layout="@layout/fragment_add_network" />
+    <fragment
+        android:id="@+id/addTokenFragment"
+        android:name="com.example.omniwalletapp.ui.home.token.AddTokenFragment"
+        android:label="fragment_add_token"
+        tools:layout="@layout/fragment_add_token" />
+
+</navigation>

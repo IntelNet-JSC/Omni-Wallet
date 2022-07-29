@@ -1,14 +1,17 @@
 package com.example.omniwalletapp.ui.addWallet
 
 import android.content.Context
+import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseActivity
 import com.example.omniwalletapp.databinding.ActivityAddWalletBinding
+import com.example.omniwalletapp.ui.home.HomeActivity
 import dagger.hilt.android.AndroidEntryPoint
 
 class AddWalletActivity : BaseActivity() {
@@ -38,6 +41,11 @@ class AddWalletActivity : BaseActivity() {
     private fun getForegroundFragment(): Fragment? {
         val navHostFragment = supportFragmentManager.findFragmentById(R.id.fragmentAddWallet)
         return navHostFragment?.childFragmentManager?.fragments?.get(0)
+    }
+
+    fun navigateHomeActivity(){
+        startActivity(Intent(this, HomeActivity::class.java))
+        finish()
     }
 
     private fun hideKeyboard() {
