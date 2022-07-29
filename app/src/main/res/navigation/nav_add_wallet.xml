@@ -73,20 +73,7 @@
         android:name="com.example.omniwalletapp.ui.addWallet.createWallet.ConfirmPhraseFragment"
         android:label="fragment_confirm_phrase"
         tools:layout="@layout/fragment_confirm_phrase" >
-        <action
-            android:id="@+id/action_confirmPhraseFragment_to_loginLaterFragment"
-            app:destination="@id/loginLaterFragment"
-            app:enterAnim="@anim/enter_from_right"
-            app:exitAnim="@anim/exit_to_left"
-            app:popEnterAnim="@anim/enter_from_left"
-            app:popExitAnim="@anim/exit_to_right"
-            app:launchSingleTop="true"
-            app:popUpTo="@+id/nav_add_wallet"
-            app:popUpToInclusive="true" />
+
     </fragment>
-    <fragment
-        android:id="@+id/loginLaterFragment"
-        android:name="com.example.omniwalletapp.ui.login.LoginLaterFragment"
-        android:label="fragment_login_later"
-        tools:layout="@layout/fragment_login_later" />
+
 </navigation>

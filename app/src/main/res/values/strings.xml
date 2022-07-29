@@ -41,10 +41,40 @@
     <string name="complete_to_backup">Hoàn thành sao lưu</string>
     <string name="welcome_back">Chào mừng bạn trở lại!</string>
     <string name="unlock">Mở khóa</string>
+    <string name="lock">Khóa</string>
 
     <string name="label_login_1">Ví không mở khóa? Bạn có thể XÓA ví hiện tại và cài đặt ví mới</string>
     <string name="reset_wallet">Cài lại ví</string>
 
+    <string name="wallet">Wallet</string>
+    <string name="send">Gửi</string>
+    <string name="receive">Nhận</string>
+    <string name="swap">Hoán đổi</string>
+    <string name="import_token">Thêm token</string>
+    <string name="import_token2">Nhập token</string>
+    <string name="main_net">Ethereum Main Network</string>
+    <string name="ropsten_test_net">Ropsten Test Network</string>
+    <string name="kovan_test_net">Kovan Test Network</string>
+    <string name="rinkeby_test_net">Rinkeby Test Network</string>
+    <string name="goerli_test_net">Goerli Test Network</string>
+    <string name="dot_net">•</string>
+    <string name="address_demo">0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF</string>
+    <string name="dont_see_your_token">Không thấy token của mình</string>
+    <string name="other_network">Mạng khác</string>
+    <string name="choose_network">Chọn mạng</string>
+    <string name="add_network">Thêm mạng</string>
+    <string name="close">Đóng</string>
+    <string name="new_rpc_network">Mạng RPC mới</string>
+    <string name="label_add_network1">Sử dụng mạng hỗ trợ RPC tùy chỉnh thông qua URL thay vì một trong các mạng được cung cấp.</string>
 
+    <string name="name_network">Tên mạng</string>
+    <string name="new_rpc_url">URl của RPC</string>
+    <string name="chain_id">ID chuỗi</string>
+    <string name="currency_symbol">Biểu tượng</string>
+    <string name="block_explorer_url">URL của Block Explorer</string>
+    <string name="label_import_token1">Bất kỳ ai cũng có thể tạo token, bao gồm cả việc tạo các phiên bản giả mạo của token hiện có. Tìm hiểu thêm về lừa đảo và rủi ro bảo mật.</string>
 
+    <string name="token_contract_address">Địa chỉ Token</string>
+    <string name="token_symbol">Biểu tượng Token</string>
+    <string name="token_decimal">Token chính xác</string>
 </resources>

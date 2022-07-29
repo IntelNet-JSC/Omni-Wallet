@@ -18,8 +18,8 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
 
     override val viewModel: CreateWalletViewModel by viewModels()
 
-    private val adapterPhrase = ConfirmPhraseAdapter()
-    private val adapterBlank = ConfirmPhraseAdapter(isBlank = true)
+    private val phraseAdapter = ConfirmPhraseAdapter()
+    private val blankAdapter = ConfirmPhraseAdapter(isBlank = true)
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -35,7 +35,7 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
             layoutManager = GridLayoutManager(requireContext(), 2)
             if (itemDecorationCount == 0)
                 addItemDecoration(GridSpacingItemDecoration(2, 16.dpToPx, true, 0))
-            adapter = adapterBlank.also {
+            adapter = blankAdapter.also {
                 it.addAll(
                     WordItem.generateListBlank()
                 )
@@ -46,7 +46,7 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
             layoutManager = GridLayoutManager(requireContext(), 3)
             if (itemDecorationCount == 0)
                 addItemDecoration(GridSpacingItemDecoration(3, 8.dpToPx, false, 0))
-            adapter = adapterPhrase.also {
+            adapter = phraseAdapter.also {
                 it.addAll(
                     WordItem.generateListWord()
                 )
@@ -54,10 +54,7 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
         }
 
         binding.btnCompleteBackup.setOnClickListener {
-            (requireActivity() as AddWalletActivity).initToolbar(false)
-            navigate(
-                ConfirmPhraseFragmentDirections.actionConfirmPhraseFragmentToLoginLaterFragment()
-            )
+            (requireActivity() as AddWalletActivity).navigateHomeActivity()
         }
     }
 

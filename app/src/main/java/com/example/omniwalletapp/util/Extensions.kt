@@ -50,3 +50,5 @@ val Int.pxToDp: Int
 
 fun String.isValidEmail() =
     isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
+
+fun String.formatAddressWallet() = if(isNotEmpty()) this.replace(this.substring(6, 38), "...") else ""

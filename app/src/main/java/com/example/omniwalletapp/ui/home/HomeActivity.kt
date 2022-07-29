@@ -1,12 +1,18 @@
 package com.example.omniwalletapp.ui.home
 
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import com.example.omniwalletapp.R
+import com.example.omniwalletapp.base.BaseActivity
+import com.example.omniwalletapp.databinding.ActivityHomeBinding
+import dagger.hilt.android.AndroidEntryPoint
 
-class HomeActivity : AppCompatActivity() {
+@AndroidEntryPoint
+class HomeActivity : BaseActivity() {
+
+    lateinit var binding: ActivityHomeBinding
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_home)
+        binding=ActivityHomeBinding.inflate(layoutInflater)
+        setContentView(binding.root)
     }
 }
