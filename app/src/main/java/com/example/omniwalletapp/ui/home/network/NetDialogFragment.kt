@@ -15,6 +15,7 @@ import com.example.omniwalletapp.base.BaseDialogFragment
 import com.example.omniwalletapp.databinding.DialogNetBinding
 import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
 import com.example.omniwalletapp.ui.home.network.adapter.NetworkAdapter
+import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 
 class NetDialogFragment(
     private var netItems: List<ItemNetwork>,

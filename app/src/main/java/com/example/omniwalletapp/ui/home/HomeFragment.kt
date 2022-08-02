@@ -59,7 +59,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private val callBackToken: (ItemToken) -> Unit = {
-        showToast("Item Token Click")
+        navigate(
+            HomeFragmentDirections.actionHomeFragmentToDetailTokenFragment()
+        )
     }
     private val callBackImportToken: () -> Unit = {
         navigate(
@@ -93,6 +95,34 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                         HomeFragmentDirections.actionHomeFragmentToAddNetworkFragment()
                     )
                 }
+            )
+        }
+
+        binding.viewReceive.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToReceiveTokenDialogFragment()
+            )
+        }
+
+        binding.viewSend.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment()
+            )
+        }
+
+        binding.viewSwap.setOnClickListener {
+            showToast("Action Swap")
+        }
+
+        binding.imgScan.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(getString(R.string.address_demo))
+            )
+        }
+
+        binding.txtLock.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToLoginLaterFragment()
             )
         }
     }

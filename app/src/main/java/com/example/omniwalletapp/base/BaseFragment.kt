@@ -26,6 +26,7 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.omniwalletapp.view.OmniLoadingDialog
 import dagger.hilt.android.internal.Contexts.getApplication
+import timber.log.Timber
 
 abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
 
@@ -38,6 +39,10 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
 
     val fManager: FragmentManager by lazy {
         requireActivity().supportFragmentManager
+    }
+
+    private val nameFragmentCurrent: String by lazy {
+        this.findNavController().currentDestination?.label.toString()
     }
 
     override fun onCreateView(
@@ -67,14 +72,27 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
 
     abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?):B
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         dialog?.dismiss()
         dialog = null
         _binding=null
-        super.onDestroy()
+        super.onDestroyView()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Timber.d("onActivityCreated: Fragment=>$nameFragmentCurrent")
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("onCreate: Fragment=>$nameFragmentCurrent")
+    }
+
+    override fun onDestroy() {
+        Timber.d("onDestroy: Fragment=>$nameFragmentCurrent")
+        super.onDestroy()
+    }
 
     fun navigate(navDirection: NavDirections, navOptions: NavOptions? = null) {
         navOptions?.let {

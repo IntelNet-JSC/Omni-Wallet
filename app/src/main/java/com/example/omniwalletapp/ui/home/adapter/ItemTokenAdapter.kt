@@ -4,14 +4,14 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.omniwalletapp.databinding.ItemChooseTokenBinding
 import com.example.omniwalletapp.databinding.ItemImportTokenBinding
 import com.example.omniwalletapp.databinding.ItemTokenBinding
-import com.example.omniwalletapp.entity.WordItem
 
 class ItemTokenAdapter(
     private val lstToken: MutableList<ItemToken> = mutableListOf(),
-    private val callBackToken: (ItemToken) -> Unit,
-    private val callBackImportToken: () -> Unit
+    private val callBackTokenClick: (ItemToken) -> Unit,
+    private val callBackImportToken: (() -> Unit)? = null
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -27,9 +27,17 @@ class ItemTokenAdapter(
                 ItemTokenViewHolder(
                     ItemTokenBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
-            else ->
+            ITEM_FOOTER ->
                 ItemFooterViewHolder(
                     ItemImportTokenBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            else ->
+                ItemChooseViewHolder(
+                    ItemChooseTokenBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -39,27 +47,30 @@ class ItemTokenAdapter(
     }
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-        if (holder.itemViewType == ITEM_DATA)
-            (holder as ItemTokenViewHolder).bind()
-        else
-            (holder as ItemFooterViewHolder).bind()
+        when (holder.itemViewType) {
+            ITEM_DATA -> (holder as ItemTokenViewHolder).bind(ItemToken(0, "BNB", "1000"))
+            ITEM_FOOTER -> (holder as ItemFooterViewHolder).bind()
+            else -> (holder as ItemChooseViewHolder).bind(ItemToken(0, "BNB", "1000"))
+        }
     }
 
     override fun getItemCount(): Int {
-        return 4
+        return if (callBackImportToken != null) 4 else 2
     }
 
     override fun getItemViewType(position: Int): Int {
 //        return if (lstToken.size - 1 != position) ITEM_DATA else ITEM_FOOTER
+        if (callBackImportToken == null)
+            return ITEM_CHOOSE
         return if (3 != position) ITEM_DATA else ITEM_FOOTER
     }
 
     inner class ItemTokenViewHolder(val binding: ItemTokenBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind() {
+        fun bind(item: ItemToken) {
             itemView.setOnClickListener {
-                Toast.makeText(binding.root.context, "Token Click", Toast.LENGTH_SHORT).show()
+                callBackTokenClick.invoke(item)
             }
         }
     }
@@ -69,7 +80,17 @@ class ItemTokenAdapter(
 
         fun bind() {
             itemView.setOnClickListener {
-                callBackImportToken.invoke()
+                callBackImportToken?.invoke()
+            }
+        }
+    }
+
+    inner class ItemChooseViewHolder(val binding: ItemChooseTokenBinding) :
+        RecyclerView.ViewHolder(binding.root) {
+
+        fun bind(item: ItemToken) {
+            itemView.setOnClickListener {
+                callBackTokenClick.invoke(item)
             }
         }
     }
@@ -77,6 +98,7 @@ class ItemTokenAdapter(
     companion object {
         private const val ITEM_DATA = 0
         private const val ITEM_FOOTER = 1
+        private const val ITEM_CHOOSE = 2
     }
 }
 

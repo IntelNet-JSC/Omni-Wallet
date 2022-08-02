@@ -3,7 +3,9 @@
   <component name="DesignSurface">
     <option name="filePathToZoomLevelMap">
       <map>
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/bg_txt_copy.xml" value="0.2595" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.202" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_baseline.xml" value="0.2595" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_btn_wallet.xml" value="0.1955" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_btn_wallet1.xml" value="0.2115" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_btn_wallet2.xml" value="0.176" />
@@ -11,6 +13,9 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_btn_wallet_hide.xml" value="0.203" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_dialog_network.xml" value="0.228" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_dot.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_group_copy_address.xml" value="0.2585" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_layout_from_address.xml" value="0.176" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_receive_token_dialog.xml" value="0.2345" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_rv_memorize_phrase.xml" value="0.2065" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_step_active.xml" value="0.176" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_step_in_process.xml" value="0.203" />
@@ -18,13 +23,19 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_step_pass.xml" value="0.203" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_step_process.xml" value="0.176" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_txt_address.xml" value="0.203" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_txt_copy.xml" value="0.2595" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/border_top_bottom.xml" value="0.176" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.2065" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.2065" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_call_received_24.xml" value="0.203" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.2225" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_arrow_down_24.xml" value="0.2065" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_arrow_right_24.xml" value="0.1815" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_tab_24.xml" value="0.1815" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_lock_24.xml" value="0.2595" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_qr_code_24.xml" value="0.1815" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_qr_code_scanner_24.xml" value="0.1815" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_share_24.xml" value="0.244" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_swap_horiz_24.xml" value="0.1815" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_launcher_background.xml" value="0.2115" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/splash_image.xml" value="0.1955" />
@@ -37,21 +48,32 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_home.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_intro.xml" value="0.2" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_splash.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_choose_token.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_net.xml" value="0.253125" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_omni_wallet.xml" value="0.253125" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_transaction_detail.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_add_network.xml" value="0.253125" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_add_token.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_add_wallet.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_amount.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_confirm.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_confirm_phrase.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_create_pass.xml" value="0.25416666666666665" />
-        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_home.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_detail_token.xml" value="0.4" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_home.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_import_key.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_import_phrase.xml" value="0.190625" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_login_later.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_memorize_phrase.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_receive_token.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_send_token.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_address_recently.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_choose_token.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_history_token.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_import_token.xml" value="0.253125" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_net.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_token.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_view_all_history.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_word.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_word_confirm.xml" value="0.4" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/toolbar_add_wallet.xml" value="0.15885416666666666" />

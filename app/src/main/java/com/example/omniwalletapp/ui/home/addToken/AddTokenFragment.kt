@@ -1,4 +1,4 @@
-package com.example.omniwalletapp.ui.home.token
+package com.example.omniwalletapp.ui.home.addToken
 
 import android.view.LayoutInflater
 import android.view.ViewGroup

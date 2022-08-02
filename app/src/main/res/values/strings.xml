@@ -77,4 +77,26 @@
     <string name="token_contract_address">Địa chỉ Token</string>
     <string name="token_symbol">Biểu tượng Token</string>
     <string name="token_decimal">Token chính xác</string>
+    <string name="scan_address_to_receive_payment">Sao chép địa chỉ để nhận thanh toán</string>
+    <string name="copy">Sao chép</string>
+    <string name="send_to">Gửi cho</string>
+    <string name="from">From:</string>
+    <string name="to">To:</string>
+    <string name="from1">From</string>
+    <string name="to1">To</string>
+    <string name="recently">Gần đây</string>
+    <string name="hint_search_public_address">Tìm kiếm, địa chỉ công khai</string>
+    <string name="amount">Số tiền</string>
+    <string name="cancel">Hủy</string>
+    <string name="use_max">Dùng tối đa</string>
+    <string name="confirm">Xác nhận</string>
+    <string name="estimated_gas_fee">Phí gas ước tính</string>
+    <string name="total">Tổng</string>
+    <string name="total_amount">Tổng số tiền</string>
+    <string name="view_all_history_on_testnet">Xem toàn bộ lịch sử trên Testnet</string>
+    <string name="you_have_no_transactions">Bạn không có giao dịch nào!</string>
+    <string name="format_date_demo">Tháng 8 1 tại 9:28 pm</string>
+    <string name="view_one_testnet">VIEW ON Testnet</string>
+    <string name="status">Trạng thái</string>
+    <string name="date">Ngày</string>
 </resources>

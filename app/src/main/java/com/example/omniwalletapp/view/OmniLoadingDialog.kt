@@ -16,7 +16,7 @@ class OmniLoadingDialog(var callbackDismiss: (() -> Unit)?) : AppCompatDialogFra
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
-        return inflater.inflate(R.layout.dialog_omni_wallet, container, false)
+        return inflater.inflate(R.layout.dialog_loading_omni_wallet, container, false)
     }
 
 /*    override fun onStart() {

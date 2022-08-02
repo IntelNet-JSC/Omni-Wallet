@@ -24,6 +24,28 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_receiveTokenDialogFragment"
+            app:destination="@id/receiveTokenDialogFragment" />
+        <action
+            android:id="@+id/action_homeFragment_to_sendTokenFragment"
+            app:destination="@id/sendTokenFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_homeFragment_to_loginLaterFragment"
+            app:destination="@id/loginLaterFragment"
+            app:popUpTo="@id/nav_home"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_homeFragment_to_detailTokenFragment"
+            app:destination="@id/detailTokenFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
     </fragment>
     <fragment
         android:id="@+id/addNetworkFragment"
@@ -32,8 +54,79 @@
         tools:layout="@layout/fragment_add_network" />
     <fragment
         android:id="@+id/addTokenFragment"
-        android:name="com.example.omniwalletapp.ui.home.token.AddTokenFragment"
+        android:name="com.example.omniwalletapp.ui.home.addToken.AddTokenFragment"
         android:label="fragment_add_token"
         tools:layout="@layout/fragment_add_token" />
+    <dialog
+        android:id="@+id/receiveTokenDialogFragment"
+        android:name="com.example.omniwalletapp.ui.home.receive.ReceiveTokenDialogFragment"
+        android:label="fragment_receive_token"
+        tools:layout="@layout/fragment_receive_token" />
+    <fragment
+        android:id="@+id/loginLaterFragment"
+        android:name="com.example.omniwalletapp.ui.login.LoginLaterFragment"
+        android:label="fragment_login_later"
+        tools:layout="@layout/fragment_login_later" />
+    <fragment
+        android:id="@+id/sendTokenFragment"
+        android:name="com.example.omniwalletapp.ui.home.send.SendTokenFragment"
+        android:label="fragment_send_token"
+        tools:layout="@layout/fragment_send_token" >
+        <argument
+            android:name="address"
+            app:argType="string"
+            app:nullable="true"
+            android:defaultValue="@null" />
+        <action
+            android:id="@+id/action_sendTokenFragment_to_amountFragment"
+            app:destination="@id/amountFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+
+    </fragment>
+    <fragment
+        android:id="@+id/amountFragment"
+        android:name="com.example.omniwalletapp.ui.home.send.AmountFragment"
+        android:label="fragment_amount"
+        tools:layout="@layout/fragment_amount" >
+        <action
+            android:id="@+id/action_amountFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_amountFragment_to_confirmFragment"
+            app:destination="@id/confirmFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/confirmFragment"
+        android:name="com.example.omniwalletapp.ui.home.send.ConfirmFragment"
+        android:label="fragment_confirm"
+        tools:layout="@layout/fragment_confirm" >
+        <action
+            android:id="@+id/action_confirmFragment_to_homeFragment"
+            app:destination="@id/homeFragment"
+            app:popUpTo="@id/homeFragment"
+            app:popUpToInclusive="true" />
+        <action
+            android:id="@+id/action_confirmFragment_to_detailTokenFragment"
+            app:destination="@id/detailTokenFragment"
+            app:popUpTo="@id/homeFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+    </fragment>
+    <fragment
+        android:id="@+id/detailTokenFragment"
+        android:name="com.example.omniwalletapp.ui.home.detailToken.DetailTokenFragment"
+        android:label="fragment_detail_token"
+        tools:layout="@layout/fragment_detail_token" />
 
 </navigation>

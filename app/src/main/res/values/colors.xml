@@ -20,5 +20,10 @@
 
     <color name="transparent">#00000000</color>
 
+    <color name="grey30">#fafbfc</color>
+    <color name="grey40">#f2f4f6</color>
+    <color name="grey100">#d6d9dc</color>
+    <color name="grey200">#bbc0c5</color>
+
 
 </resources>
