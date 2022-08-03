@@ -1,6 +1,8 @@
 package com.example.omniwalletapp.base
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -85,6 +87,13 @@ abstract class BaseBottomSheetFragment<B : ViewBinding> : BottomSheetDialogFragm
             InputMethodManager.SHOW_IMPLICIT,
             0
         )
+    }
+
+    open fun copyToClipboard(data: String) {
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("eth-address", data)
+        clipboard.setPrimaryClip(clip)
     }
 
 }

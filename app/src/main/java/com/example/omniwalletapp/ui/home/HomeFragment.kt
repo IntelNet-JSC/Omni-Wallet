@@ -1,6 +1,7 @@
 package com.example.omniwalletapp.ui.home
 
 import android.graphics.Color
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
@@ -10,11 +11,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentHomeBinding
+import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
 import com.example.omniwalletapp.ui.home.network.NetDialogFragment
 import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
 import com.example.omniwalletapp.util.formatAddressWallet
+import com.example.omniwalletapp.util.getStringAddressFromScan
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import java.util.*
 
@@ -77,12 +83,52 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         )
     }
 
+    // Register the launcher and result handler
+    private val qrcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            showToast("Cancelled")
+        } else {
+            Log.d("XXX", ": ${result.contents}")
+            val address = result.contents.getStringAddressFromScan()
+            Log.d("XXX", "format: $address")
+            if (address.isNotEmpty())
+                navigate(
+                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(address)
+                )
+            else
+                showToast("Not Address")
+        }
+    }
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentHomeBinding.inflate(inflater, container, false)
 
     override fun initControl() {
+
+        binding.txtAddress.setOnClickListener {
+            copyToClipboard(getString(R.string.address_demo))
+            showToast(getString(R.string.toast_address_copied))
+        }
+
+        // fade click anim
+/*        binding.txtAddress.setOnTouchListener { v, action ->
+            when (action.action) {
+                MotionEvent.ACTION_UP -> {
+                    binding.txtAddress.alpha = 1f
+                    false
+                }
+                MotionEvent.ACTION_DOWN -> {
+                    binding.txtAddress.alpha = 0.5f
+                    false
+                }
+                else -> false
+            }
+        }*/
+
         binding.viewClickNetWork.setOnClickListener {
             NetDialogFragment.newInstance(
                 fManager,
@@ -115,9 +161,16 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         binding.imgScan.setOnClickListener {
-            navigate(
+            qrcodeLauncher.launch(ScanOptions().apply {
+                captureActivity = AnyOrientationCaptureActivity::class.java
+                setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+                setPrompt("đang quét...")
+                setBeepEnabled(false)
+                setOrientationLocked(false)
+            })
+            /*navigate(
                 HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(getString(R.string.address_demo))
-            )
+            )*/
         }
 
         binding.txtLock.setOnClickListener {

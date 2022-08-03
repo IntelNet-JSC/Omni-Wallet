@@ -2,6 +2,7 @@ package com.example.omniwalletapp.ui.home.send
 
 import android.os.Bundle
 import android.text.Editable
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,10 +17,16 @@ import androidx.recyclerview.widget.RecyclerView
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentSendTokenBinding
+import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
+import com.example.omniwalletapp.ui.home.HomeFragmentDirections
 import com.example.omniwalletapp.ui.home.send.adapter.AddressRecentlyAdapter
 import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 import com.example.omniwalletapp.util.formatAddressWallet
+import com.example.omniwalletapp.util.getStringAddressFromScan
 import com.google.android.material.textfield.TextInputLayout
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 
 
@@ -39,6 +46,25 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewMo
                 showToast("Item Address Click")
             }
         )
+    }
+
+    // Register the launcher and result handler
+    private val qrcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            showToast("Cancelled")
+        } else {
+            Log.d("XXX", ": ${result.contents}")
+            val address = result.contents.getStringAddressFromScan()
+            Log.d("XXX", "format: $address")
+            if(address.isNotEmpty()) {
+                this.address=address
+                initFillFromAddress()
+            }
+            else
+                showToast("Not Address")
+        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -136,7 +162,13 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewMo
     }
 
     override fun onClick(p0: View?) {
-        showToast("Action Scan")
+        qrcodeLauncher.launch(ScanOptions().apply {
+            captureActivity = AnyOrientationCaptureActivity::class.java
+            setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+            setPrompt("đang quét...")
+            setBeepEnabled(false)
+            setOrientationLocked(false)
+        })
     }
 
 }

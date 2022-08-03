@@ -1,6 +1,8 @@
 package com.example.omniwalletapp.base
 
 import android.app.Activity
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.TYPE_ETHERNET
@@ -28,7 +30,8 @@ import com.example.omniwalletapp.view.OmniLoadingDialog
 import dagger.hilt.android.internal.Contexts.getApplication
 import timber.log.Timber
 
-abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
+
+abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
 
     var dialog: DialogFragment? = null
 
@@ -50,7 +53,7 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding=getFragmentBinding(inflater, container)
+        _binding = getFragmentBinding(inflater, container)
         return binding.root
     }
 
@@ -70,12 +73,12 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
 
     protected abstract fun initConfig()
 
-    abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?):B
+    abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?): B
 
     override fun onDestroyView() {
         dialog?.dismiss()
         dialog = null
-        _binding=null
+        _binding = null
         super.onDestroyView()
     }
 
@@ -119,7 +122,7 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
     }
 
     fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     fun backToPrevious() {
@@ -163,9 +166,10 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
         val connectivityManager = getApplication(requireContext()).getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val activeNetwork = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
             return when {
                 capabilities.hasTransport(TRANSPORT_WIFI) -> true
                 capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
@@ -174,7 +178,7 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
             }
         } else {
             connectivityManager.activeNetworkInfo?.run {
-                return when(type) {
+                return when (type) {
                     TYPE_WIFI -> true
                     TYPE_MOBILE -> true
                     TYPE_ETHERNET -> true
@@ -183,6 +187,13 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
             }
         }
         return false
+    }
+
+    open fun copyToClipboard(data: String) {
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("eth-address", data)
+        clipboard.setPrimaryClip(clip)
     }
 
 }
