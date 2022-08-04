@@ -18,7 +18,7 @@ class IntroActivity : BaseActivity() {
         setContentView(binding.root)
 
         binding.btnStart.setOnClickListener {
-            startActivity(Intent(this, HomeActivity::class.java))
+            startActivity(Intent(this, AddWalletActivity::class.java))
             finish()
         }
     }

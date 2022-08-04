@@ -74,6 +74,9 @@
         android:label="fragment_confirm_phrase"
         tools:layout="@layout/fragment_confirm_phrase" >
 
+        <argument
+            android:name="seed_code"
+            app:argType="string" />
     </fragment>
 
 </navigation>

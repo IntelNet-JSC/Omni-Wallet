@@ -1,9 +1,11 @@
 package com.example.omniwalletapp.ui.home
 
 import android.graphics.Color
+import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -109,6 +111,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     override fun initControl() {
 
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            Handler().postDelayed(
+                {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }, 500
+            )
+        }
+
         binding.txtAddress.setOnClickListener {
             copyToClipboard(getString(R.string.address_demo))
             showToast(getString(R.string.toast_address_copied))
@@ -193,6 +203,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
             )
         }
+
+        binding.swipeRefreshLayout.setColorSchemeColors(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.blue500
+            )
+        )
+
     }
 
     override fun initEvent() {

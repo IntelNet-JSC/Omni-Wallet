@@ -4,13 +4,16 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.mylibrary.MnemonicUtils
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentMemorizePhraseBinding
-import com.example.omniwalletapp.entity.WordItem
 import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.MemorizePhraseAdapter
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import java.security.SecureRandom
+import java.util.regex.Pattern
+
 
 @AndroidEntryPoint
 class MemorizePhraseFragment :
@@ -20,6 +23,16 @@ class MemorizePhraseFragment :
 
     private val adapter = MemorizePhraseAdapter()
 
+    private val seedCode: String by lazy {
+        val initialEntropy = ByteArray(16)
+        SecureRandom().nextBytes(initialEntropy)
+        MnemonicUtils.generateMnemonic(initialEntropy)
+    }
+
+    private val lstWord: List<String> by lazy {
+        Pattern.compile(" ").split(seedCode).toList()
+    }
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -28,7 +41,7 @@ class MemorizePhraseFragment :
     override fun initControl() {
         binding.btnContinue.setOnClickListener {
             navigate(
-                MemorizePhraseFragmentDirections.actionMemorizePhraseFragmentToConfirmPhraseFragment()
+                MemorizePhraseFragmentDirections.actionMemorizePhraseFragmentToConfirmPhraseFragment(seedCode)
             )
         }
     }
@@ -40,7 +53,7 @@ class MemorizePhraseFragment :
                 addItemDecoration(GridSpacingItemDecoration(2, 16.dpToPx, true, 0))
             adapter = this@MemorizePhraseFragment.adapter.also {
                 it.addAll(
-                    WordItem.generateListWord()
+                    lstWord
                 )
             }
         }
@@ -55,7 +68,7 @@ class MemorizePhraseFragment :
     }
 
     override fun onDestroyView() {
-        binding.rvMemorizePhrase.adapter=null
+        binding.rvMemorizePhrase.adapter = null
         super.onDestroyView()
     }
 

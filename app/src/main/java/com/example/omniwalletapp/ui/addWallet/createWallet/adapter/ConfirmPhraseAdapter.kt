@@ -7,16 +7,15 @@ import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.databinding.ItemWordConfirmBinding
-import com.example.omniwalletapp.entity.WordItem
 
 class ConfirmPhraseAdapter(
-    private val lstWord: MutableList<WordItem> = mutableListOf(), private val isBlank:Boolean=false
+    private val lstWord: MutableList<String> = mutableListOf(), private val isBlank: Boolean = false
 ) :
     RecyclerView.Adapter<ConfirmPhraseAdapter.ConfirmPhraseViewHolder>() {
 
-    var callBackItemClick: ((WordItem) -> Unit)? = null
+    var callBackItemClick: ((String) -> Unit)? = null
 
-    fun addAll(listItem: List<WordItem>) {
+    fun addAll(listItem: List<String>) {
         lstWord.clear()
         lstWord.addAll(listItem)
         notifyDataSetChanged()
@@ -25,16 +24,18 @@ class ConfirmPhraseAdapter(
     inner class ConfirmPhraseViewHolder(val binding: ItemWordConfirmBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: WordItem) {
+        fun bind(item: String) {
             binding.txtWordNumber.isVisible = isBlank
 
-            binding.txtNameWord.text="${item.name}"
-            binding.txtWordNumber.text="${adapterPosition+1}"
+            binding.txtNameWord.text = item
+            binding.txtWordNumber.text = "${adapterPosition + 1}"
 
-            if(isBlank&&item.name.isEmpty()){
-                binding.txtNameWord.background=ContextCompat.getDrawable(binding.root.context, R.drawable.bg_btn_wallet3)
-            }else{
-                binding.txtNameWord.background=ContextCompat.getDrawable(binding.root.context, R.drawable.bg_btn_wallet2)
+            if (isBlank) {
+                binding.txtNameWord.background =
+                    ContextCompat.getDrawable(binding.root.context, R.drawable.bg_btn_wallet3)
+            } else {
+                binding.txtNameWord.background =
+                    ContextCompat.getDrawable(binding.root.context, R.drawable.bg_btn_wallet2)
             }
         }
     }

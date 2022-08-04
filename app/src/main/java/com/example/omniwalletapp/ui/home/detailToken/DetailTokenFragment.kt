@@ -1,9 +1,12 @@
 package com.example.omniwalletapp.ui.home.detailToken
 
+import android.os.Handler
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.recyclerview.widget.LinearLayoutManager
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentDetailTokenBinding
 import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemHistoryToken
@@ -40,6 +43,14 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, DetailToken
     ) = FragmentDetailTokenBinding.inflate(inflater, container, false)
 
     override fun initControl() {
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            Handler().postDelayed(
+                {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }, 500
+            )
+        }
+
         binding.viewClickNetWork.setOnClickListener {
             showToast("Action Network")
         }
@@ -73,6 +84,8 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, DetailToken
                 SpacesItemVDecoration(1.dpToPx)
             )
         }
+
+        binding.swipeRefreshLayout.setColorSchemeColors(ContextCompat.getColor(requireContext(), R.color.blue500))
     }
 
     override fun initEvent() {

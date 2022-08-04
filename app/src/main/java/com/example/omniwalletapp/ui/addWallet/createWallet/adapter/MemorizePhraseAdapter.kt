@@ -4,14 +4,13 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omniwalletapp.databinding.ItemWordBinding
-import com.example.omniwalletapp.entity.WordItem
 
 class MemorizePhraseAdapter(
-    private val lstWord: MutableList<WordItem> = mutableListOf()
+    private val lstWord: MutableList<String> = mutableListOf()
 ) :
     RecyclerView.Adapter<MemorizePhraseAdapter.MemorizePhraseViewHolder>() {
 
-    fun addAll(listItem: List<WordItem>) {
+    fun addAll(listItem: List<String>) {
         lstWord.clear()
         lstWord.addAll(listItem)
         notifyDataSetChanged()
@@ -20,8 +19,8 @@ class MemorizePhraseAdapter(
     inner class MemorizePhraseViewHolder(val binding: ItemWordBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: WordItem) {
-            binding.txtNameWord.text="${adapterPosition+1}. ${item.name}"
+        fun bind(item: String) {
+            binding.txtNameWord.text="${adapterPosition+1}. $item"
         }
     }
 
