@@ -16,6 +16,7 @@
         android:layout_height="wrap_content"/>
 
     <LinearLayout
+        android:clipToPadding="false"
         android:layout_weight="1"
         android:paddingStart="24dp"
         android:paddingEnd="24dp"
@@ -56,6 +57,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtNewPass"
+                android:text="12345678"
                 android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
@@ -74,6 +76,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtConfirmPass"
+                android:text="12345678"
                 android:inputType="textPassword"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

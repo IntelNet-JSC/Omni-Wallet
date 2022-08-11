@@ -18,12 +18,14 @@ import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
 import com.example.omniwalletapp.ui.home.network.NetDialogFragment
 import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
+import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
 import com.example.omniwalletapp.util.getStringAddressFromScan
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.util.*
 
 
@@ -173,26 +175,25 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         binding.imgScan.setOnClickListener {
             qrcodeLauncher.launch(ScanOptions().apply {
                 captureActivity = AnyOrientationCaptureActivity::class.java
-                setDesiredBarcodeFormats(ScanOptions.ALL_CODE_TYPES)
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
                 setPrompt("đang quét...")
                 setBeepEnabled(false)
                 setOrientationLocked(false)
             })
-            /*navigate(
-                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(getString(R.string.address_demo))
-            )*/
         }
 
         binding.txtLock.setOnClickListener {
-            navigate(
+            showToast("Lock Wallet!")
+            /*navigate(
                 HomeFragmentDirections.actionHomeFragmentToLoginLaterFragment()
-            )
+            )*/
+//            viewModel.loadCredentials2("0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF")
         }
     }
 
     override fun initUI() {
-        val strAddressWallet = getString(R.string.address_demo)
-        binding.txtAddress.text = strAddressWallet.formatAddressWallet()
+        initUiWallet()
+
         binding.txtDot.setBackgroundColor(lstNet[0].color)
         binding.txtNet.text = lstNet[0].name
 
@@ -213,24 +214,34 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     }
 
+    private fun initUiWallet() {
+        viewModel.credentials?.let { credentials ->
+            Timber.d("Address home: ${credentials.address}")
+            binding.txtAddress.text = credentials.address.formatAddressWallet()
+            binding.imgAvaterWallet.setAddress(credentials.address)
+        }
+    }
+
     override fun initEvent() {
-        /*viewModel.accountsLiveData.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { response ->
-                when (response.responseType) {
-                    Status.SUCCESSFUL -> {
-                        response.data?.let { ethAccount ->
-                            toast(ethAccount.accounts.size.toString())
-                        }
-                    }
+        viewModel.addressLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                when (data.responseType) {
                     Status.LOADING -> {
-                        toast("show loading")
+                        showLoadingDialog()
+                    }
+                    Status.SUCCESSFUL -> {
+                        hideDialog()
+                        initUiWallet()
                     }
                     Status.ERROR -> {
-                        toast("hide loading")
+                        hideDialog()
+                        data.error?.message?.let {
+                            showToast(it)
+                        }
                     }
                 }
             }
-        }*/
+        }
     }
 
     override fun initConfig() {

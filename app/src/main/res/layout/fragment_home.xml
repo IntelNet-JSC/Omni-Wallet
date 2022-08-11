@@ -114,8 +114,18 @@
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="16dp">
 
-                    <com.google.android.material.imageview.ShapeableImageView
+                    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
                         android:id="@+id/imgAvaterWallet"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        app:radius="100"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgAvaterWallet2"
+                        android:visibility="gone"
                         android:layout_width="48dp"
                         android:layout_height="48dp"
                         android:cropToPadding="true"

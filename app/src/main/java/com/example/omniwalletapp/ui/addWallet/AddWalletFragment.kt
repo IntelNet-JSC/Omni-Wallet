@@ -4,13 +4,15 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import com.example.omniwalletapp.base.BaseFragment
+import com.example.omniwalletapp.base.EmptyViewModel
 import com.example.omniwalletapp.databinding.FragmentAddWalletBinding
+import com.example.omniwalletapp.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
-class AddWalletFragment : BaseFragment<FragmentAddWalletBinding, AddWalletViewModel>() {
+class AddWalletFragment : BaseFragment<FragmentAddWalletBinding, EmptyViewModel>() {
 
-    override val viewModel: AddWalletViewModel by viewModels()
+    override val viewModel: EmptyViewModel by viewModels()
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,

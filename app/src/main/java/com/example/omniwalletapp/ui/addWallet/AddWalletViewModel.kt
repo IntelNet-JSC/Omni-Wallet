@@ -1,7 +1,130 @@
 package com.example.omniwalletapp.ui.addWallet
 
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.omniwalletapp.base.BaseViewModel
+import com.example.omniwalletapp.repository.PreferencesRepository
+import com.example.omniwalletapp.repository.AddWalletRepository
+import com.example.omniwalletapp.util.Data
+import com.example.omniwalletapp.util.Event
+import com.example.omniwalletapp.util.Status
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
+import timber.log.Timber
+import javax.inject.Inject
 
-class AddWalletViewModel : BaseViewModel() {
+typealias EventPhrase = Event<Data<String>>
+typealias EventAddress = Event<Data<String>>
 
+@HiltViewModel
+class AddWalletViewModel @Inject
+constructor(
+    private val repository: AddWalletRepository,
+    private val preferencesRepository: PreferencesRepository
+) : BaseViewModel() {
+
+    private val _phraseLiveData: MutableLiveData<EventPhrase> =
+        MutableLiveData()
+    val phraseLiveData: LiveData<EventPhrase> = _phraseLiveData
+
+    private val _addressLiveData: MutableLiveData<EventAddress> =
+        MutableLiveData()
+    val addressLiveData: LiveData<EventAddress> = _addressLiveData
+
+    fun createWallet(pass: String, remember: Boolean) {
+        val disposable = repository.createWallet(pass)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _phraseLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called")
+                    preferencesRepository.setRememberLogin(remember)
+                    _phraseLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response.second
+                            )
+                        )
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _phraseLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun importPrivateKey(prvKey: String, pass: String, remember: Boolean) {
+        val disposable = repository.importPrivateKey(prvKey, pass)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called")
+                    preferencesRepository.setRememberLogin(remember)
+                    _addressLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response.address
+                            )
+                        )
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _addressLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun importWordPhrase(wordPhrase: String, pass: String, remember: Boolean) {
+        val disposable = repository.importMnemonic(wordPhrase, pass)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called")
+                    preferencesRepository.setRememberLogin(remember)
+                    _addressLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response.toString()
+                            )
+                        )
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _addressLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called")
+                }
+            )
+        addDisposable(disposable)
+    }
 }

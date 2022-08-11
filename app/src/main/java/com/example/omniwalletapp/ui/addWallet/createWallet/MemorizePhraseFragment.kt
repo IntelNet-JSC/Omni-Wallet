@@ -3,34 +3,33 @@ package com.example.omniwalletapp.ui.addWallet.createWallet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mylibrary.MnemonicUtils
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.base.BaseFragment
+import com.example.omniwalletapp.base.EmptyViewModel
 import com.example.omniwalletapp.databinding.FragmentMemorizePhraseBinding
 import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.MemorizePhraseAdapter
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import org.web3j.crypto.MnemonicUtils
 import java.security.SecureRandom
 import java.util.regex.Pattern
 
 
 @AndroidEntryPoint
 class MemorizePhraseFragment :
-    BaseFragment<FragmentMemorizePhraseBinding, CreateWalletViewModel>() {
+    BaseFragment<FragmentMemorizePhraseBinding, EmptyViewModel>() {
 
-    override val viewModel: CreateWalletViewModel by viewModels()
+    override val viewModel: EmptyViewModel by viewModels()
+
+    private val args:MemorizePhraseFragmentArgs by navArgs()
 
     private val adapter = MemorizePhraseAdapter()
 
-    private val seedCode: String by lazy {
-        val initialEntropy = ByteArray(16)
-        SecureRandom().nextBytes(initialEntropy)
-        MnemonicUtils.generateMnemonic(initialEntropy)
-    }
-
     private val lstWord: List<String> by lazy {
-        Pattern.compile(" ").split(seedCode).toList()
+        Pattern.compile(" ").split(args.wordPhrase).toList()
     }
 
     override fun getFragmentBinding(
@@ -41,7 +40,9 @@ class MemorizePhraseFragment :
     override fun initControl() {
         binding.btnContinue.setOnClickListener {
             navigate(
-                MemorizePhraseFragmentDirections.actionMemorizePhraseFragmentToConfirmPhraseFragment(seedCode)
+                MemorizePhraseFragmentDirections.actionMemorizePhraseFragmentToConfirmPhraseFragment(
+                    args.wordPhrase
+                )
             )
         }
     }

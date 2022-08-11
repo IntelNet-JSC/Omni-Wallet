@@ -25,5 +25,7 @@
     <color name="grey100">#d6d9dc</color>
     <color name="grey200">#bbc0c5</color>
 
+    <color name="red1">#F44336</color>
+
 
 </resources>

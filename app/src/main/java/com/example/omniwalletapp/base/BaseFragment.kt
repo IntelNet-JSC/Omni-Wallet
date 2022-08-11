@@ -31,7 +31,7 @@ import dagger.hilt.android.internal.Contexts.getApplication
 import timber.log.Timber
 
 
-abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
+abstract class BaseFragment<B : ViewBinding, VM : ViewModel?> : Fragment() {
 
     var dialog: DialogFragment? = null
 
