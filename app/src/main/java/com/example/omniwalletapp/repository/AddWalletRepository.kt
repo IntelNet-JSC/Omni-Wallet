@@ -26,13 +26,12 @@ class AddWalletRepository @Inject constructor(
             Timber.d("address: ${credentials.address}")
             Timber.d("privateKey: ${credentials.ecKeyPair.privateKey.toString(16)}")
 
+            passwordRepository.setPassword2(credentials.address, pass)
+
             Pair(
                 credentials.address,
                 bip39Wallet.mnemonic
             )
-        }.flatMap {
-            passwordRepository.setPassword(it.first, pass)
-            Observable.just(it)
         }
     }
 

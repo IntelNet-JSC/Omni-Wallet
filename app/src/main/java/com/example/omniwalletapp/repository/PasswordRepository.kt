@@ -19,6 +19,10 @@ class PasswordRepository @Inject constructor(context: Context) {
         return Observable.fromCallable { cipher.put(address, password) } // return address
     }
 
+    fun setPassword2(address: String, password: String): String {
+        return cipher.put(address, password)
+    }
+
     fun isExists(address: String): Boolean {
         return cipher.isExists(address)
     }

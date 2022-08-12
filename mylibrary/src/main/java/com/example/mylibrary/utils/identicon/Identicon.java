@@ -7,7 +7,7 @@ public class Identicon {
 
     public Identicon(BlockiesIdenticon identicon, String value){
         identicon.setVisibility(INVISIBLE);
-        identicon.setCornerRadius(30);
+        identicon.setCornerRadius(50);
         identicon.setAddress(value);
         identicon.setVisibility(VISIBLE);
     }
