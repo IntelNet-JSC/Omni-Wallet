@@ -12,11 +12,11 @@ class PasswordRepository @Inject constructor(context: Context) {
     private val cipher = CipherManager(context)
 
     fun getPassword(address: String): Observable<String> {
-        return Observable.fromCallable { String(cipher.get(address)) }
+        return Observable.fromCallable { String(cipher.get(address)) } // return password
     }
 
-    fun setPassword(address: String, password: String): Observable<Boolean> {
-        return Observable.fromCallable { cipher.put(address, password) }
+    fun setPassword(address: String, password: String): Observable<String> {
+        return Observable.fromCallable { cipher.put(address, password) } // return address
     }
 
     fun isExists(address: String): Boolean {

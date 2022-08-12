@@ -22,7 +22,7 @@ class CipherManager(private val context: Context) {
     private val PADDING = KeyProperties.ENCRYPTION_PADDING_PKCS7
     private val CIPHER_ALGORITHM = "AES/CBC/PKCS7Padding"
 
-    fun put(address: String, password: String):Boolean {
+    fun put(address: String, password: String):String {
        return setData(password.toByteArray(), address, address, address + "iv")
     }
 
@@ -41,7 +41,7 @@ class CipherManager(private val context: Context) {
         }
     }
 
-    private fun setData(data: ByteArray?, alias: String, aliasFile: String, aliasIV: String): Boolean {
+    private fun setData(data: ByteArray?, alias: String, aliasFile: String, aliasIV: String): String {
 
         if (data == null)
             throw Exception("Keystore insert data is null!")
@@ -92,7 +92,7 @@ class CipherManager(private val context: Context) {
                 cipherOutputStream?.close()
             }
 
-            return true
+            return alias
         } catch (e: Exception) {
             throw Exception("KeyStore error!", e)
         }

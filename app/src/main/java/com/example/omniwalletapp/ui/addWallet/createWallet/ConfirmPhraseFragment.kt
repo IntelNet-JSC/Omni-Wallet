@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.omniwalletapp.BuildConfig
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.base.EmptyViewModel
@@ -17,7 +18,6 @@ import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.RandomPhraseA
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
-import org.web3j.crypto.WalletUtils
 import java.util.regex.Pattern
 
 @AndroidEntryPoint
@@ -74,6 +74,7 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, EmptyVi
             if (itemDecorationCount == 0)
                 addItemDecoration(GridSpacingItemDecoration(2, 16.dpToPx, true, 0))
             adapter = confirmAdapter.also {
+
                 it.addAll(
                     lstWordItem
                 )
@@ -90,6 +91,8 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, EmptyVi
                 )
             }
         }
+
+        binding.btnCompleteBackup.isEnabled = BuildConfig.DEBUG
 
         binding.btnCompleteBackup.setOnClickListener {
             (requireActivity() as AddWalletActivity).navigateHomeActivity()

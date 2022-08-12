@@ -3,11 +3,13 @@ package com.example.omniwalletapp.ui.login
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentLoginLaterBinding
 import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.util.Status
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import javax.inject.Inject
 
 
@@ -26,7 +28,7 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
 
     override fun onStart() {
         super.onStart()
-        if (preferencesRepository.isRememberLogin())
+        if (preferencesRepository.getAddress().isNotEmpty())
             navigate(
                 LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
             )
@@ -40,8 +42,37 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         }
 
         binding.txtResetWallet.setOnClickListener {
-            showToast("Reset Wallet")
+            showAlertDialog(
+                title = "",
+                content = getString(R.string.content_reset_wallet),
+                confirmButtonTitle = "Ok",
+                cancelButtonTitle = "Hủy",
+                confirmCallback = {
+
+                    val keydir = File(requireActivity().filesDir, "")
+                    deleteDir(keydir)
+
+                    requireActivity().finish()
+                    startActivity(requireActivity().intent)
+                },
+                cancelCallback = {
+
+                }
+            )
         }
+    }
+
+    private fun deleteDir(dir: File): Boolean {
+        if (dir.isDirectory) {
+            val childrens = dir.list() ?: return false
+            for (i in childrens.indices) {
+                val success = deleteDir(File(dir, childrens[i]))
+                if (!success) {
+                    return false
+                }
+            }
+        }
+        return dir.delete()
     }
 
     override fun initUI() {
@@ -57,11 +88,11 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                     }
                     Status.SUCCESSFUL -> {
                         hideDialog()
-                        data.data?.let { pass ->
-                            showToast(pass.toString())
-                            preferencesRepository.setRememberLogin(binding.swDefault.isChecked)
+                        data.data?.let { address ->
+                            if (binding.swDefault.isChecked)
+                                preferencesRepository.setAddress(address)
                             navigate(
-                                LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
+                                LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment(address)
                             )
                         }
                     }

@@ -37,9 +37,10 @@ class WalletRepository @Inject constructor(context: Context) {
     }
 
     fun loadCredentials2(address: String): Observable<Credentials> {
+        Timber.d("ADDRESS $address")
         return passwordRepository.getPassword(address)
             .flatMap {
-                Timber.d("pass $it")
+                Timber.d("PASS $it")
                 Observable.fromCallable {
                     val childrens = keyDir.list() ?: throw Exception("Error list dir.")
                     val credentials =

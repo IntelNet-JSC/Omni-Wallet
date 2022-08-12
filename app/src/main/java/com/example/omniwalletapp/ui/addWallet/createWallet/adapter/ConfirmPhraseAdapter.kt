@@ -5,6 +5,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
+import com.example.omniwalletapp.BuildConfig
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.databinding.ItemWordConfirmBinding
 import com.example.omniwalletapp.entity.WordItem
@@ -30,7 +31,7 @@ class ConfirmPhraseAdapter(
         fun bind(item: WordItem) {
             binding.txtWordNumber.isVisible = true
 
-            binding.txtNameWord.text = item.fill
+            binding.txtNameWord.text = if(BuildConfig.DEBUG) item.name else item.fill
             binding.txtWordNumber.text = "${adapterPosition + 1}"
 
             binding.txtNameWord.background = when {

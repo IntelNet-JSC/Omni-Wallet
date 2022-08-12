@@ -1,18 +1,22 @@
 package com.example.omniwalletapp.ui.home
 
 import android.graphics.Color
+import android.os.Bundle
 import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentHomeBinding
+import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
@@ -27,12 +31,20 @@ import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.util.*
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
+    @Inject
+    lateinit var preferencesRepository: PreferencesRepository
+
     override val viewModel: HomeViewModel by viewModels()
+
+    private val args:HomeFragmentArgs by navArgs()
+
+    private var address:String?=null
 
     private val lstNet: List<ItemNetwork> by lazy {
         val random = Random()
@@ -103,6 +115,15 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 )
             else
                 showToast("Not Address")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        address = args.address?:preferencesRepository.getAddress()
+        address?.let {
+            viewModel.loadCredentials(it)
         }
     }
 
@@ -183,11 +204,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         binding.txtLock.setOnClickListener {
-            showToast("Lock Wallet!")
-            /*navigate(
+            preferencesRepository.clearData()
+            navigate(
                 HomeFragmentDirections.actionHomeFragmentToLoginLaterFragment()
-            )*/
-//            viewModel.loadCredentials2("0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF")
+            )
         }
     }
 
@@ -218,7 +238,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         viewModel.credentials?.let { credentials ->
             Timber.d("Address home: ${credentials.address}")
             binding.txtAddress.text = credentials.address.formatAddressWallet()
-            binding.imgAvaterWallet.setAddress(credentials.address)
+            Identicon(binding.imgAvaterWallet, credentials.address)
         }
     }
 

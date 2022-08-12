@@ -10,11 +10,10 @@ import com.example.omniwalletapp.util.Status
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
-import org.web3j.crypto.WalletUtils
 import timber.log.Timber
 import javax.inject.Inject
 
-typealias EventLogin = Event<Data<Boolean>>
+typealias EventLogin = Event<Data<String>>
 
 @HiltViewModel
 class LoginLaterViewModel @Inject constructor(
@@ -43,7 +42,7 @@ class LoginLaterViewModel @Inject constructor(
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
-                                data = WalletUtils.isValidAddress(response.address)
+                                data = response.address
                             )
                         )
                 }, { error ->

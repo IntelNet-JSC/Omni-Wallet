@@ -17,7 +17,9 @@ import javax.inject.Inject
 typealias EventAddress = Event<Data<String>>
 
 @HiltViewModel
-class HomeViewModel @Inject constructor(private val walletRepository: WalletRepository) :
+class HomeViewModel @Inject constructor(
+    private val walletRepository: WalletRepository
+) :
     BaseViewModel() {
 
     var credentials: Credentials? = null
@@ -26,7 +28,7 @@ class HomeViewModel @Inject constructor(private val walletRepository: WalletRepo
     val addressLiveData: LiveData<EventAddress> = _addressLiveData
 
 
-    fun loadCredentials2(address: String) {
+    fun loadCredentials(address: String) {
         val disposable = walletRepository.loadCredentials2(address)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())

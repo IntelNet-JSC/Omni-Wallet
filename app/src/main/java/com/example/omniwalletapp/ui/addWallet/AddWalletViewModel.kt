@@ -3,8 +3,8 @@ package com.example.omniwalletapp.ui.addWallet
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.omniwalletapp.base.BaseViewModel
-import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.repository.AddWalletRepository
+import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.util.Data
 import com.example.omniwalletapp.util.Event
 import com.example.omniwalletapp.util.Status
@@ -45,7 +45,8 @@ constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called")
-                    preferencesRepository.setRememberLogin(remember)
+                    if (remember)
+                        preferencesRepository.setAddress(response.first)
                     _phraseLiveData.value =
                         Event(
                             Data(
@@ -76,13 +77,14 @@ constructor(
             }
             .subscribe(
                 { response ->
-                    Timber.d("On Next Called")
-                    preferencesRepository.setRememberLogin(remember)
+                    Timber.d("On Next Called: $response")
+                    if (remember)
+                        preferencesRepository.setAddress(response)
                     _addressLiveData.value =
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
-                                data = response.address
+                                data = response
                             )
                         )
                 }, { error ->
@@ -109,7 +111,8 @@ constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called")
-                    preferencesRepository.setRememberLogin(remember)
+                    if (remember)
+                        preferencesRepository.setAddress(response)
                     _addressLiveData.value =
                         Event(
                             Data(

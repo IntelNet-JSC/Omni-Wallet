@@ -1,7 +1,6 @@
 package com.example.omniwalletapp.repository
 
 import android.content.Context
-import com.example.omniwalletapp.entity.Wallet
 import io.reactivex.Observable
 import org.bouncycastle.util.encoders.Hex
 import org.web3j.crypto.Bip44WalletUtils
@@ -19,7 +18,7 @@ class AddWalletRepository @Inject constructor(
 
     private val passwordRepository = PasswordRepository(context)
 
-    fun createWallet(pass: String): Observable<Pair<Wallet, String>> {
+    fun createWallet(pass: String): Observable<Pair<String, String>> {
         return Observable.fromCallable {
             val bip39Wallet = Bip44WalletUtils.generateBip44Wallet(pass, keyStoreFile)
             Timber.d("bip39Wallet: $bip39Wallet")
@@ -28,13 +27,16 @@ class AddWalletRepository @Inject constructor(
             Timber.d("privateKey: ${credentials.ecKeyPair.privateKey.toString(16)}")
 
             Pair(
-                Wallet(address = credentials.address),
+                credentials.address,
                 bip39Wallet.mnemonic
             )
+        }.flatMap {
+            passwordRepository.setPassword(it.first, pass)
+            Observable.just(it)
         }
     }
 
-    fun importPrivateKey(prvKey: String, pass: String): Observable<Wallet> {
+    fun importPrivateKey(prvKey: String, pass: String): Observable<String> {
         return Observable.fromCallable {
             val keys = ECKeyPair.create(Hex.decode(prvKey))
             val nameFile = WalletUtils.generateWalletFile(pass, keys, keyStoreFile, false)
@@ -42,11 +44,13 @@ class AddWalletRepository @Inject constructor(
             val credentials = WalletUtils.loadCredentials(pass, File(keyStoreFile, nameFile))
             Timber.d("address: ${credentials.address}")
 
-            Wallet(address = credentials.address)
+            credentials.address
+        }.flatMap {
+            passwordRepository.setPassword(it, pass)
         }
     }
 
-    fun importMnemonic(mnemonic: String, pass: String): Observable<Wallet> {
+    fun importMnemonic(mnemonic: String, pass: String): Observable<String> {
         return Observable.fromCallable {
             val credentials = Bip44WalletUtils.loadBip44Credentials("", mnemonic)
             val nameFile =
@@ -54,7 +58,9 @@ class AddWalletRepository @Inject constructor(
             Timber.d("address: ${credentials.address}")
             Timber.d("nameFile: $nameFile")
 
-            Wallet(address = credentials.address)
+            credentials.address
+        }.flatMap {
+            passwordRepository.setPassword(it, pass)
         }
     }
 

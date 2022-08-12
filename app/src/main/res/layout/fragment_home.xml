@@ -123,21 +123,6 @@
                         android:layout_width="50dp"
                         android:layout_height="50dp"/>
 
-                    <com.google.android.material.imageview.ShapeableImageView
-                        android:id="@+id/imgAvaterWallet2"
-                        android:visibility="gone"
-                        android:layout_width="48dp"
-                        android:layout_height="48dp"
-                        android:cropToPadding="true"
-                        android:padding="2dp"
-                        android:src="@drawable/ic_launcher_background"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toTopOf="parent"
-                        app:shapeAppearanceOverlay="@style/Circular"
-                        app:strokeColor="@color/blue500"
-                        app:strokeWidth="2dp" />
-
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtNameWallet"
                         android:layout_width="wrap_content"
@@ -170,7 +155,7 @@
                         android:background="@drawable/bg_txt_address"
                         android:paddingHorizontal="8dp"
                         android:paddingVertical="4dp"
-                        android:text="@string/address_demo"
+                        android:text="..."
                         android:textColor="@color/black"
                         android:textSize="14sp"
                         app:layout_constraintEnd_toEndOf="parent"
