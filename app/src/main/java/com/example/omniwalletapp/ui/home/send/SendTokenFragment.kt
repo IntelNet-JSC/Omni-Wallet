@@ -2,23 +2,23 @@ package com.example.omniwalletapp.ui.home.send
 
 import android.os.Bundle
 import android.text.Editable
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.core.widget.addTextChangedListener
-import androidx.fragment.app.viewModels
+import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentSendTokenBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
-import com.example.omniwalletapp.ui.home.HomeFragmentDirections
+import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.send.adapter.AddressRecentlyAdapter
 import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 import com.example.omniwalletapp.util.formatAddressWallet
@@ -28,17 +28,20 @@ import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
+import org.web3j.crypto.WalletUtils
+import timber.log.Timber
 
 
 @AndroidEntryPoint
-class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewModel>(),
+class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(),
     View.OnClickListener {
 
-    override val viewModel: SendTokenViewModel by viewModels()
+//    override val viewModel: SendTokenViewModel by viewModels()
+    override val viewModel: HomeViewModel by activityViewModels()
 
     private val args: SendTokenFragmentArgs by navArgs()
 
-    private var address: String? = null
+    private var toAddress: String? = null
 
     private val adapter: AddressRecentlyAdapter by lazy {
         AddressRecentlyAdapter(
@@ -55,21 +58,20 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewMo
         if (result.contents == null) {
             showToast("Cancelled")
         } else {
-            Log.d("XXX", ": ${result.contents}")
+            Timber.d("content: ${result.contents}")
             val address = result.contents.getStringAddressFromScan()
-            Log.d("XXX", "format: $address")
-            if(address.isNotEmpty()) {
-                this.address=address
-                initFillFromAddress()
-            }
-            else
+            Timber.d("format: $address")
+            if (WalletUtils.isValidAddress(address)) {
+                this.toAddress = address
+                initFillToAddress()
+            } else
                 showToast("Not Address")
         }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        address = args.address
+        toAddress = args.address
     }
 
     override fun getFragmentBinding(
@@ -110,7 +112,9 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewMo
     }
 
     override fun initUI() {
-        initFillFromAddress()
+        initFromToAddress()
+        initFillToAddress()
+        initDefaultNetwork()
 
         binding.tiySearchAddress.apply {
             endIconMode = TextInputLayout.END_ICON_CUSTOM
@@ -132,19 +136,38 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, SendTokenViewMo
         }
 
         binding.imgDeleteFill.setOnClickListener {
-            address=null
-            initFillFromAddress()
+            toAddress = null
+            initFillToAddress()
         }
     }
 
-    private fun initFillFromAddress(){
-        address?.run {
+    private fun initDefaultNetwork() {
+        val itemNetwork = viewModel.getItemNetworkDefault()
+        itemNetwork?.let {
+            binding.txtDot.setBackgroundColor(it.color)
+            binding.txtNet.text = it.name
+        }
+    }
+
+    private fun initFromToAddress(){
+        viewModel.credentials?.let {
+            Identicon(binding.imgAvatarFrom, it.address)
+            val balanceEthFormat = viewModel.getBalanceFormatWithSymbol()
+            binding.txtBalance.text = getString(R.string.content_balance_from_send, balanceEthFormat)
+        }
+    }
+
+    private fun initFillToAddress() {
+        toAddress?.run {
+            Identicon(binding.imgAvatarTo, this)
             binding.layoutFill.isVisible = true
             binding.tiySearchAddress.visibility = View.INVISIBLE
             binding.txtAddressFill.text = this.formatAddressWallet(12)
-        }?:kotlin.run {
+            binding.btnContinue.isEnabled = true
+        } ?: kotlin.run {
             binding.layoutFill.isVisible = false
             binding.tiySearchAddress.visibility = View.VISIBLE
+            binding.btnContinue.isEnabled = false
         }
     }
 

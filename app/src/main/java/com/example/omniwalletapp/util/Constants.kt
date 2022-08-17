@@ -5,4 +5,13 @@ object Constants {
     const val LOCAL_SHARED_PREF = "local_shared_pref"
     const val REMEMBER_LOGIN = "is_remember_login"
     const val BASE_URL = "https://jsonplaceholder.typicode.com/"
+
+    const val ETHEREUM_NETWORK_NAME = "Ethereum"
+    const val ROPSTEN_NETWORK_NAME = "Ropsten (Test)"
+
+    const val BSC_MAINNET_NAME = "BSC MainNet"
+    const val BSC_TESTNET = "BSC TestNet"
+
+    const val ETH_SYMBOL = "ETH"
+    const val BSC_SYMBOL = "BNB"
 }

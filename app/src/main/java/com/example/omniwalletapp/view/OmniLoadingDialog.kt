@@ -1,6 +1,8 @@
 package com.example.omniwalletapp.view
 
 import android.app.Dialog
+import android.graphics.Color
+import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -16,6 +18,8 @@ class OmniLoadingDialog(var callbackDismiss: (() -> Unit)?) : AppCompatDialogFra
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View {
+        // make white background transparent
+        dialog?.window?.setBackgroundDrawable(ColorDrawable(Color.TRANSPARENT))
         return inflater.inflate(R.layout.dialog_loading_omni_wallet, container, false)
     }
 
@@ -39,7 +43,7 @@ class OmniLoadingDialog(var callbackDismiss: (() -> Unit)?) : AppCompatDialogFra
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.themeShowLoadingDialog)
+//        setStyle(DialogFragment.STYLE_NO_FRAME, R.style.themeShowLoadingDialog)
         return super.onCreateDialog(savedInstanceState)
     }
 

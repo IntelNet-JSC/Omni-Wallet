@@ -25,6 +25,7 @@ android {
 
         // should correspond to key/value pairs inside the file
         buildConfigField("String", "Etherscan_API", apikeyProperties['Etherscan_API'])
+        buildConfigField("String", "BSC_API", apikeyProperties['BSC_API'])
 
 //        multiDexEnabled true
     }
@@ -101,6 +102,7 @@ dependencies {
     // retrofit
     implementation 'com.squareup.retrofit2:retrofit:2.9.0'
     implementation 'com.squareup.retrofit2:converter-gson:2.9.0'
+    implementation "com.squareup.retrofit2:adapter-rxjava2:2.9.0"
     implementation 'com.squareup.okhttp3:logging-interceptor:4.10.0'
 
     // zxing
@@ -110,6 +112,8 @@ dependencies {
     implementation "androidx.swiperefreshlayout:swiperefreshlayout:1.1.0"
 
     implementation project(":mylibrary")
+
+    implementation 'net.yslibrary.keyboardvisibilityevent:keyboardvisibilityevent:3.0.0-RC3'
 
 //    implementation 'org.bitcoinj:bitcoinj-core:0.16.1'
 

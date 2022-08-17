@@ -120,15 +120,13 @@
             app:layout_constraintStart_toEndOf="@+id/barrier2"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <com.example.mylibrary.utils.identicon.BlockiesIdenticon
                 android:id="@+id/imgAvatarFrom"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
-                android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/Circular" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtFromName"
@@ -146,7 +144,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginTop="4dp"
-                android:text="Số dư: 100 ETH"
+                tools:text="Số dư: 100 ETH"
                 android:textColor="@color/black"
                 android:textSize="14sp"
                 app:layout_constraintStart_toStartOf="@+id/txtFromName"
@@ -198,15 +196,13 @@
             app:layout_constraintStart_toStartOf="@+id/tiySearchAddress"
             app:layout_constraintTop_toTopOf="@+id/tiySearchAddress">
 
-            <com.google.android.material.imageview.ShapeableImageView
+            <com.example.mylibrary.utils.identicon.BlockiesIdenticon
                 android:id="@+id/imgAvatarTo"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
-                android:src="@drawable/ic_launcher_background"
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:shapeAppearanceOverlay="@style/Circular" />
+                app:layout_constraintTop_toTopOf="parent" />
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtAddressFill"

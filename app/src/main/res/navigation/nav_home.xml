@@ -66,7 +66,11 @@
         android:id="@+id/receiveTokenDialogFragment"
         android:name="com.example.omniwalletapp.ui.home.receive.ReceiveTokenDialogFragment"
         android:label="fragment_receive_token"
-        tools:layout="@layout/fragment_receive_token" />
+        tools:layout="@layout/fragment_receive_token" >
+        <argument
+            android:name="address"
+            app:argType="string" />
+    </dialog>
     <fragment
         android:id="@+id/loginLaterFragment"
         android:name="com.example.omniwalletapp.ui.login.LoginLaterFragment"

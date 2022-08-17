@@ -3,15 +3,12 @@ package com.example.omniwalletapp.ui.home.network.adapter
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
-import com.example.omniwalletapp.R
 import com.example.omniwalletapp.databinding.ItemNetBinding
-import com.example.omniwalletapp.util.show
 
 class NetworkAdapter(
     private val lstNet: MutableList<ItemNetwork> = mutableListOf(),
-    private val callBackNetwork: (ItemNetwork) -> Unit,
+    private val callBackNetwork: (Int) -> Unit,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -45,7 +42,8 @@ class NetworkAdapter(
                 imgDotNet.setBackgroundColor(item.color)
             }
             itemView.setOnClickListener {
-                callBackNetwork.invoke(item)
+                if(!item.isChecked)
+                    callBackNetwork.invoke(adapterPosition)
             }
         }
     }

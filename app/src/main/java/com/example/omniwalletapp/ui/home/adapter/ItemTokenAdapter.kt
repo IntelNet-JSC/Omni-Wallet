@@ -2,8 +2,8 @@ package com.example.omniwalletapp.ui.home.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.databinding.ItemChooseTokenBinding
 import com.example.omniwalletapp.databinding.ItemImportTokenBinding
 import com.example.omniwalletapp.databinding.ItemTokenBinding
@@ -21,13 +21,18 @@ class ItemTokenAdapter(
         notifyDataSetChanged()
     }
 
+    fun clearAll(){
+        lstToken.clear()
+        notifyDataSetChanged()
+    }
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
-            ITEM_DATA ->
+            ItemToken.ITEM_DATA ->
                 ItemTokenViewHolder(
                     ItemTokenBinding.inflate(LayoutInflater.from(parent.context), parent, false)
                 )
-            ITEM_FOOTER ->
+            ItemToken.ITEM_FOOTER ->
                 ItemFooterViewHolder(
                     ItemImportTokenBinding.inflate(
                         LayoutInflater.from(parent.context),
@@ -48,27 +53,31 @@ class ItemTokenAdapter(
 
     override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
         when (holder.itemViewType) {
-            ITEM_DATA -> (holder as ItemTokenViewHolder).bind(ItemToken(0, "BNB", "1000"))
-            ITEM_FOOTER -> (holder as ItemFooterViewHolder).bind()
-            else -> (holder as ItemChooseViewHolder).bind(ItemToken(0, "BNB", "1000"))
+            ItemToken.ITEM_DATA -> (holder as ItemTokenViewHolder).bind(lstToken[position])
+            ItemToken.ITEM_FOOTER -> (holder as ItemFooterViewHolder).bind()
+            else -> (holder as ItemChooseViewHolder).bind(lstToken[position])
         }
     }
 
     override fun getItemCount(): Int {
-        return if (callBackImportToken != null) 4 else 2
+        return if (lstToken.isEmpty()) 0 else lstToken.size
     }
 
     override fun getItemViewType(position: Int): Int {
-//        return if (lstToken.size - 1 != position) ITEM_DATA else ITEM_FOOTER
         if (callBackImportToken == null)
-            return ITEM_CHOOSE
-        return if (3 != position) ITEM_DATA else ITEM_FOOTER
+            return ItemToken.ITEM_FOOTER
+        return if (lstToken.size - 1 != position) ItemToken.ITEM_DATA else ItemToken.ITEM_FOOTER
     }
 
     inner class ItemTokenViewHolder(val binding: ItemTokenBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ItemToken) {
+           val balanceFormat = StringBuilder().append(item.amount)
+                .append(" ${item.symbol}").toString()
+            binding.txtNameToken.text = balanceFormat
+            Identicon(binding.imgToken, item.address)
+
             itemView.setOnClickListener {
                 callBackTokenClick.invoke(item)
             }
@@ -94,16 +103,25 @@ class ItemTokenAdapter(
             }
         }
     }
-
-    companion object {
-        private const val ITEM_DATA = 0
-        private const val ITEM_FOOTER = 1
-        private const val ITEM_CHOOSE = 2
-    }
 }
 
 data class ItemToken(
-    val id: Int,
-    var name: String,
-    var amount: String
-)
+    var symbol: String = "",
+    var amount: String = "",
+    var address: String = "",
+    var type: Int = 0
+) {
+    companion object {
+        const val ITEM_DATA = 0
+        const val ITEM_FOOTER = 1
+        const val ITEM_CHOOSE = 2
+
+        fun generateFooterItem() = ItemToken(type = ITEM_FOOTER)
+
+        fun generateHeadItem(
+            symbol: String,
+            amount: String,
+            type: Int = ITEM_DATA
+        ) = ItemToken(symbol = symbol, amount = amount, type = type)
+    }
+}

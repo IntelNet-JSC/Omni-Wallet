@@ -19,7 +19,6 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
-import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -33,7 +32,7 @@ import dagger.hilt.android.internal.Contexts.getApplication
 import timber.log.Timber
 
 
-abstract class BaseFragment<B : ViewBinding, VM : ViewModel?> : Fragment() {
+abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
 
     var dialog: DialogFragment? = null
 

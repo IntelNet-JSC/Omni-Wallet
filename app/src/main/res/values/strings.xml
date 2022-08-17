@@ -61,6 +61,7 @@
     <string name="address_demo">0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF</string>
     <string name="private_key_demo">8b9a47d4cc36a15ad1a262ee834268826ea786d6b5d28095f879d87318e96c33</string>
     <string name="word_phrase_demo">treat short panther process involve patient gold spoil little pudding road predict</string>
+    <string name="word_phrase_demo2">damage day correct salt wood joy jeans senior force topic person laundry</string>
     <string name="dont_see_your_token">Không thấy token của mình</string>
     <string name="other_network">Mạng khác</string>
     <string name="choose_network">Chọn mạng</string>
@@ -103,4 +104,6 @@
     <string name="date">Ngày</string>
     <string name="toast_address_copied">Đã sao chép địa chỉ công khai vào bộ nhớ đệm</string>
     <string name="content_reset_wallet">Bạn có chắc là cài lại ví! Dữ liệu sẽ bị mất 😃</string>
+
+    <string name="content_balance_from_send">Số dư: %s</string>
 </resources>

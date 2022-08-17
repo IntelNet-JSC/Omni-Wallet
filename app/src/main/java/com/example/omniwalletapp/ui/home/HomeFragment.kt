@@ -1,12 +1,11 @@
 package com.example.omniwalletapp.ui.home
 
-import android.graphics.Color
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
@@ -21,16 +20,18 @@ import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
 import com.example.omniwalletapp.ui.home.network.NetDialogFragment
-import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
 import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
+import com.example.omniwalletapp.util.getNavigationResult
 import com.example.omniwalletapp.util.getStringAddressFromScan
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
+import org.web3j.crypto.WalletUtils
 import timber.log.Timber
-import java.util.*
+import java.math.BigDecimal
+import java.math.BigInteger
 import javax.inject.Inject
 
 
@@ -40,45 +41,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     @Inject
     lateinit var preferencesRepository: PreferencesRepository
 
-    override val viewModel: HomeViewModel by viewModels()
+    override val viewModel: HomeViewModel by activityViewModels()
 
-    private val args:HomeFragmentArgs by navArgs()
+    private val args: HomeFragmentArgs by navArgs()
 
-    private var address:String?=null
-
-    private val lstNet: List<ItemNetwork> by lazy {
-        val random = Random()
-        listOf(
-            ItemNetwork(
-                1, getString(R.string.main_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                true
-            ),
-            ItemNetwork(
-                2, getString(R.string.ropsten_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            ),
-            ItemNetwork(
-                3, getString(R.string.kovan_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            ),
-            ItemNetwork(
-                4, getString(R.string.goerli_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            )
-        )
-    }
+    private var address: String? = null
 
     private val callBackToken: (ItemToken) -> Unit = {
         navigate(
@@ -107,11 +74,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             showToast("Cancelled")
         } else {
             Log.d("XXX", ": ${result.contents}")
-            val address = result.contents.getStringAddressFromScan()
-            Log.d("XXX", "format: $address")
-            if (address.isNotEmpty())
+            val addressFormat = result.contents.getStringAddressFromScan()
+            Log.d("XXX", "format: $addressFormat")
+            if (WalletUtils.isValidAddress(addressFormat))
                 navigate(
-                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(address)
+                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(addressFormat)
                 )
             else
                 showToast("Not Address")
@@ -121,10 +88,12 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
-        address = args.address?:preferencesRepository.getAddress()
+        address = args.address ?: preferencesRepository.getAddress()
         address?.let {
             viewModel.loadCredentials(it)
+            viewModel.loadBalance(it)
         }
+
     }
 
     override fun getFragmentBinding(
@@ -135,16 +104,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun initControl() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
-            Handler().postDelayed(
-                {
-                    binding.swipeRefreshLayout.isRefreshing = false
-                }, 500
-            )
+            viewModel.refresh()
         }
 
         binding.txtAddress.setOnClickListener {
-            copyToClipboard(getString(R.string.address_demo))
-            showToast(getString(R.string.toast_address_copied))
+            address?.let {
+                copyToClipboard(it)
+                showToast(getString(R.string.toast_address_copied))
+            }
         }
 
         // fade click anim
@@ -165,9 +132,11 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         binding.viewClickNetWork.setOnClickListener {
             NetDialogFragment.newInstance(
                 fManager,
-                lstNet,
+                viewModel.lstItemNetwork,
                 chooseNetworkListener = {
-                    showToast(it.name)
+                    viewModel.setDefaultNetworkInfo(it)
+                    setUiDefaultNetWork()
+                    viewModel.refresh()
                 },
                 addNetworkListener = {
                     navigate(
@@ -179,7 +148,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         binding.viewReceive.setOnClickListener {
             navigate(
-                HomeFragmentDirections.actionHomeFragmentToReceiveTokenDialogFragment()
+                HomeFragmentDirections.actionHomeFragmentToReceiveTokenDialogFragment(address ?: "")
             )
         }
 
@@ -212,10 +181,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     override fun initUI() {
-        initUiWallet()
-
-        binding.txtDot.setBackgroundColor(lstNet[0].color)
-        binding.txtNet.text = lstNet[0].name
+        initAddressWallet()
+        initBalanceWallet(viewModel.balanceETH)
+        setUiDefaultNetWork()
 
         binding.rvToken.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -234,15 +202,47 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     }
 
-    private fun initUiWallet() {
-        viewModel.credentials?.let { credentials ->
-            Timber.d("Address home: ${credentials.address}")
-            binding.txtAddress.text = credentials.address.formatAddressWallet()
-            Identicon(binding.imgAvaterWallet, credentials.address)
+    private fun setUiDefaultNetWork() {
+        val itemNetwork = viewModel.getItemNetworkDefault()
+        itemNetwork?.let {
+            binding.txtDot.setBackgroundColor(it.color)
+            binding.txtNet.text = it.name
         }
     }
 
+    private fun initAddressWallet() {
+        address?.let { it ->
+            Timber.d("Address home: $it")
+
+            binding.txtAddress.text = it.formatAddressWallet()
+            Identicon(binding.imgAvaterWallet, it)
+
+        }
+    }
+
+    private fun initBalanceWallet(ethBalance: BigDecimal) {
+        val balanceFormat = StringBuilder().append(ethBalance)
+            .append(" ${viewModel.getSymbolNetworkDefault()}").toString()
+        binding.txtAmount.text = balanceFormat
+    }
+
     override fun initEvent() {
+        viewModel.fetchLiveData.observe(viewLifecycleOwner) {
+            when (it.responseType) {
+                Status.ERROR -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+
+                Status.LOADING -> {
+                    binding.swipeRefreshLayout.isRefreshing = true
+                }
+
+                Status.SUCCESSFUL -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
+
         viewModel.addressLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { data ->
                 when (data.responseType) {
@@ -251,7 +251,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                     }
                     Status.SUCCESSFUL -> {
                         hideDialog()
-                        initUiWallet()
+//                        initAddressWallet()
                     }
                     Status.ERROR -> {
                         hideDialog()
@@ -262,10 +262,28 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             }
         }
+
+        viewModel.balanceLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                initBalanceWallet(data)
+            }
+        }
+
+        viewModel.lstTokenLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { lstItemToken ->
+                tokenAdapter.addAll(lstItemToken)
+            }
+        }
     }
 
     override fun initConfig() {
-
+        getNavigationResult<Int>(
+            R.id.homeFragment,
+            "network_change"
+        ) {
+            tokenAdapter.clearAll()
+            viewModel.refresh()
+        }
     }
 
     override fun onDestroyView() {

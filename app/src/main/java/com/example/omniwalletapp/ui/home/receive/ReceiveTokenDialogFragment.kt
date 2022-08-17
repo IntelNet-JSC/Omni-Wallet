@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
+import androidx.navigation.fragment.navArgs
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseBottomSheetFragment
 import com.example.omniwalletapp.databinding.FragmentReceiveTokenBinding
@@ -22,6 +23,8 @@ import dagger.hilt.android.AndroidEntryPoint
 @AndroidEntryPoint
 class ReceiveTokenDialogFragment : BaseBottomSheetFragment<FragmentReceiveTokenBinding>() {
 
+    private val args: ReceiveTokenDialogFragmentArgs by navArgs()
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
@@ -36,9 +39,9 @@ class ReceiveTokenDialogFragment : BaseBottomSheetFragment<FragmentReceiveTokenB
         super.onViewCreated(view, savedInstanceState)
 
         val strAddressWallet = getString(R.string.address_demo)
-        binding.txtAddress.text = strAddressWallet.formatAddressWallet()
+        binding.txtAddress.text = args.address.formatAddressWallet()
 
-        generateQRCode(strAddressWallet)?.run {
+        generateQRCode(args.address)?.run {
             binding.imgQR.setImageBitmap(this)
         }
 
@@ -46,7 +49,7 @@ class ReceiveTokenDialogFragment : BaseBottomSheetFragment<FragmentReceiveTokenB
 
             val sendIntent: Intent = Intent().apply {
                 action = Intent.ACTION_SEND
-                putExtra(Intent.EXTRA_TEXT, strAddressWallet)
+                putExtra(Intent.EXTRA_TEXT, args.address)
                 type = "text/plain"
             }
 
@@ -55,7 +58,7 @@ class ReceiveTokenDialogFragment : BaseBottomSheetFragment<FragmentReceiveTokenB
         }
 
         binding.txtCopy.setOnClickListener {
-            copyToClipboard(strAddressWallet)
+            copyToClipboard(args.address)
             showToast(getString(R.string.toast_address_copied))
         }
     }
