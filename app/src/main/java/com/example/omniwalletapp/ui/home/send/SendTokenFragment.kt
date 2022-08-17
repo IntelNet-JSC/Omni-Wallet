@@ -19,6 +19,7 @@ import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentSendTokenBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.HomeViewModel
+import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.send.adapter.AddressRecentlyAdapter
 import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 import com.example.omniwalletapp.util.formatAddressWallet
@@ -46,7 +47,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
     private val adapter: AddressRecentlyAdapter by lazy {
         AddressRecentlyAdapter(
             callBackItemClick = {
-                showToast("Item Address Click")
+                initUiToAddress(it.name)
             }
         )
     }
@@ -62,8 +63,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
             val address = result.contents.getStringAddressFromScan()
             Timber.d("format: $address")
             if (WalletUtils.isValidAddress(address)) {
-                this.toAddress = address
-                initFillToAddress()
+                initUiToAddress(address)
             } else
                 showToast("Not Address")
         }
@@ -87,7 +87,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
 
         binding.btnContinue.setOnClickListener {
             navigate(
-                SendTokenFragmentDirections.actionSendTokenFragmentToAmountFragment()
+                SendTokenFragmentDirections.actionSendTokenFragmentToAmountFragment(toAddress!!, args.indexToken)
             )
         }
 
@@ -112,8 +112,8 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
     }
 
     override fun initUI() {
-        initFromToAddress()
-        initFillToAddress()
+        initUiFromAddress()
+        initUiToAddress(toAddress)
         initDefaultNetwork()
 
         binding.tiySearchAddress.apply {
@@ -136,8 +136,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         }
 
         binding.imgDeleteFill.setOnClickListener {
-            toAddress = null
-            initFillToAddress()
+            initUiToAddress(null)
         }
     }
 
@@ -149,15 +148,15 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         }
     }
 
-    private fun initFromToAddress(){
-        viewModel.credentials?.let {
-            Identicon(binding.imgAvatarFrom, it.address)
-            val balanceEthFormat = viewModel.getBalanceFormatWithSymbol()
-            binding.txtBalance.text = getString(R.string.content_balance_from_send, balanceEthFormat)
-        }
+    private fun initUiFromAddress() {
+        val balanceFormat = StringBuilder().append(viewModel.balanceETH)
+            .append(" ${viewModel.getSymbolNetworkDefault()}").toString()
+        binding.txtBalance.text = getString(R.string.content_balance_from_send, balanceFormat)
+        Identicon(binding.imgAvatarFrom, viewModel.credentials?.address)
     }
 
-    private fun initFillToAddress() {
+    private fun initUiToAddress(address:String?) {
+        toAddress = address // set toAddress
         toAddress?.run {
             Identicon(binding.imgAvatarTo, this)
             binding.layoutFill.isVisible = true

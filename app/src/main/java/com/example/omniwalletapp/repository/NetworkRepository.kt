@@ -5,17 +5,27 @@ import com.example.omniwalletapp.BuildConfig
 import com.example.omniwalletapp.base.Erc20TokenWrapper
 import com.example.omniwalletapp.entity.NetworkInfo
 import com.example.omniwalletapp.util.BalanceUtil
+import com.example.omniwalletapp.util.BalanceUtil.convertTogEstimateGasEth
 import com.example.omniwalletapp.util.Constants
 import io.reactivex.Observable
+import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.datatypes.Address
+import org.web3j.abi.datatypes.Function
+import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
+import org.web3j.protocol.core.methods.request.Transaction
+import org.web3j.protocol.core.methods.response.EthEstimateGas
+import org.web3j.protocol.core.methods.response.EthGasPrice
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
 import org.web3j.tx.response.NoOpProcessor
 import org.web3j.tx.response.TransactionReceiptProcessor
+import org.web3j.utils.Convert
+import timber.log.Timber
+import java.math.BigDecimal
 import java.math.BigInteger
 import javax.inject.Inject
 
@@ -148,6 +158,41 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
                 "balance" to BalanceUtil.subunitToBase(contract.balanceOf(Address(address)).value)
                     .toString()
             )
+        }
+    }
+
+    fun getEstimateGas(
+        fromAddress: String,
+        toAddress: String, // or contractAddress
+        amount: String
+    ): Observable<BigDecimal> {
+        val web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
+
+        return Observable.fromCallable {
+            val amount2: BigInteger = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
+            val function =
+                Function(
+                    "transfer",
+                    listOf(Address(toAddress), Uint256(amount2)),
+                    emptyList()
+                )
+            val txData: String = FunctionEncoder.encode(function)
+
+            val transaction = Transaction.createEthCallTransaction(fromAddress, toAddress, txData)
+
+            val ethGasPrice: EthGasPrice = web3j.ethGasPrice().sendAsync().get()
+            val ethEstimateGas: EthEstimateGas = web3j.ethEstimateGas(transaction).sendAsync().get()
+
+            Timber.d("amount: $amount2")
+            Timber.d("ethGasPrice: ${ethGasPrice.gasPrice}")
+            Timber.d("ethEstimateGas: ${ethEstimateGas.amountUsed}")
+
+            val amountEstimateEth =
+                convertTogEstimateGasEth(ethGasPrice.gasPrice, ethEstimateGas.amountUsed)
+
+            Timber.d("amountEstimateEth: $amountEstimateEth")
+
+            amountEstimateEth
         }
     }
 

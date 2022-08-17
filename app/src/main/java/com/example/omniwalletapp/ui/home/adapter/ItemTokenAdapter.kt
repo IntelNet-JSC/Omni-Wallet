@@ -1,5 +1,6 @@
 package com.example.omniwalletapp.ui.home.adapter
 
+import android.os.Parcelable
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
@@ -7,10 +8,11 @@ import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.databinding.ItemChooseTokenBinding
 import com.example.omniwalletapp.databinding.ItemImportTokenBinding
 import com.example.omniwalletapp.databinding.ItemTokenBinding
+import kotlinx.parcelize.Parcelize
 
 class ItemTokenAdapter(
     private val lstToken: MutableList<ItemToken> = mutableListOf(),
-    private val callBackTokenClick: (ItemToken) -> Unit,
+    private val callBackTokenClick: (Int, ItemToken) -> Unit,
     private val callBackImportToken: (() -> Unit)? = null
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
@@ -65,7 +67,7 @@ class ItemTokenAdapter(
 
     override fun getItemViewType(position: Int): Int {
         if (callBackImportToken == null)
-            return ItemToken.ITEM_FOOTER
+            return ItemToken.ITEM_CHOOSE
         return if (lstToken.size - 1 != position) ItemToken.ITEM_DATA else ItemToken.ITEM_FOOTER
     }
 
@@ -79,7 +81,7 @@ class ItemTokenAdapter(
             Identicon(binding.imgToken, item.address)
 
             itemView.setOnClickListener {
-                callBackTokenClick.invoke(item)
+                callBackTokenClick.invoke(adapterPosition, item)
             }
         }
     }
@@ -98,19 +100,25 @@ class ItemTokenAdapter(
         RecyclerView.ViewHolder(binding.root) {
 
         fun bind(item: ItemToken) {
+
+            binding.txtNameToken.text = item.symbol
+            binding.txtAmountToken.text = item.amount
+            Identicon(binding.imgToken, item.address)
+
             itemView.setOnClickListener {
-                callBackTokenClick.invoke(item)
+                callBackTokenClick.invoke(adapterPosition , item)
             }
         }
     }
 }
 
+@Parcelize
 data class ItemToken(
     var symbol: String = "",
     var amount: String = "",
     var address: String = "",
     var type: Int = 0
-) {
+) : Parcelable {
     companion object {
         const val ITEM_DATA = 0
         const val ITEM_FOOTER = 1

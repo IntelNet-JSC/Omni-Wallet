@@ -52,6 +52,8 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
                 fManager,
                 viewModel.lstItemNetwork,
                 chooseNetworkListener = {
+                    if(it==-1)
+                        return@newInstance
                     setNavigationResult("network_change", it)
                     viewModel.setDefaultNetworkInfo(it)
                     setUiDefaultNetWork()

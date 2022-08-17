@@ -18,13 +18,13 @@ import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
 
 class ChooseTokenDialogFragment(
     private var tokenItems: List<ItemToken>,
-    private var chooseTokenListener: (ItemToken) -> Unit = { }
+    private var chooseTokenListener: ((Int, ItemToken) -> Unit)?
 ) : BaseBottomSheetFragment<DialogChooseTokenBinding>() {
 
     private val adapter: ItemTokenAdapter by lazy {
         ItemTokenAdapter(
-            callBackTokenClick = {
-                chooseTokenListener.invoke(it)
+            callBackTokenClick = { x, y->
+                chooseTokenListener?.invoke(x, y)
                 this.dismiss()
             }
         )
@@ -44,7 +44,7 @@ class ChooseTokenDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-//        adapter.addAll(netItems)
+        adapter.addAll(tokenItems)
         initAdapter()
 
     }
@@ -67,7 +67,7 @@ class ChooseTokenDialogFragment(
         fun newInstance(
             fm: FragmentManager,
             items: List<ItemToken>,
-            chooseTokenListener: (ItemToken) -> Unit = { }
+            chooseTokenListener: ((Int, ItemToken) -> Unit)?
         ) {
             val dialog = ChooseTokenDialogFragment(items, chooseTokenListener)
             dialog.show(fm, dialog.tag)

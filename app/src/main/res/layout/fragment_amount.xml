@@ -91,7 +91,7 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtSymbolToken"
-            android:text="BNB"
+            tools:text="BNB"
             android:gravity="center"
             android:paddingHorizontal="10dp"
             android:textSize="16sp"
@@ -121,7 +121,7 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtAmountToken"
-            android:inputType="number"
+            android:inputType="numberDecimal"
             android:background="@null"
             android:textStyle="bold"
             android:layout_width="wrap_content"

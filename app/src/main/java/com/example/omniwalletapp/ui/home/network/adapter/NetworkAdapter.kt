@@ -44,6 +44,8 @@ class NetworkAdapter(
             itemView.setOnClickListener {
                 if(!item.isChecked)
                     callBackNetwork.invoke(adapterPosition)
+                else
+                    callBackNetwork.invoke(-1)
             }
         }
     }

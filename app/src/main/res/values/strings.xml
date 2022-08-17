@@ -106,4 +106,6 @@
     <string name="content_reset_wallet">Bạn có chắc là cài lại ví! Dữ liệu sẽ bị mất 😃</string>
 
     <string name="content_balance_from_send">Số dư: %s</string>
+
+    <string name="content_zero_balance">Bạn có 0 %s trong tài khoản để trả phí giao dịch. Mua %s hoặc nạp từ tài khoản khác.</string>
 </resources>

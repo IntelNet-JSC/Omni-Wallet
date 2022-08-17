@@ -24,6 +24,7 @@ import javax.inject.Inject
 
 typealias EventAddress = Event<Data<String>>
 typealias EventToken = Event<Data<MutableMap<String, String>>>
+typealias EventEstimate = Event<Data<BigDecimal>>
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -34,6 +35,7 @@ class HomeViewModel @Inject constructor(
     BaseViewModel() {
 
     init {
+        Timber.d("INIT HOME VIEWMODEL")
         preferencesRepository.getListTokenAddress(Constants.BSC_SYMBOL) ?: kotlin.run {
             preferencesRepository.setListTokenAddress(
                 listOf(
@@ -56,6 +58,8 @@ class HomeViewModel @Inject constructor(
 
     var balanceETH = BigDecimal("0")
 
+    var lstToken = mutableListOf<ItemToken>()
+
     private val _addressLiveData: MutableLiveData<EventAddress> = MutableLiveData()
     val addressLiveData: LiveData<EventAddress> = _addressLiveData
 
@@ -67,6 +71,9 @@ class HomeViewModel @Inject constructor(
 
     private val _tokenLiveData: MutableLiveData<EventToken> = MutableLiveData()
     val tokenLiveData: LiveData<EventToken> = _tokenLiveData
+
+    private val _estimateLiveData: MutableLiveData<EventEstimate> = MutableLiveData()
+    val estimateLiveData: LiveData<EventEstimate> = _estimateLiveData
 
     val lstItemNetwork: MutableList<ItemNetwork> by lazy {
         getNetWorkItemList().toMutableList()
@@ -170,7 +177,8 @@ class HomeViewModel @Inject constructor(
 
 
     private fun parseMapToItemToken(lstMap: List<Map<String, String>>): MutableList<ItemToken> {
-        return lstMap.mapIndexed { i, map ->
+        lstToken.clear()
+        val lstTemp = lstMap.mapIndexed { i, map ->
             val symbol = map["symbol"] ?: ""
             val balance = map["balance"] ?: ""
             val address = map["address"] ?: ""
@@ -183,6 +191,11 @@ class HomeViewModel @Inject constructor(
                     balanceETH.toString()
                 )
             )
+        }
+        lstToken.addAll( // set list token
+            lstTemp
+        )
+        return lstTemp.also {
             it.add(
                 ItemToken.generateFooterItem()
             )
@@ -266,11 +279,12 @@ class HomeViewModel @Inject constructor(
         addDisposable(disposable)
     }
 
-    fun loadInforToken(address: String, buttonClick:Boolean) {
+    fun loadInforToken(address: String, buttonClick: Boolean) {
         val disposable = networkRepository.getInforToken(credentials!!, address)
             .map {
-               val isExist = preferencesRepository.checkExistTokenAddress(address, getSymbolNetworkDefault())
-                if(isExist)
+                val isExist =
+                    preferencesRepository.checkExistTokenAddress(address, getSymbolNetworkDefault())
+                if (isExist)
                     throw Exception("token_address_existed")
                 it.toMutableMap()
             }
@@ -309,7 +323,44 @@ class HomeViewModel @Inject constructor(
         addDisposable(disposable)
     }
 
-    fun addContractAddressToPref(address:String){
+    fun getEstimateGas(
+        fromAddress: String,
+        toAddress: String, // or contractAddress
+        amount: String
+    ) {
+        val disposable = networkRepository.getEstimateGas(fromAddress, toAddress, amount)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _estimateLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+                    _estimateLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response
+                            )
+                        )
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _estimateLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called: loadInforToken")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun addContractAddressToPref(address: String) {
         preferencesRepository.addTokenAddress(address, getSymbolNetworkDefault())
     }
 

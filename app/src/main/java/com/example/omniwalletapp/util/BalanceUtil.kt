@@ -64,7 +64,18 @@ object BalanceUtil {
                 if (stripTrailingZeros().scale() <= 0)
                     this
                 else
-                    setScale(4, RoundingMode.FLOOR)
+                    setScale(5, RoundingMode.FLOOR)
             }
     }
+
+    fun convertTogEstimateGasEth(gasPrice: BigInteger, gasLimit: BigInteger): BigDecimal {
+        return weiToEth(gasPrice).multiply(
+            BigDecimal(gasLimit)
+        ).setScale(
+            6, RoundingMode.FLOOR
+        )
+    }
+
+    fun formatBalanceWithSymbol(amount: String, symbol: String) = StringBuilder(amount)
+        .append(" $symbol").toString()
 }

@@ -49,7 +49,7 @@ class IntroActivity : BaseActivity() {
 
 
 //        web3j = Web3j.build(HttpService("https://data-seed-prebsc-1-s1.binance.org:8545/"))
-        web3j = Web3j.build(HttpService("https://ropsten.infura.io/v3/5c74f1278e2a4c87ab5b46e3aa8cb30b"))
+//        web3j = Web3j.build(HttpService("https://ropsten.infura.io/v3/5c74f1278e2a4c87ab5b46e3aa8cb30b"))
 
 //        getWalletBalance()
 

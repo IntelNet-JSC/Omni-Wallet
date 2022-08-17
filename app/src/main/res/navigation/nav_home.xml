@@ -99,6 +99,9 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <argument
+            android:name="index_token"
+            app:argType="integer" />
 
     </fragment>
     <fragment
@@ -118,6 +121,12 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <argument
+            android:name="to_address"
+            app:argType="string" />
+        <argument
+            android:name="index_token"
+            app:argType="integer" />
     </fragment>
     <fragment
         android:id="@+id/confirmFragment"
@@ -137,11 +146,34 @@
             app:exitAnim="@anim/exit_to_left"
             app:popEnterAnim="@anim/enter_from_left"
             app:popExitAnim="@anim/exit_to_right" />
+        <argument
+            android:name="to_address"
+            app:argType="string" />
+        <argument
+            android:name="index_token"
+            app:argType="integer" />
+        <argument
+            android:name="amount"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/detailTokenFragment"
         android:name="com.example.omniwalletapp.ui.home.detailToken.DetailTokenFragment"
         android:label="fragment_detail_token"
-        tools:layout="@layout/fragment_detail_token" />
+        tools:layout="@layout/fragment_detail_token" >
+        <argument
+            android:name="index_token"
+            app:argType="integer" />
+        <action
+            android:id="@+id/action_detailTokenFragment_to_sendTokenFragment"
+            app:destination="@id/sendTokenFragment"
+            app:enterAnim="@anim/enter_from_right"
+            app:exitAnim="@anim/exit_to_left"
+            app:popEnterAnim="@anim/enter_from_left"
+            app:popExitAnim="@anim/exit_to_right" />
+        <action
+            android:id="@+id/action_detailTokenFragment_to_receiveTokenDialogFragment"
+            app:destination="@id/receiveTokenDialogFragment" />
+    </fragment>
 
 </navigation>

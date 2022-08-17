@@ -102,11 +102,10 @@
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="16dp">
 
-                    <androidx.appcompat.widget.AppCompatImageView
+                    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
                         android:id="@+id/imgToken"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
-                        android:src="@drawable/binance"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -131,6 +130,7 @@
                         android:text="$26.85"
                         android:textColor="@color/black"
                         android:textSize="16sp"
+                        android:visibility="gone"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toBottomOf="@+id/txtAmountToken" />
@@ -180,7 +180,6 @@
                         android:layout_height="wrap_content"
                         android:layout_marginStart="32dp"
                         android:layout_marginTop="16dp"
-                        android:layout_marginEnd="32dp"
                         android:background="@color/blue500"
                         android:src="@drawable/ic_baseline_arrow_send_24"
                         android:tint="@color/white"
@@ -249,6 +248,14 @@
                         app:layout_constraintEnd_toEndOf="@+id/imgSwap"
                         app:layout_constraintStart_toStartOf="@+id/imgSwap"
                         app:layout_constraintTop_toTopOf="@+id/imgSwap" />
+
+                    <androidx.constraintlayout.widget.Group
+                        android:id="@+id/groupSwap"
+                        android:visibility="gone"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        app:constraint_referenced_ids="txtSwap, imgSwap" />
+
 
                 </androidx.constraintlayout.widget.ConstraintLayout>
 

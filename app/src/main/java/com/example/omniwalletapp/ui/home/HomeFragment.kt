@@ -47,9 +47,9 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
     private var address: String? = null
 
-    private val callBackToken: (ItemToken) -> Unit = {
+    private val callBackToken: (Int, ItemToken) -> Unit = { i, data ->
         navigate(
-            HomeFragmentDirections.actionHomeFragmentToDetailTokenFragment()
+            HomeFragmentDirections.actionHomeFragmentToDetailTokenFragment(i)
         )
     }
     private val callBackImportToken: () -> Unit = {
@@ -78,7 +78,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             Log.d("XXX", "format: $addressFormat")
             if (WalletUtils.isValidAddress(addressFormat))
                 navigate(
-                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(addressFormat)
+                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(0, addressFormat)
                 )
             else
                 showToast("Not Address")
@@ -134,6 +134,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 fManager,
                 viewModel.lstItemNetwork,
                 chooseNetworkListener = {
+                    if(it==-1)
+                        return@newInstance
                     viewModel.setDefaultNetworkInfo(it)
                     setUiDefaultNetWork()
                     viewModel.refresh()
@@ -154,7 +156,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         binding.viewSend.setOnClickListener {
             navigate(
-                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment()
+                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(indexToken = 0)
             )
         }
 

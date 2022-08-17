@@ -126,8 +126,11 @@ abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    fun backToPrevious() {
-        this.findNavController().popBackStack()
+    fun backToPrevious(desId:Int=-1, inclusive:Boolean=false) {
+        if(desId!=-1)
+            this.findNavController().popBackStack(desId, inclusive)
+        else
+            this.findNavController().popBackStack()
     }
 
     fun hideKeyboard() {
