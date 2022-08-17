@@ -1,6 +1,7 @@
 package com.example.omniwalletapp.base
 
-import androidx.lifecycle.ViewModel
+import androidx.lifecycle.*
+import com.example.omniwalletapp.util.Data
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
@@ -8,6 +9,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
+
+    // loading liveData
+    protected val _fetchLiveData = MutableLiveData<Data<Void>>()
+    val fetchLiveData: LiveData<Data<Void>> = _fetchLiveData
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 
@@ -21,6 +26,15 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
 
     override fun onCleared() {
         clearDisposables()
+    }
+
+    fun <T> LiveData<T>.observeOnce(lifecycleOwner: LifecycleOwner, observer: Observer<T>) {
+        observe(lifecycleOwner, object : Observer<T> {
+            override fun onChanged(t: T?) {
+                observer.onChanged(t)
+                removeObserver(this)
+            }
+        })
     }
 
 }

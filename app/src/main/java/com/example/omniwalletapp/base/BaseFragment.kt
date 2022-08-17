@@ -1,6 +1,9 @@
 package com.example.omniwalletapp.base
 
 import android.app.Activity
+import android.app.AlertDialog
+import android.content.ClipData
+import android.content.ClipboardManager
 import android.content.Context
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.TYPE_ETHERNET
@@ -26,8 +29,10 @@ import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
 import com.example.omniwalletapp.view.OmniLoadingDialog
 import dagger.hilt.android.internal.Contexts.getApplication
+import timber.log.Timber
 
-abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
+
+abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
 
     var dialog: DialogFragment? = null
 
@@ -40,12 +45,16 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
         requireActivity().supportFragmentManager
     }
 
+    private val nameFragmentCurrent: String by lazy {
+        this.findNavController().currentDestination?.label.toString()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        _binding=getFragmentBinding(inflater, container)
+        _binding = getFragmentBinding(inflater, container)
         return binding.root
     }
 
@@ -65,16 +74,29 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
 
     protected abstract fun initConfig()
 
-    abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?):B
+    abstract fun getFragmentBinding(inflater: LayoutInflater, container: ViewGroup?): B
 
-    override fun onDestroy() {
+    override fun onDestroyView() {
         dialog?.dismiss()
         dialog = null
-        _binding=null
-        super.onDestroy()
+        _binding = null
+        super.onDestroyView()
     }
 
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        Timber.d("onActivityCreated: Fragment=>$nameFragmentCurrent")
+    }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        Timber.d("onCreate: Fragment=>$nameFragmentCurrent")
+    }
+
+    override fun onDestroy() {
+        Timber.d("onDestroy: Fragment=>$nameFragmentCurrent")
+        super.onDestroy()
+    }
 
     fun navigate(navDirection: NavDirections, navOptions: NavOptions? = null) {
         navOptions?.let {
@@ -101,7 +123,7 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
     }
 
     fun showToast(message: String) {
-        Toast.makeText(requireContext(), message, Toast.LENGTH_LONG).show()
+        Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
     fun backToPrevious() {
@@ -145,9 +167,10 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
         val connectivityManager = getApplication(requireContext()).getSystemService(
             Context.CONNECTIVITY_SERVICE
         ) as ConnectivityManager
-        if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             val activeNetwork = connectivityManager.activeNetwork ?: return false
-            val capabilities = connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(activeNetwork) ?: return false
             return when {
                 capabilities.hasTransport(TRANSPORT_WIFI) -> true
                 capabilities.hasTransport(TRANSPORT_CELLULAR) -> true
@@ -156,7 +179,7 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
             }
         } else {
             connectivityManager.activeNetworkInfo?.run {
-                return when(type) {
+                return when (type) {
                     TYPE_WIFI -> true
                     TYPE_MOBILE -> true
                     TYPE_ETHERNET -> true
@@ -165,6 +188,52 @@ abstract class BaseFragment<B:ViewBinding, VM: ViewModel>:Fragment() {
             }
         }
         return false
+    }
+
+    open fun copyToClipboard(data: String) {
+        val clipboard =
+            requireActivity().getSystemService(Context.CLIPBOARD_SERVICE) as ClipboardManager
+        val clip = ClipData.newPlainText("eth-address", data)
+        clipboard.setPrimaryClip(clip)
+    }
+
+    open fun showAlertDialog(
+        title: String,
+        content: String,
+        confirmButtonTitle: String,
+        cancelButtonTitle: String,
+        confirmCallback: () -> Unit,
+        cancelCallback: () -> Unit
+    ) {
+        val builder: AlertDialog.Builder =
+            AlertDialog.Builder(requireContext())
+
+        val dialog = builder
+            .setTitle(title)
+            .setMessage(content)
+            .setPositiveButton(confirmButtonTitle) { dialog, _ ->
+                confirmCallback.invoke()
+            }
+            .setNegativeButton(cancelButtonTitle) { _, _ ->
+                cancelCallback.invoke()
+            }
+            .show()
+
+/*        val positiveButton = dialog.getButton(AlertDialog.BUTTON_POSITIVE)
+        val negativeButton = dialog.getButton(AlertDialog.BUTTON_NEGATIVE)
+
+        positiveButton.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.button_in_alert_dialog_color
+            )
+        )
+        negativeButton.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.button_in_alert_dialog_color
+            )
+        )*/
     }
 
 }

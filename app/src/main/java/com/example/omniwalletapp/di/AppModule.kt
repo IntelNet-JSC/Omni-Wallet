@@ -3,6 +3,7 @@ package com.example.omniwalletapp.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.util.Constants
 import com.google.gson.Gson
 import dagger.Module
@@ -17,6 +18,7 @@ import okhttp3.Response
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.gson.GsonConverterFactory
+import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
@@ -34,10 +36,10 @@ object AppModule {
             .build()
     }
 
-    private class BasicAuthInterceptor: Interceptor {
+    private class BasicAuthInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request: Request = chain.request()
-            val newRequest = request.newBuilder().addHeader("Content-Type","text/plain").build()
+            val newRequest = request.newBuilder().addHeader("Content-Type", "text/plain").build()
             return chain.proceed(newRequest)
         }
     }
@@ -45,8 +47,8 @@ object AppModule {
     private fun httpClient(): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
         val clientBuilder = OkHttpClient.Builder()
-        if(BuildConfig.DEBUG){
-            httpLoggingInterceptor.level  = HttpLoggingInterceptor.Level.BODY
+        if (BuildConfig.DEBUG) {
+            httpLoggingInterceptor.level = HttpLoggingInterceptor.Level.BODY
             clientBuilder.addInterceptor(httpLoggingInterceptor)
         }
         clientBuilder.addInterceptor(BasicAuthInterceptor())
@@ -55,17 +57,45 @@ object AppModule {
         return clientBuilder.build()
     }
 
+    @Provides
+    @Singleton
+    fun provideApplicationContext(@ApplicationContext context: Context): Context {
+        return context
+    }
+
 
     @Provides
     @Singleton
     fun provideSharedPref(@ApplicationContext context: Context): SharedPreferences {
-        return context.getSharedPreferences(Constants.LOCAL_SHARED_PREF,Context.MODE_PRIVATE)
+        return context.getSharedPreferences(Constants.LOCAL_SHARED_PREF, Context.MODE_PRIVATE)
     }
 
     @Provides
     @Singleton
     fun provideGson(): Gson {
         return Gson()
+    }
+
+    @Provides
+    fun provideKeyStoreFile(@ApplicationContext context: Context): File {
+        val keydir = File(context.filesDir, "keystore")
+        deleteDir(keydir) // đảm bảo folder keystore 1 file :))
+        if (!keydir.exists())
+            keydir.mkdirs()
+        return keydir
+    }
+
+    private fun deleteDir(dir: File): Boolean {
+        if (dir.isDirectory) {
+            val childrens = dir.list() ?: return false
+            for (i in childrens.indices) {
+                val success = deleteDir(File(dir, childrens[i]))
+                if (!success) {
+                    return false
+                }
+            }
+        }
+        return dir.delete()
     }
 
 }

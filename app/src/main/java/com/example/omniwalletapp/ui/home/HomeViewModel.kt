@@ -1,47 +1,316 @@
 package com.example.omniwalletapp.ui.home
 
+import android.graphics.Color
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
 import com.example.omniwalletapp.base.BaseViewModel
+import com.example.omniwalletapp.repository.NetworkRepository
+import com.example.omniwalletapp.repository.PreferencesRepository
+import com.example.omniwalletapp.repository.WalletRepository
+import com.example.omniwalletapp.ui.home.adapter.ItemToken
+import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
+import com.example.omniwalletapp.util.*
+import dagger.hilt.android.lifecycle.HiltViewModel
+import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.functions.BiFunction
+import io.reactivex.schedulers.Schedulers
+import org.web3j.crypto.Credentials
+import timber.log.Timber
+import java.math.BigDecimal
+import java.math.BigInteger
+import java.util.*
+import javax.inject.Inject
 
-//typealias EventEthAccounts = Event<Data<EthAccounts>>
-//typealias EventEthBlockNumber = Event<Data<EthBlockNumber>>
+typealias EventAddress = Event<Data<String>>
+typealias EventToken = Event<Data<MutableMap<String, String>>>
 
-class HomeViewModel: BaseViewModel(){
+@HiltViewModel
+class HomeViewModel @Inject constructor(
+    private val walletRepository: WalletRepository,
+    private val networkRepository: NetworkRepository,
+    private val preferencesRepository: PreferencesRepository
+) :
+    BaseViewModel() {
 
-/*    private val _accountsLiveData: MutableLiveData<EventEthAccounts> = MutableLiveData()
-    val accountsLiveData: LiveData<EventEthAccounts> = _accountsLiveData
+    init {
+        preferencesRepository.getListTokenAddress(Constants.BSC_SYMBOL) ?: kotlin.run {
+            preferencesRepository.setListTokenAddress(
+                listOf(
+                    "0xaE18F6c514A500a30EaFf19F1d1B7B320986eB72"
+                ),
+                Constants.BSC_SYMBOL
+            )
+        }
+        preferencesRepository.getListTokenAddress(Constants.ETH_SYMBOL) ?: kotlin.run {
+            preferencesRepository.setListTokenAddress(
+                listOf(
+                    "0xaE18F6c514A500a30EaFf19F1d1B7B320986eB72"
+                ),
+                Constants.ETH_SYMBOL
+            )
+        }
+    }
 
-    private val _blockNumberLiveData: MutableLiveData<EventEthBlockNumber> = MutableLiveData()
-    val blockNumberLiveData: LiveData<EventEthBlockNumber> = _blockNumberLiveData
+    var credentials: Credentials? = null
 
-    var web3: Web3j = Web3j.build(HttpService(Constant.ETHEREUM_NOTE_URL))*/
+    var balanceETH = BigDecimal("0")
 
-/*    fun getAccounts(){
-        val disposable = web3.ethAccounts().flowable().subscribeOn(Schedulers.io()).observeOn(AndroidSchedulers.mainThread())
+    private val _addressLiveData: MutableLiveData<EventAddress> = MutableLiveData()
+    val addressLiveData: LiveData<EventAddress> = _addressLiveData
+
+    private val _balanceLiveData: MutableLiveData<Event<BigDecimal>> = MutableLiveData()
+    val balanceLiveData: LiveData<Event<BigDecimal>> = _balanceLiveData
+
+    private val _lstTokenLiveData: MutableLiveData<Event<List<ItemToken>>> = MutableLiveData()
+    val lstTokenLiveData: LiveData<Event<List<ItemToken>>> = _lstTokenLiveData
+
+    private val _tokenLiveData: MutableLiveData<EventToken> = MutableLiveData()
+    val tokenLiveData: LiveData<EventToken> = _tokenLiveData
+
+    val lstItemNetwork: MutableList<ItemNetwork> by lazy {
+        getNetWorkItemList().toMutableList()
+    }
+
+    private fun getNetWorkItemList() = networkRepository.getNetworkList().map {
+        val random = Random()
+        val network = networkRepository.getDefaultNetwork()
+        ItemNetwork(
+            1, it.name, Color.argb(
+                255, random.nextInt(256),
+                random.nextInt(256), random.nextInt(256)
+            ),
+            network.name == it.name
+        )
+    }
+
+    fun getItemNetworkDefault(): ItemNetwork? {
+        return lstItemNetwork.find { it.isChecked }
+    }
+
+    fun setDefaultNetworkInfo(pos: Int) {
+        lstItemNetwork.forEachIndexed { index, itemNetwork ->
+            itemNetwork.isChecked = pos == index
+        } // update list item network
+        networkRepository.setDefaultNetworkInfo(pos)
+    }
+
+    fun loadCredentials(address: String) {
+        val disposable = walletRepository.loadCredentials2(address)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                _accountsLiveData.value = EventEthAccounts(Data(Status.LOADING, null))
+                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
             }
             .doOnComplete {
                 Timber.d("Close waitting dialog")
             }
-            .subscribe({ response ->
-                Timber.d("Accounts size: ${response.accounts.size}")
-                val data = Data(responseType = Status.SUCCESSFUL, data = response)
-                _accountsLiveData.value = EventEthAccounts(data)
-
-            }, { error ->
-                Timber.e("On Error Called")
-                val data = Data<EthAccounts>(
-                    responseType = Status.ERROR,
-                    error = Error(error.message),
-                    data = null
-                )
-
-                _accountsLiveData.value = EventEthAccounts(data)
-//                handleNetworkError(error)
-            }, {
-                Timber.d("On Complete Called")
-            })
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: ${response.address}")
+                    credentials = response
+                    loadListToken()
+                    _addressLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response.address
+                            )
+                        )
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _addressLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called")
+                }
+            )
         addDisposable(disposable)
-    }*/
+    }
+
+    private fun loadListToken() {
+        val disposable = networkRepository.getListToken(credentials!!)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _fetchLiveData.value = Data(responseType = Status.LOADING)
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called")
+
+                    Timber.d("SIZE: ${response.size}")
+                    for (item in response) {
+                        val xxx = item as HashMap<String, String>
+                        xxx.forEach { (k, v) ->
+                            Timber.d("$k : $v")
+                        }
+                        Timber.d("----------------------------")
+                    }
+
+                    val lstTokenItem = parseMapToItemToken(response)
+
+                    _lstTokenLiveData.value = Event(lstTokenItem)
+
+                    _fetchLiveData.value = Data(responseType = Status.SUCCESSFUL)
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _fetchLiveData.value =
+                        Data(Status.ERROR, null, error = Error(error.message))
+                }, {
+                    Timber.d("On Complete Called: loadListToken")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+
+    private fun parseMapToItemToken(lstMap: List<Map<String, String>>): MutableList<ItemToken> {
+        return lstMap.mapIndexed { i, map ->
+            val symbol = map["symbol"] ?: ""
+            val balance = map["balance"] ?: ""
+            val address = map["address"] ?: ""
+            ItemToken(symbol, balance, address, ItemToken.ITEM_DATA)
+        }.toMutableList().also {
+            it.add(
+                0,
+                ItemToken.generateHeadItem(
+                    getSymbolNetworkDefault(),
+                    balanceETH.toString()
+                )
+            )
+            it.add(
+                ItemToken.generateFooterItem()
+            )
+        }
+    }
+
+
+    fun loadBalance(address: String) {
+        val disposable = networkRepository.getWalletBalance(address)
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+                    _balanceLiveData.value =
+                        Event(convertBalanceETH(response))
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                }, {
+                    Timber.d("On Complete Called: loadBalance")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun getSymbolNetworkDefault() = networkRepository.getDefaultNetwork().symbol
+
+    fun getBalanceFormatWithSymbol() = StringBuilder().append(balanceETH)
+        .append(" ${getSymbolNetworkDefault()}").toString()
+
+    private fun convertBalanceETH(response: BigInteger): BigDecimal {
+        balanceETH = BalanceUtil.subunitToBase(response)
+        return balanceETH
+    }
+
+    fun refresh() {
+        if (credentials == null)
+            return
+        val disposable = Observable.zip(
+            networkRepository.getWalletBalance(credentials!!.address),
+            networkRepository.getListToken(credentials!!),
+            BiFunction { t1, t2 ->
+                Pair(t1, t2)
+            }
+        )
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _fetchLiveData.value = Data(responseType = Status.LOADING)
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+                    val balanceETH = convertBalanceETH(response.first)
+                    val lstTokenItem = parseMapToItemToken(response.second)
+
+                    _balanceLiveData.value = Event(balanceETH)
+                    _lstTokenLiveData.value = Event(lstTokenItem)
+
+                    _fetchLiveData.value = Data(responseType = Status.SUCCESSFUL)
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _fetchLiveData.value =
+                        Data(Status.ERROR, null, error = Error(error.message))
+                }, {
+                    Timber.d("On Complete Called: refresh")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun loadInforToken(address: String, buttonClick:Boolean) {
+        val disposable = networkRepository.getInforToken(credentials!!, address)
+            .map {
+               val isExist = preferencesRepository.checkExistTokenAddress(address, getSymbolNetworkDefault())
+                if(isExist)
+                    throw Exception("token_address_existed")
+                it.toMutableMap()
+            }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _tokenLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+                    val map = response.apply {
+                        put("button_click", buttonClick.toString())
+                    }
+
+                    _tokenLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = map
+                            )
+                        )
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _tokenLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called: loadInforToken")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun addContractAddressToPref(address:String){
+        preferencesRepository.addTokenAddress(address, getSymbolNetworkDefault())
+    }
 
 }

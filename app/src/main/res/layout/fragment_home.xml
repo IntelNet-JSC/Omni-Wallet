@@ -1,9 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:background="@color/white"
     android:orientation="vertical"
     tools:context=".ui.home.HomeFragment">
 
@@ -15,58 +16,59 @@
 
         <View
             android:id="@+id/viewClickNetWork"
-            app:layout_constraintStart_toStartOf="@+id/txtDot"
-            app:layout_constraintEnd_toEndOf="@+id/txtNet"
-            app:layout_constraintTop_toTopOf="@+id/txtWallet"
-            app:layout_constraintBottom_toBottomOf="@+id/txtNet"
             android:layout_width="0dp"
-            android:layout_height="0dp"/>
+            android:layout_height="0dp"
+            app:layout_constraintBottom_toBottomOf="@+id/txtNet"
+            app:layout_constraintEnd_toEndOf="@+id/txtNet"
+            app:layout_constraintStart_toStartOf="@+id/txtDot"
+            app:layout_constraintTop_toTopOf="@+id/txtWallet" />
 
         <androidx.appcompat.widget.AppCompatImageView
             android:id="@+id/imgScan"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:background="?attr/selectableItemBackgroundBorderless"
+            android:src="@drawable/ic_baseline_qr_code_scanner_24"
             android:tint="@color/blue500"
-            app:layout_constraintTop_toTopOf="@+id/txtWallet"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
-            android:src="@drawable/ic_baseline_qr_code_scanner_24"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            app:layout_constraintTop_toTopOf="@+id/txtWallet" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtLock"
-            app:layout_constraintTop_toTopOf="@+id/txtWallet"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:drawablePadding="4dp"
-            android:textColor="@color/blue500"
-            app:drawableTint="@color/blue500"
-            android:drawableStart="@drawable/ic_baseline_lock_24"
-            android:textSize="16sp"
-            android:text="@string/lock"
             android:layout_width="wrap_content"
-            android:layout_height="wrap_content"/>
+            android:layout_height="wrap_content"
+            android:drawableStart="@drawable/ic_baseline_lock_24"
+            android:drawablePadding="4dp"
+            android:text="@string/lock"
+            android:textColor="@color/blue500"
+            android:textSize="16sp"
+            app:drawableTint="@color/blue500"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtWallet" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtWallet"
-            app:layout_constraintEnd_toEndOf="@+id/txtNet"
-            app:layout_constraintStart_toStartOf="@+id/txtDot"
-            app:layout_constraintBottom_toTopOf="@+id/txtNet"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/wallet"
             android:textColor="@color/black"
-            android:textSize="18sp" />
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/txtNet"
+            app:layout_constraintEnd_toEndOf="@+id/txtNet"
+            app:layout_constraintStart_toStartOf="@+id/txtDot" />
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtNet"
-            android:gravity="top"
-            app:layout_constraintBottom_toBottomOf="parent"
-            android:layout_marginStart="4dp"
             android:layout_width="wrap_content"
             android:layout_height="20dp"
+            android:layout_marginStart="4dp"
+            android:gravity="top"
             android:text="@string/main_net"
             android:textColor="@color/black"
             android:textSize="12sp"
+            app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
@@ -74,186 +76,219 @@
 
         <com.google.android.material.imageview.ShapeableImageView
             android:id="@+id/txtDot"
-            app:layout_constraintTop_toTopOf="@+id/txtNet"
-            app:layout_constraintBottom_toBottomOf="@+id/txtNet"
-            android:background="@color/green_1"
             android:layout_width="8dp"
             android:layout_height="8dp"
-            app:shapeAppearanceOverlay="@style/Circular"
+            android:background="@color/green_1"
+            app:layout_constraintBottom_toBottomOf="@+id/txtNet"
             app:layout_constraintEnd_toStartOf="@+id/txtNet"
             app:layout_constraintHorizontal_bias="0.5"
             app:layout_constraintHorizontal_chainStyle="packed"
-            app:layout_constraintStart_toStartOf="parent" />
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@+id/txtNet"
+            app:shapeAppearanceOverlay="@style/Circular" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <androidx.core.widget.NestedScrollView
-        android:id="@+id/nestedScrollView"
-        android:overScrollMode="never"
-        android:fillViewport="true"
-        android:layout_weight="1"
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        android:layout_height="0dp">
-        <LinearLayout
-            android:orientation="vertical"
+        android:layout_height="0dp"
+        android:layout_weight="1">
+
+        <androidx.core.widget.NestedScrollView
+            android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:fillViewport="true"
+            android:overScrollMode="never">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/layoutInforWallet"
+            <LinearLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingHorizontal="24dp"
-                android:paddingVertical="16dp">
+                android:layout_height="match_parent"
+                android:orientation="vertical">
 
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgAvaterWallet"
-                    android:src="@drawable/ic_launcher_background"
-                    android:cropToPadding="true"
-                    android:padding="2dp"
-                    android:layout_width="48dp"
-                    android:layout_height="48dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent"
-                    app:shapeAppearanceOverlay="@style/Circular"
-                    app:strokeWidth="2dp"
-                    app:strokeColor="@color/blue500"
-                     />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtNameWallet"
-                    android:layout_width="wrap_content"
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/layoutInforWallet"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:text="Account 1"
-                    android:textColor="@color/black"
-                    android:textSize="26sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/imgAvaterWallet" />
+                    android:paddingHorizontal="24dp"
+                    android:paddingVertical="16dp">
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtAmount"
-                    android:layout_width="wrap_content"
+                    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+                        android:id="@+id/imgAvaterWallet"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent"
+                        android:layout_width="50dp"
+                        android:layout_height="50dp"/>
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtNameWallet"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="8dp"
+                        android:text="Account 1"
+                        android:textColor="@color/black"
+                        android:textSize="26sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/imgAvaterWallet" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtAmount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:text="200 BNB"
+                        android:textStyle="bold"
+                        android:textColor="@color/black"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txtNameWallet" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtAddress"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@drawable/bg_txt_address"
+                        android:paddingHorizontal="8dp"
+                        android:paddingVertical="4dp"
+                        android:text="..."
+                        android:textColor="@color/black"
+                        android:textSize="14sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgReceive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/blue500"
+                        android:rotation="90"
+                        android:src="@drawable/ic_baseline_keyboard_tab_24"
+                        android:tint="@color/white"
+                        app:contentPadding="8dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imgSend"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintHorizontal_chainStyle="packed"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@+id/txtAddress"
+                        app:shapeAppearanceOverlay="@style/Circular" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtReceive"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/receive"
+                        android:textColor="@color/blue500"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/imgReceive"
+                        app:layout_constraintStart_toStartOf="@+id/imgReceive"
+                        app:layout_constraintTop_toBottomOf="@+id/imgReceive" />
+
+                    <View
+                        android:id="@+id/viewReceive"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:layout_constraintBottom_toBottomOf="@+id/txtReceive"
+                        app:layout_constraintEnd_toEndOf="@+id/imgReceive"
+                        app:layout_constraintStart_toStartOf="@+id/imgReceive"
+                        app:layout_constraintTop_toTopOf="@+id/imgReceive" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="32dp"
+                        android:layout_marginTop="16dp"
+                        android:layout_marginEnd="32dp"
+                        android:background="@color/blue500"
+                        android:src="@drawable/ic_baseline_arrow_send_24"
+                        android:tint="@color/white"
+                        app:contentPadding="8dp"
+                        app:layout_constraintEnd_toStartOf="@+id/imgSwap"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/imgReceive"
+                        app:layout_constraintTop_toBottomOf="@+id/txtAddress"
+                        app:shapeAppearanceOverlay="@style/Circular" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSend"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/send"
+                        android:textColor="@color/blue500"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/imgSend"
+                        app:layout_constraintStart_toStartOf="@+id/imgSend"
+                        app:layout_constraintTop_toBottomOf="@+id/imgSend" />
+
+                    <View
+                        android:id="@+id/viewSend"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:layout_constraintBottom_toBottomOf="@+id/txtSend"
+                        app:layout_constraintEnd_toEndOf="@+id/imgSend"
+                        app:layout_constraintStart_toStartOf="@+id/imgSend"
+                        app:layout_constraintTop_toTopOf="@+id/imgSend" />
+
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/imgSwap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="16dp"
+                        android:background="@color/blue500"
+                        android:src="@drawable/ic_baseline_swap_horiz_24"
+                        android:tint="@color/white"
+                        app:contentPadding="8dp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintHorizontal_bias="0.5"
+                        app:layout_constraintStart_toEndOf="@+id/imgSend"
+                        app:layout_constraintTop_toBottomOf="@+id/txtAddress"
+                        app:shapeAppearanceOverlay="@style/Circular" />
+
+                    <androidx.appcompat.widget.AppCompatTextView
+                        android:id="@+id/txtSwap"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginTop="4dp"
+                        android:text="@string/swap"
+                        android:textColor="@color/blue500"
+                        android:textSize="16sp"
+                        app:layout_constraintEnd_toEndOf="@+id/imgSwap"
+                        app:layout_constraintStart_toStartOf="@+id/imgSwap"
+                        app:layout_constraintTop_toBottomOf="@+id/imgSwap" />
+
+                    <View
+                        android:id="@+id/viewSwap"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        app:layout_constraintBottom_toBottomOf="@+id/txtSwap"
+                        app:layout_constraintEnd_toEndOf="@+id/imgSwap"
+                        app:layout_constraintStart_toStartOf="@+id/imgSwap"
+                        app:layout_constraintTop_toTopOf="@+id/imgSwap" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/rvToken"
+                    android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:text="$1000"
-                    android:textColor="@color/black"
-                    android:textSize="16sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtNameWallet" />
+                    android:focusable="false"
+                    android:nestedScrollingEnabled="false"
+                    tools:itemCount="3"
+                    tools:listitem="@layout/item_token" />
+            </LinearLayout>
+        </androidx.core.widget.NestedScrollView>
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtAddress"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@drawable/bg_txt_address"
-                    android:paddingHorizontal="8dp"
-                    android:paddingVertical="4dp"
-                    android:text="@string/address_demo"
-                    android:textColor="@color/black"
-                    android:textSize="14sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAmount" />
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/blue500"
-                    android:rotation="90"
-                    android:src="@drawable/ic_baseline_keyboard_tab_24"
-                    android:tint="@color/white"
-                    app:contentPadding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imgSend"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintHorizontal_chainStyle="packed"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAddress"
-                    app:shapeAppearanceOverlay="@style/Circular" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtReceive"
-                    android:text="@string/receive"
-                    android:textSize="16sp"
-                    android:textColor="@color/blue500"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/imgReceive"
-                    app:layout_constraintStart_toStartOf="@+id/imgReceive"
-                    app:layout_constraintEnd_toEndOf="@+id/imgReceive"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgSend"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/blue500"
-                    android:src="@drawable/ic_baseline_arrow_send_24"
-                    android:tint="@color/white"
-                    app:contentPadding="8dp"
-                    app:layout_constraintEnd_toStartOf="@+id/imgSwap"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/imgReceive"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAddress"
-                    app:shapeAppearanceOverlay="@style/Circular" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSend"
-                    android:text="@string/send"
-                    android:textSize="16sp"
-                    android:textColor="@color/blue500"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/imgSend"
-                    app:layout_constraintStart_toStartOf="@+id/imgSend"
-                    app:layout_constraintEnd_toEndOf="@+id/imgSend"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-                <com.google.android.material.imageview.ShapeableImageView
-                    android:id="@+id/imgSwap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginTop="16dp"
-                    android:background="@color/blue500"
-                    android:src="@drawable/ic_baseline_swap_horiz_24"
-                    android:tint="@color/white"
-                    app:contentPadding="8dp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintHorizontal_bias="0.5"
-                    app:layout_constraintStart_toEndOf="@+id/imgSend"
-                    app:layout_constraintTop_toBottomOf="@+id/txtAddress"
-                    app:shapeAppearanceOverlay="@style/Circular" />
-
-                <androidx.appcompat.widget.AppCompatTextView
-                    android:id="@+id/txtSwap"
-                    android:text="@string/swap"
-                    android:textSize="16sp"
-                    android:textColor="@color/blue500"
-                    android:layout_marginTop="4dp"
-                    app:layout_constraintTop_toBottomOf="@+id/imgSwap"
-                    app:layout_constraintStart_toStartOf="@+id/imgSwap"
-                    app:layout_constraintEnd_toEndOf="@+id/imgSwap"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"/>
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
-            <androidx.recyclerview.widget.RecyclerView
-                android:id="@+id/rvToken"
-                android:nestedScrollingEnabled="false"
-                android:focusable="false"
-                tools:itemCount="3"
-                tools:listitem="@layout/item_token"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"/>
-        </LinearLayout>
-    </androidx.core.widget.NestedScrollView>
 </LinearLayout>

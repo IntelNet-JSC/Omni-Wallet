@@ -1,65 +1,56 @@
 package com.example.omniwalletapp.ui.home
 
-import android.graphics.Color
+import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.fragment.app.activityViewModels
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentHomeBinding
+import com.example.omniwalletapp.repository.PreferencesRepository
+import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
 import com.example.omniwalletapp.ui.home.network.NetDialogFragment
-import com.example.omniwalletapp.ui.home.network.adapter.ItemNetwork
+import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
+import com.example.omniwalletapp.util.getNavigationResult
+import com.example.omniwalletapp.util.getStringAddressFromScan
+import com.journeyapps.barcodescanner.ScanContract
+import com.journeyapps.barcodescanner.ScanIntentResult
+import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
-import java.util.*
+import org.web3j.crypto.WalletUtils
+import timber.log.Timber
+import java.math.BigDecimal
+import java.math.BigInteger
+import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
-    override val viewModel: HomeViewModel by viewModels()
+    @Inject
+    lateinit var preferencesRepository: PreferencesRepository
 
-    private val lstNet: List<ItemNetwork> by lazy {
-        val random = Random()
-        listOf(
-            ItemNetwork(
-                1, getString(R.string.main_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                true
-            ),
-            ItemNetwork(
-                2, getString(R.string.ropsten_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            ),
-            ItemNetwork(
-                3, getString(R.string.kovan_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            ),
-            ItemNetwork(
-                4, getString(R.string.goerli_test_net), Color.argb(
-                    255, random.nextInt(256),
-                    random.nextInt(256), random.nextInt(256)
-                ),
-                false
-            )
-        )
-    }
+    override val viewModel: HomeViewModel by activityViewModels()
+
+    private val args: HomeFragmentArgs by navArgs()
+
+    private var address: String? = null
 
     private val callBackToken: (ItemToken) -> Unit = {
-        showToast("Item Token Click")
+        navigate(
+            HomeFragmentDirections.actionHomeFragmentToDetailTokenFragment()
+        )
     }
     private val callBackImportToken: () -> Unit = {
         navigate(
@@ -75,18 +66,77 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         )
     }
 
+    // Register the launcher and result handler
+    private val qrcodeLauncher = registerForActivityResult(
+        ScanContract()
+    ) { result: ScanIntentResult ->
+        if (result.contents == null) {
+            showToast("Cancelled")
+        } else {
+            Log.d("XXX", ": ${result.contents}")
+            val addressFormat = result.contents.getStringAddressFromScan()
+            Log.d("XXX", "format: $addressFormat")
+            if (WalletUtils.isValidAddress(addressFormat))
+                navigate(
+                    HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(addressFormat)
+                )
+            else
+                showToast("Not Address")
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        address = args.address ?: preferencesRepository.getAddress()
+        address?.let {
+            viewModel.loadCredentials(it)
+            viewModel.loadBalance(it)
+        }
+
+    }
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentHomeBinding.inflate(inflater, container, false)
 
     override fun initControl() {
+
+        binding.swipeRefreshLayout.setOnRefreshListener {
+            viewModel.refresh()
+        }
+
+        binding.txtAddress.setOnClickListener {
+            address?.let {
+                copyToClipboard(it)
+                showToast(getString(R.string.toast_address_copied))
+            }
+        }
+
+        // fade click anim
+/*        binding.txtAddress.setOnTouchListener { v, action ->
+            when (action.action) {
+                MotionEvent.ACTION_UP -> {
+                    binding.txtAddress.alpha = 1f
+                    false
+                }
+                MotionEvent.ACTION_DOWN -> {
+                    binding.txtAddress.alpha = 0.5f
+                    false
+                }
+                else -> false
+            }
+        }*/
+
         binding.viewClickNetWork.setOnClickListener {
             NetDialogFragment.newInstance(
                 fManager,
-                lstNet,
+                viewModel.lstItemNetwork,
                 chooseNetworkListener = {
-                    showToast(it.name)
+                    viewModel.setDefaultNetworkInfo(it)
+                    setUiDefaultNetWork()
+                    viewModel.refresh()
                 },
                 addNetworkListener = {
                     navigate(
@@ -95,13 +145,45 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             )
         }
+
+        binding.viewReceive.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToReceiveTokenDialogFragment(address ?: "")
+            )
+        }
+
+        binding.viewSend.setOnClickListener {
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToSendTokenFragment()
+            )
+        }
+
+        binding.viewSwap.setOnClickListener {
+            showToast("Action Swap")
+        }
+
+        binding.imgScan.setOnClickListener {
+            qrcodeLauncher.launch(ScanOptions().apply {
+                captureActivity = AnyOrientationCaptureActivity::class.java
+                setDesiredBarcodeFormats(ScanOptions.QR_CODE)
+                setPrompt("đang quét...")
+                setBeepEnabled(false)
+                setOrientationLocked(false)
+            })
+        }
+
+        binding.txtLock.setOnClickListener {
+            preferencesRepository.clearData()
+            navigate(
+                HomeFragmentDirections.actionHomeFragmentToLoginLaterFragment()
+            )
+        }
     }
 
     override fun initUI() {
-        val strAddressWallet = getString(R.string.address_demo)
-        binding.txtAddress.text = strAddressWallet.formatAddressWallet()
-        binding.txtDot.setBackgroundColor(lstNet[0].color)
-        binding.txtNet.text = lstNet[0].name
+        initAddressWallet()
+        initBalanceWallet(viewModel.balanceETH)
+        setUiDefaultNetWork()
 
         binding.rvToken.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -110,30 +192,98 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)
             )
         }
+
+        binding.swipeRefreshLayout.setColorSchemeColors(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.blue500
+            )
+        )
+
+    }
+
+    private fun setUiDefaultNetWork() {
+        val itemNetwork = viewModel.getItemNetworkDefault()
+        itemNetwork?.let {
+            binding.txtDot.setBackgroundColor(it.color)
+            binding.txtNet.text = it.name
+        }
+    }
+
+    private fun initAddressWallet() {
+        address?.let { it ->
+            Timber.d("Address home: $it")
+
+            binding.txtAddress.text = it.formatAddressWallet()
+            Identicon(binding.imgAvaterWallet, it)
+
+        }
+    }
+
+    private fun initBalanceWallet(ethBalance: BigDecimal) {
+        val balanceFormat = StringBuilder().append(ethBalance)
+            .append(" ${viewModel.getSymbolNetworkDefault()}").toString()
+        binding.txtAmount.text = balanceFormat
     }
 
     override fun initEvent() {
-        /*viewModel.accountsLiveData.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { response ->
-                when (response.responseType) {
-                    Status.SUCCESSFUL -> {
-                        response.data?.let { ethAccount ->
-                            toast(ethAccount.accounts.size.toString())
-                        }
-                    }
+        viewModel.fetchLiveData.observe(viewLifecycleOwner) {
+            when (it.responseType) {
+                Status.ERROR -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+
+                Status.LOADING -> {
+                    binding.swipeRefreshLayout.isRefreshing = true
+                }
+
+                Status.SUCCESSFUL -> {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                }
+            }
+        }
+
+        viewModel.addressLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                when (data.responseType) {
                     Status.LOADING -> {
-                        toast("show loading")
+                        showLoadingDialog()
+                    }
+                    Status.SUCCESSFUL -> {
+                        hideDialog()
+//                        initAddressWallet()
                     }
                     Status.ERROR -> {
-                        toast("hide loading")
+                        hideDialog()
+                        data.error?.message?.let {
+                            showToast(it)
+                        }
                     }
                 }
             }
-        }*/
+        }
+
+        viewModel.balanceLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                initBalanceWallet(data)
+            }
+        }
+
+        viewModel.lstTokenLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { lstItemToken ->
+                tokenAdapter.addAll(lstItemToken)
+            }
+        }
     }
 
     override fun initConfig() {
-
+        getNavigationResult<Int>(
+            R.id.homeFragment,
+            "network_change"
+        ) {
+            tokenAdapter.clearAll()
+            viewModel.refresh()
+        }
     }
 
     override fun onDestroyView() {

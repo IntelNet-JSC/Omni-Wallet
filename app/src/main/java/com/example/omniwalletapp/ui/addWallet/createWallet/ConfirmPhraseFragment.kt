@@ -2,24 +2,47 @@ package com.example.omniwalletapp.ui.addWallet.createWallet
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
+import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
+import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
+import com.example.omniwalletapp.base.EmptyViewModel
 import com.example.omniwalletapp.databinding.FragmentConfirmPhraseBinding
 import com.example.omniwalletapp.entity.WordItem
 import com.example.omniwalletapp.ui.addWallet.AddWalletActivity
 import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.ConfirmPhraseAdapter
+import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.RandomPhraseAdapter
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import java.util.regex.Pattern
 
 @AndroidEntryPoint
-class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateWalletViewModel>() {
+class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, EmptyViewModel>() {
 
-    override val viewModel: CreateWalletViewModel by viewModels()
+    private val args: ConfirmPhraseFragmentArgs by navArgs()
 
-    private val phraseAdapter = ConfirmPhraseAdapter()
-    private val blankAdapter = ConfirmPhraseAdapter(isBlank = true)
+    override val viewModel: EmptyViewModel by viewModels()
+
+    private val randomPhraseAdapter = RandomPhraseAdapter()
+    private val confirmAdapter = ConfirmPhraseAdapter()
+
+    private val lstSeedCode: List<String> by lazy {
+        Pattern.compile(" ").split(args.seedCode).toList()
+    }
+
+    private val lstWordItem: List<WordItem> by lazy {
+        Pattern.compile(" ").split(args.seedCode).map {
+            WordItem(name = it)
+        }
+    }
+
+    private val lstSeedCodeShuffle: List<String> by lazy {
+        lstSeedCode.shuffled()
+    }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -27,7 +50,22 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
     ) = FragmentConfirmPhraseBinding.inflate(inflater, container, false)
 
     override fun initControl() {
+        randomPhraseAdapter.callBackItemClick = {
+            confirmAdapter.addWord(it)
+        }
+        confirmAdapter.callBackValidate = { pass, default ->
+            binding.rvBlankPhrase.background = if(pass) {
+                binding.btnCompleteBackup.isEnabled = true
+                ContextCompat.getDrawable(requireContext(), R.drawable.bg_rv_memorize_phrase_pass)
+            }else{
+                binding.btnCompleteBackup.isEnabled = false
+                if(default)
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_rv_memorize_phrase)
+                else
+                    ContextCompat.getDrawable(requireContext(), R.drawable.bg_rv_memorize_phrase_error)
+            }
 
+        }
     }
 
     override fun initUI() {
@@ -35,9 +73,10 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
             layoutManager = GridLayoutManager(requireContext(), 2)
             if (itemDecorationCount == 0)
                 addItemDecoration(GridSpacingItemDecoration(2, 16.dpToPx, true, 0))
-            adapter = blankAdapter.also {
+            adapter = confirmAdapter.also {
+
                 it.addAll(
-                    WordItem.generateListBlank()
+                    lstWordItem
                 )
             }
         }
@@ -46,12 +85,14 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
             layoutManager = GridLayoutManager(requireContext(), 3)
             if (itemDecorationCount == 0)
                 addItemDecoration(GridSpacingItemDecoration(3, 8.dpToPx, false, 0))
-            adapter = phraseAdapter.also {
+            adapter = randomPhraseAdapter.also {
                 it.addAll(
-                    WordItem.generateListWord()
+                    lstSeedCodeShuffle
                 )
             }
         }
+
+        binding.btnCompleteBackup.isEnabled = BuildConfig.DEBUG
 
         binding.btnCompleteBackup.setOnClickListener {
             (requireActivity() as AddWalletActivity).navigateHomeActivity()
@@ -67,8 +108,8 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, CreateW
     }
 
     override fun onDestroyView() {
-        binding.rvBlankPhrase.adapter=null
-        binding.rvPhase.adapter=null
+        binding.rvBlankPhrase.adapter = null
+        binding.rvPhase.adapter = null
         super.onDestroyView()
     }
 

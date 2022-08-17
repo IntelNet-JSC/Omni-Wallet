@@ -1,13 +1,10 @@
 package com.example.omniwalletapp.ui.home.network
 
 import android.content.DialogInterface
-import android.graphics.Color
-import android.graphics.drawable.ColorDrawable
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.Window
 import androidx.fragment.app.FragmentManager
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.example.omniwalletapp.R
@@ -18,7 +15,7 @@ import com.example.omniwalletapp.ui.home.network.adapter.NetworkAdapter
 
 class NetDialogFragment(
     private var netItems: List<ItemNetwork>,
-    private var chooseNetworkListener: (ItemNetwork) -> Unit = { },
+    private var chooseNetworkListener: (Int) -> Unit = { },
     private var addNetworkListener: () -> Unit = { },
 ) : BaseDialogFragment<DialogNetBinding>() {
 
@@ -80,7 +77,7 @@ class NetDialogFragment(
         fun newInstance(
             fm: FragmentManager,
             items: List<ItemNetwork>,
-            chooseNetworkListener: (ItemNetwork) -> Unit = { },
+            chooseNetworkListener: (Int) -> Unit = { },
             addNetworkListener: () -> Unit = { }
         ) {
             val dialog = NetDialogFragment(items, chooseNetworkListener, addNetworkListener)
