@@ -136,7 +136,7 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewMod
     }
 
     override fun initConfig() {
-        viewModel.refresh()
+//        viewModel.refresh()
     }
 
     override fun onDestroyView() {

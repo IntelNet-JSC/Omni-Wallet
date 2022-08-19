@@ -121,6 +121,7 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtAmountToken"
+            android:text="100"
             android:inputType="numberDecimal"
             android:background="@null"
             android:textStyle="bold"

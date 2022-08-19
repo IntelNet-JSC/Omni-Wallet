@@ -90,23 +90,6 @@ class IntroActivity : BaseActivity() {
 
         }
 
-//        var transactionHash: String? = null
-//        val nonce: BigInteger = getNonce(walletAddress)
-//        val weiValue: BigDecimal = Convert.toWei(etherAmount, Convert.Unit.ETHER)
-//
-//        val rawTransaction = RawTransaction.createEtherTransaction(
-//            nonce, gasPrice, gasLimit, to_Address, weiValue.toBigIntegerExact()
-//        )
-//        val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
-//
-//
-//        val hexValue = Numeric.toHexString(signedMessage)
-//
-//        val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get()
-//
-//        transactionHash = ethSendTransaction.transactionHash
-
-
     }
 
     private fun getEstimateGas(){

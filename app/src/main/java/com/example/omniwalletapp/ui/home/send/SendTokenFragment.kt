@@ -19,7 +19,6 @@ import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentSendTokenBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.HomeViewModel
-import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.send.adapter.AddressRecentlyAdapter
 import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 import com.example.omniwalletapp.util.formatAddressWallet
@@ -37,7 +36,7 @@ import timber.log.Timber
 class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(),
     View.OnClickListener {
 
-//    override val viewModel: SendTokenViewModel by viewModels()
+    //    override val viewModel: SendTokenViewModel by viewModels()
     override val viewModel: HomeViewModel by activityViewModels()
 
     private val args: SendTokenFragmentArgs by navArgs()
@@ -47,7 +46,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
     private val adapter: AddressRecentlyAdapter by lazy {
         AddressRecentlyAdapter(
             callBackItemClick = {
-                initUiToAddress(it.name)
+                setTextInputFromAddress(it.name)
             }
         )
     }
@@ -63,7 +62,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
             val address = result.contents.getStringAddressFromScan()
             Timber.d("format: $address")
             if (WalletUtils.isValidAddress(address)) {
-                initUiToAddress(address)
+                setTextInputFromAddress(address)
             } else
                 showToast("Not Address")
         }
@@ -87,7 +86,10 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
 
         binding.btnContinue.setOnClickListener {
             navigate(
-                SendTokenFragmentDirections.actionSendTokenFragmentToAmountFragment(toAddress!!, args.indexToken)
+                SendTokenFragmentDirections.actionSendTokenFragmentToAmountFragment(
+                    toAddress!!,
+                    args.indexToken
+                )
             )
         }
 
@@ -104,11 +106,21 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
                     setEndIconOnClickListener(null)
                     setEndIconOnClickListener(this@SendTokenFragment)
                 }
-            } else
+            } else {
                 binding.tiySearchAddress.apply {
                     endIconMode = TextInputLayout.END_ICON_CLEAR_TEXT
                 }
+                val txt = text.toString().trim()
+                if (WalletUtils.isValidAddress(txt)) {
+                    initUiToAddress(txt)
+                }
+            }
         }
+
+    }
+
+    private fun setTextInputFromAddress(text: String) {
+        binding.edtSearchAddress.setText(text)
     }
 
     override fun initUI() {
@@ -155,7 +167,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         Identicon(binding.imgAvatarFrom, viewModel.credentials?.address)
     }
 
-    private fun initUiToAddress(address:String?) {
+    private fun initUiToAddress(address: String?) {
         toAddress = address // set toAddress
         toAddress?.run {
             Identicon(binding.imgAvatarTo, this)
@@ -164,6 +176,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
             binding.txtAddressFill.text = this.formatAddressWallet(12)
             binding.btnContinue.isEnabled = true
         } ?: kotlin.run {
+            binding.edtSearchAddress.setText("")
             binding.layoutFill.isVisible = false
             binding.tiySearchAddress.visibility = View.VISIBLE
             binding.btnContinue.isEnabled = false

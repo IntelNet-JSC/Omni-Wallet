@@ -27,12 +27,14 @@ import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
+import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.view.OmniLoadingDialog
 import dagger.hilt.android.internal.Contexts.getApplication
+import org.web3j.protocol.core.methods.response.Transaction
 import timber.log.Timber
 
 
-abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
+abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
 
     var dialog: DialogFragment? = null
 
@@ -40,6 +42,8 @@ abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
 
     private var _binding: B? = null
     protected val binding get() = _binding!!
+
+    var callBackTransactionConfirmed: (Transaction) -> Unit = {}
 
     val fManager: FragmentManager by lazy {
         requireActivity().supportFragmentManager
@@ -60,10 +64,34 @@ abstract class BaseFragment<B : ViewBinding, VM : ViewModel> : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
         initControl()
         initUI()
         initEvent()
         initConfig()
+
+        viewModel.transactionLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                when (data.responseType) {
+                    Status.ERROR -> {
+                        data.error?.message?.let {
+                            showToast("Error: $it")
+                        }
+                    }
+
+                    Status.LOADING -> {
+                        showToast("LOADING TRANSACTION...")
+                    }
+
+                    Status.SUCCESSFUL -> {
+                        data.data?.let {
+                            Timber.d("Transaction: $it")
+                            showToast("Transaction: $it")
+                        }
+                    }
+                }
+            }
+        }
     }
 
     protected abstract fun initControl()

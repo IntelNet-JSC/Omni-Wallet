@@ -11,28 +11,33 @@ import io.reactivex.Observable
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.datatypes.Address
 import org.web3j.abi.datatypes.Function
+import org.web3j.abi.datatypes.Type
 import org.web3j.abi.datatypes.generated.Uint256
 import org.web3j.crypto.Credentials
+import org.web3j.crypto.RawTransaction
+import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.Transaction
-import org.web3j.protocol.core.methods.response.EthEstimateGas
-import org.web3j.protocol.core.methods.response.EthGasPrice
+import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
 import org.web3j.tx.TransactionManager
+import org.web3j.tx.gas.DefaultGasProvider
 import org.web3j.tx.response.NoOpProcessor
+import org.web3j.tx.response.PollingTransactionReceiptProcessor
 import org.web3j.tx.response.TransactionReceiptProcessor
 import org.web3j.utils.Convert
+import org.web3j.utils.Numeric
 import timber.log.Timber
+import java.io.IOException
 import java.math.BigDecimal
 import java.math.BigInteger
+import java.util.*
 import javax.inject.Inject
 
+
 class NetworkRepository @Inject constructor(val preferencesRepository: PreferencesRepository) {
-
-//    private val preferencesRepository = PreferencesRepository(context)
-
 
     private val NETWORKS = arrayOf(
         NetworkInfo(
@@ -57,13 +62,18 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
 
     private var defaultNetwork = getByName(preferencesRepository.getDefaultNetwork()) ?: NETWORKS[0]
 
-//    private var web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
+    private var web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
 
     fun getNetworkList() = NETWORKS
 
     fun setDefaultNetworkInfo(pos: Int) {
+        web3j.shutdown()
+
         defaultNetwork = NETWORKS[pos]
         preferencesRepository.setDefaultNetwork(defaultNetwork.name)
+
+        web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
+
     }
 
     fun getDefaultNetwork(): NetworkInfo {
@@ -80,7 +90,6 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
 
     fun getWalletBalance(address: String): Observable<BigInteger> {
         return Observable.fromCallable {
-            val web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
             web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().balance
         }
     }
@@ -88,7 +97,6 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
 
     fun getListToken(credentials: Credentials): Observable<List<Map<String, String>>> {
         val lstAddress = preferencesRepository.getListTokenAddress(defaultNetwork.symbol)
-        val web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
 
         val transactionReceiptProcessor: TransactionReceiptProcessor = NoOpProcessor(web3j)
 
@@ -120,7 +128,6 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
         credentials: Credentials,
         contractAddress: String
     ): Observable<Map<String, String>> {
-        val web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
 
         val transactionReceiptProcessor: TransactionReceiptProcessor = NoOpProcessor(web3j)
 
@@ -163,36 +170,162 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
 
     fun getEstimateGas(
         fromAddress: String,
-        toAddress: String, // or contractAddress
-        amount: String
-    ): Observable<BigDecimal> {
-        val web3j = Web3j.build(HttpService(getDefaultNetwork().rpcServerUrl))
+        toAddress: String,
+        amount: String,
+        contractAddress: String,
+    ): Observable<Triple<BigInteger, BigInteger, BigDecimal>> {
 
         return Observable.fromCallable {
-            val amount2: BigInteger = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
-            val function =
-                Function(
-                    "transfer",
-                    listOf(Address(toAddress), Uint256(amount2)),
-                    emptyList()
-                )
+
+            val weiValue: BigInteger = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
+
+            val function = Function("transfer", listOf(Address(toAddress), Uint256(weiValue)), emptyList())
             val txData: String = FunctionEncoder.encode(function)
 
-            val transaction = Transaction.createEthCallTransaction(fromAddress, toAddress, txData)
+            val gasPrice = web3j.ethGasPrice().send().gasPrice
 
-            val ethGasPrice: EthGasPrice = web3j.ethGasPrice().sendAsync().get()
-            val ethEstimateGas: EthEstimateGas = web3j.ethEstimateGas(transaction).sendAsync().get()
+            val toAddress2 = contractAddress.takeIf { it.isNotEmpty() }?:toAddress
 
-            Timber.d("amount: $amount2")
-            Timber.d("ethGasPrice: ${ethGasPrice.gasPrice}")
-            Timber.d("ethEstimateGas: ${ethEstimateGas.amountUsed}")
+            val transaction = Transaction.createFunctionCallTransaction(fromAddress,
+                BigInteger.ONE,  gasPrice, DefaultGasProvider.GAS_LIMIT, toAddress2, BigInteger.ZERO, txData)
+
+            val estimateGas = web3j.ethEstimateGas(transaction).sendAsync().get().amountUsed
+
+            Timber.d("ethGasPrice: $gasPrice")
+            Timber.d("ethEstimateGas: $estimateGas")
 
             val amountEstimateEth =
-                convertTogEstimateGasEth(ethGasPrice.gasPrice, ethEstimateGas.amountUsed)
+                convertTogEstimateGasEth(gasPrice, estimateGas)
 
             Timber.d("amountEstimateEth: $amountEstimateEth")
 
-            amountEstimateEth
+            Triple(gasPrice, estimateGas, amountEstimateEth)
+        }
+    }
+
+    @Throws(IOException::class)
+    private fun getNonce(walletAddress: String): BigInteger {
+        val ethGetTransactionCount = web3j.ethGetTransactionCount(
+            walletAddress, DefaultBlockParameterName.PENDING
+        ).send()
+        return ethGetTransactionCount.transactionCount
+    }
+
+    fun transactionFlowable() = web3j.transactionFlowable()
+    fun ethPendingTransactionHashFlowable() = web3j.ethPendingTransactionHashFlowable()
+    fun pendingTransactionFlowable() = web3j.pendingTransactionFlowable()
+
+    fun sendEther(
+        credentials: Credentials,
+        toAddress: String,
+        amount: String,
+        gasPrice: BigInteger,
+        gasLimit: BigInteger
+    ): Observable<String> {
+
+        return Observable.fromCallable {
+            val weiValue: BigDecimal = Convert.toWei(amount, Convert.Unit.ETHER)
+
+            val nonce: BigInteger = getNonce(credentials.address)
+
+            val rawTransaction = RawTransaction.createEtherTransaction(
+                nonce, gasPrice, gasLimit, toAddress, weiValue.toBigIntegerExact()
+            )
+            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+            val hexValue = Numeric.toHexString(signedMessage)
+
+            val ethSendTransaction = web3j.ethSendRawTransaction(hexValue).sendAsync().get()
+
+            val transactionHash = ethSendTransaction.transactionHash
+
+            Timber.d("transactionHash: $transactionHash")
+
+            transactionHash
+        }
+    }
+
+    fun sendToken(
+        credentials: Credentials,
+        toAddress: String,
+        amount: String,
+        gasPrice: BigInteger,
+        gasLimit: BigInteger,
+        tokenAddress: String
+    ): Observable<String> {
+
+        return Observable.fromCallable {
+
+            val weiValue: BigDecimal = Convert.toWei(amount, Convert.Unit.ETHER)
+
+            val ethGetTransactionCount = web3j.ethGetTransactionCount(
+                credentials.address, DefaultBlockParameterName.LATEST
+            ).send()
+            val nonce: BigInteger = ethGetTransactionCount.transactionCount
+
+            val function = Function(
+                "transfer",
+                Arrays.asList(
+                    Address(toAddress),
+                    Uint256(weiValue.toBigInteger())
+                ) as List<Type<Any>>?, emptyList()
+            )
+            val txData: String = FunctionEncoder.encode(function)
+
+            val rawTransaction = RawTransaction.createTransaction(
+                nonce, gasPrice, gasLimit, tokenAddress, txData
+            )
+
+            // sign the transaction
+            val signedMessage = TransactionEncoder.signMessage(rawTransaction, credentials)
+            val hexValue = Numeric.toHexString(signedMessage)
+
+            // Send transaction
+            val ethSendTransaction: EthSendTransaction =
+                web3j.ethSendRawTransaction(hexValue).send()
+
+            val transactionHash = ethSendTransaction.transactionHash
+
+            Timber.d("transactionHash: $transactionHash")
+
+            transactionHash
+        }
+    }
+
+
+    fun sendToken2(
+        credentials: Credentials,
+        toAddress: String,
+        amount: String,
+        gasPrice: BigInteger,
+        gasLimit: BigInteger,
+        tokenAddress: String
+    ): Observable<String> {
+
+        return Observable.fromCallable {
+
+            val weiValue: BigDecimal = Convert.toWei(amount, Convert.Unit.ETHER)
+            val transactionReceiptProcessor: TransactionReceiptProcessor =
+                PollingTransactionReceiptProcessor(web3j, 3000, 40)
+            val transactionManager: TransactionManager = RawTransactionManager(
+                web3j,
+                credentials,
+                defaultNetwork.chainId.toLong(),
+                transactionReceiptProcessor
+            )
+            val contract = Erc20TokenWrapper.load(
+                tokenAddress,
+                web3j,
+                transactionManager,
+                gasPrice,
+                gasLimit
+            )
+            val mReceipt =
+                contract.transfer(Address(toAddress), Uint256(weiValue.toBigInteger()))
+            val transactionHash = mReceipt.transactionHash
+
+            Timber.d("transactionHash: $transactionHash")
+
+            transactionHash
         }
     }
 

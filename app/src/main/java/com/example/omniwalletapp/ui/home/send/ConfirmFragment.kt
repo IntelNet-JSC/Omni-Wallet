@@ -25,6 +25,17 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
 
     private val args: ConfirmFragmentArgs by navArgs()
 
+    private val isNativeToken: Boolean by lazy {
+        args.indexToken == 0
+    }
+
+    private val itemToken: ItemToken by lazy {
+        viewModel.lstToken[args.indexToken]
+    }
+
+    private val amount:String by lazy {
+        args.amount
+    }
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -42,17 +53,16 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         }
 
         binding.btnSend.setOnClickListener {
-            navigate(
-                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(args.indexToken)
-            )
+            viewModel.transfer(args.toAddress, amount, itemToken.address)
         }
 
     }
 
+
     override fun initUI() {
         initDefaultNetwork()
         initUiToAddress()
-        initUiFromAddress(viewModel.lstToken[args.indexToken])
+        initUiFromAddress(itemToken)
     }
 
     private fun initDefaultNetwork() {
@@ -70,7 +80,7 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         Identicon(binding.imgAvatarFrom, viewModel.credentials?.address)
 
         // amount input
-        binding.txtAmount.text = BalanceUtil.formatBalanceWithSymbol(args.amount, item.symbol)
+        binding.txtAmount.text = BalanceUtil.formatBalanceWithSymbol(amount, item.symbol)
     }
 
     private fun initUiToAddress() {
@@ -80,21 +90,21 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         }
     }
 
-    private fun initAmountEstimate(amountEstimateEth: BigDecimal, item: ItemToken) {
+    private fun initAmountEstimate(amountEstimateEth: BigDecimal) {
         val estimateAmountEth = BalanceUtil.formatBalanceWithSymbol(
             amountEstimateEth.toString(),
             viewModel.getSymbolNetworkDefault()
         )
         binding.txtGas.text = estimateAmountEth
 
-        if (args.indexToken == 0) { // native token
-            val total = BigDecimal(args.amount) + amountEstimateEth
+        if (isNativeToken) {
+            val total = BigDecimal(amount) + amountEstimateEth
             binding.txtTotal.text = BalanceUtil.formatBalanceWithSymbol(
                 total.toString(),
                 viewModel.getSymbolNetworkDefault()
             )
         } else {
-            val amountTokenFormat = BalanceUtil.formatBalanceWithSymbol(args.amount, item.symbol)
+            val amountTokenFormat = BalanceUtil.formatBalanceWithSymbol(amount, itemToken.symbol)
             binding.txtTotal.text =
                 StringBuilder(amountTokenFormat).append(" + ").append(estimateAmountEth)
         }
@@ -105,15 +115,42 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
             it.getContentIfNotHandled()?.let { data ->
                 when (data.responseType) {
                     Status.LOADING -> {
+                        binding.btnSend.isEnabled = false
                         showLoadingDialog()
                     }
                     Status.SUCCESSFUL -> {
+                        binding.btnSend.isEnabled = true
                         hideDialog()
                         data.data?.let {
-                            initAmountEstimate(it, viewModel.lstToken[args.indexToken])
+                            initAmountEstimate(it)
                         }
                     }
                     Status.ERROR -> {
+                        binding.btnSend.isEnabled = false
+                        hideDialog()
+                        data.error?.message?.let {
+                            showToast("Error: $it")
+                        }
+                    }
+                }
+            }
+        }
+
+        viewModel.transferLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                when (data.responseType) {
+                    Status.LOADING -> {
+                        showLoadingDialog()
+                    }
+                    Status.SUCCESSFUL -> {
+                        binding.btnSend.isEnabled = true
+                        hideDialog()
+                        data.data?.let {
+                            showToast("Hash: $it")
+                        }
+                    }
+                    Status.ERROR -> {
+//                        binding.btnSend.isEnabled = false
                         hideDialog()
                         data.error?.message?.let {
                             showToast("Error: $it")
@@ -127,8 +164,9 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
     override fun initConfig() {
         viewModel.getEstimateGas(
             fromAddress = viewModel.credentials!!.address,
-            toAddress = if (args.indexToken == 0) args.toAddress else viewModel.lstToken[args.indexToken].address,
-            amount = args.amount
+            toAddress = args.toAddress,
+            amount = amount,
+            contractAddress = itemToken.address
         )
 
     }

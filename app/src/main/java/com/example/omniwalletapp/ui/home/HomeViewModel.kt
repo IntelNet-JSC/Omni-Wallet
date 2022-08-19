@@ -25,6 +25,7 @@ import javax.inject.Inject
 typealias EventAddress = Event<Data<String>>
 typealias EventToken = Event<Data<MutableMap<String, String>>>
 typealias EventEstimate = Event<Data<BigDecimal>>
+typealias EventTransfer = Event<Data<String>>
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -54,6 +55,9 @@ class HomeViewModel @Inject constructor(
         }
     }
 
+    lateinit var gasPrice: BigInteger
+    lateinit var gasLimit: BigInteger
+
     var credentials: Credentials? = null
 
     var balanceETH = BigDecimal("0")
@@ -74,6 +78,9 @@ class HomeViewModel @Inject constructor(
 
     private val _estimateLiveData: MutableLiveData<EventEstimate> = MutableLiveData()
     val estimateLiveData: LiveData<EventEstimate> = _estimateLiveData
+
+    private val _transferLiveData: MutableLiveData<EventTransfer> = MutableLiveData()
+    val transferLiveData: LiveData<EventTransfer> = _transferLiveData
 
     val lstItemNetwork: MutableList<ItemNetwork> by lazy {
         getNetWorkItemList().toMutableList()
@@ -325,10 +332,11 @@ class HomeViewModel @Inject constructor(
 
     fun getEstimateGas(
         fromAddress: String,
-        toAddress: String, // or contractAddress
-        amount: String
+        toAddress: String,
+        amount: String,
+        contractAddress: String
     ) {
-        val disposable = networkRepository.getEstimateGas(fromAddress, toAddress, amount)
+        val disposable = networkRepository.getEstimateGas(fromAddress, toAddress, amount, contractAddress)
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -341,7 +349,60 @@ class HomeViewModel @Inject constructor(
                 { response ->
                     Timber.d("On Next Called: $response")
 
+                    gasPrice = response.first
+                    gasLimit = response.second
+
                     _estimateLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response.third
+                            )
+                        )
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _estimateLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called: getEstimateGas")
+                }
+            )
+        addDisposable(disposable)
+    }
+
+    fun transfer(
+        toAddress: String,
+        amount: String,
+        tokenAddress: String = ""
+    ) {
+        val disposable = if (tokenAddress.isNotEmpty()) {
+            networkRepository.sendToken2(
+                credentials!!,
+                toAddress,
+                amount,
+                gasPrice,
+                gasLimit,
+                tokenAddress
+            )
+        } else {
+            networkRepository.sendEther(credentials!!, toAddress, amount, gasPrice, gasLimit)
+        }
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _transferLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+//                    listenerTransfer()
+
+                    _transferLiveData.value =
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
@@ -351,17 +412,52 @@ class HomeViewModel @Inject constructor(
 
                 }, { error ->
                     Timber.e("On Error Called, ${error.message}")
-                    _estimateLiveData.value =
+                    _transferLiveData.value =
                         Event(Data(Status.ERROR, null, error = Error(error.message)))
                 }, {
-                    Timber.d("On Complete Called: loadInforToken")
+                    Timber.d("On Complete Called: transfer")
                 }
             )
         addDisposable(disposable)
     }
 
+    fun listenerTransfer(){
+        networkRepository.transactionFlowable()
+            .subscribeOn(Schedulers.io())
+            .observeOn(AndroidSchedulers.mainThread())
+            .doOnSubscribe {
+                _transactionLiveData.value = Event(Data(responseType = Status.LOADING))
+            }
+            .doOnComplete {
+                Timber.d("Close waitting dialog")
+            }
+            .subscribe(
+                { response ->
+                    Timber.d("On Next Called: $response")
+
+                    _transactionLiveData.value =
+                        Event(
+                            Data(
+                                responseType = Status.SUCCESSFUL,
+                                data = response
+                            )
+                        )
+
+                }, { error ->
+                    Timber.e("On Error Called, ${error.message}")
+                    _transactionLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
+                }, {
+                    Timber.d("On Complete Called: listenerTransfer")
+                }
+            )
+    }
+
     fun addContractAddressToPref(address: String) {
-        preferencesRepository.addTokenAddress(address, getSymbolNetworkDefault())
+        preferencesRepository.addTokenAddress(
+            address = address,
+            type = getSymbolNetworkDefault()
+        )
     }
 
 }

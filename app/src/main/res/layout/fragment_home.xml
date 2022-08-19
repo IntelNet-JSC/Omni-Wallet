@@ -99,6 +99,7 @@
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
+            android:scrollbars="vertical"
             android:fillViewport="true"
             android:overScrollMode="never">
 
@@ -116,8 +117,8 @@
 
                     <com.example.mylibrary.utils.identicon.BlockiesIdenticon
                         android:id="@+id/imgAvaterWallet"
-                        android:layout_width="50dp"
-                        android:layout_height="50dp"
+                        android:layout_width="55dp"
+                        android:layout_height="55dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
@@ -287,6 +288,8 @@
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/rvToken"
+                    android:paddingBottom="100dp"
+                    android:clipToPadding="false"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:focusable="false"

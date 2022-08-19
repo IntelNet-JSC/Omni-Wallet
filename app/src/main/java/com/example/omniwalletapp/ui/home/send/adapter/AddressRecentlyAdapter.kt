@@ -53,8 +53,8 @@ data class ItemAddress(
 ){
     companion object{
         fun generateListAddressRecently() = listOf(
-            ItemAddress(0, "0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF"),
-            ItemAddress(1, "0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF"),
+            ItemAddress(0, "0x60Aef71878c7f0973DEb83C1b19Ca033DD271483"),
+            ItemAddress(1, "0x7106c6e10f1d165320172d3089cfc6cbb27b03c4"),
             ItemAddress(2, "0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF")
         )
     }
