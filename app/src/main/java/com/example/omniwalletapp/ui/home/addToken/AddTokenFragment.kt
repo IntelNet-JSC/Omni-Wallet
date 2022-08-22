@@ -1,5 +1,7 @@
 package com.example.omniwalletapp.ui.home.addToken
 
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
@@ -11,8 +13,6 @@ import com.example.omniwalletapp.ui.home.network.NetDialogFragment
 import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.setNavigationResult
 import dagger.hilt.android.AndroidEntryPoint
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEvent.setEventListener
-import net.yslibrary.android.keyboardvisibilityevent.KeyboardVisibilityEventListener
 import org.web3j.crypto.WalletUtils
 
 
@@ -36,16 +36,9 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
         }
 
         binding.btnImportToken.setOnClickListener {
-            checkAndCall(true)
+            val addressInput = binding.edtTokenAddress.text.toString().trim()
+            checkAndCall(addressInput)
         }
-
-        setEventListener(
-            requireActivity(),
-            viewLifecycleOwner,
-            KeyboardVisibilityEventListener { open ->
-                if (!open)
-                    checkAndCall(false)
-            })
 
         binding.viewClickImportToken.setOnClickListener {
             NetDialogFragment.newInstance(
@@ -65,6 +58,25 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
                 }
             )
         }
+
+        binding.edtTokenAddress.addTextChangedListener(object : TextWatcher {
+            override fun beforeTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun onTextChanged(p0: CharSequence?, p1: Int, p2: Int, p3: Int) {
+
+            }
+
+            override fun afterTextChanged(p0: Editable?) {
+                if(p0==null)
+                    return
+                if(p0.isNotBlank())
+                    checkAndCall(p0.toString().trim())
+            }
+
+
+        })
 
     }
 
@@ -99,10 +111,7 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
                         data.data?.let { map ->
                             setNavigationResult("network_change", 0)
                             contractAddressTemp = map["contractAddress"] ?: ""
-                            if ((map["button_click"] ?: "") == "true") // button click = true
-                                importTokenSuccess()
-                            else
-                                updateUI(map["symbol"] ?: "", map["decimals"] ?: "")
+                            updateUI(map["symbol"] ?: "", map["decimals"] ?: "")
                         }
                     }
                     Status.ERROR -> {
@@ -120,13 +129,12 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
         }
     }
 
-    private fun checkAndCall(buttonClick: Boolean) {
-        val contractAddress = binding.edtTokenAddress.text.toString().trim()
+    private fun checkAndCall(contractAddress:String) {
         if (contractAddress.isBlank())
             return
         if (WalletUtils.isValidAddress(contractAddress))
             if (contractAddressTemp != contractAddress)
-                viewModel.loadInforToken(contractAddress, buttonClick)
+                viewModel.loadInforToken(contractAddress)
             else
                 importTokenSuccess()
         else {

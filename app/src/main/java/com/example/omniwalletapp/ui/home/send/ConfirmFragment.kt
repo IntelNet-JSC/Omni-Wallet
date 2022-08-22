@@ -146,7 +146,10 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
                         binding.btnSend.isEnabled = true
                         hideDialog()
                         data.data?.let {
-                            showToast("Hash: $it")
+                            showToast("Giao dịch thành công!")
+                            navigate(
+                                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(args.indexToken)
+                            )
                         }
                     }
                     Status.ERROR -> {

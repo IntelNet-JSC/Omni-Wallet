@@ -66,4 +66,9 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
         prefs.edit().clear().apply()
     }
 
+
+    fun clearDataAddressWallet() {
+        prefs.edit().remove("address_wallet").apply()
+    }
+
 }

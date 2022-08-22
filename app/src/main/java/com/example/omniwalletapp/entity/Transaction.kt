@@ -10,4 +10,7 @@ data class Transaction (val timeStamp: String,
                         val gasPrice: String,
                         val isError: String,
                         val gasUsed: String,
-                        val confirmations: String)
+                        val confirmations: String,
+                        val input: String,
+                        val functionName: String,
+                        )

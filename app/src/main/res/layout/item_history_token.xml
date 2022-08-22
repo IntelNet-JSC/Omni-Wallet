@@ -14,7 +14,7 @@
         app:layout_constraintStart_toStartOf="parent"
         android:textSize="14sp"
         android:textColor="@color/black"
-        tools:text="#1-Tháng 8 1 tại 9:28 pm"
+        tools:text="#1 - Tháng 8 1 tại 9:28 pm"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -25,12 +25,12 @@
         app:layout_constraintBottom_toBottomOf="@id/txtStatus"
         android:src="@drawable/ic_baseline_call_made_24"
         android:tint="@color/blue500"
-        android:layout_width="36dp"
-        android:layout_height="36dp"
+        android:layout_width="32dp"
+        android:layout_height="32dp"
         app:shapeAppearanceOverlay="@style/Circular"
         app:contentPadding="4dp"
-        android:padding="2dp"
-        app:strokeWidth="2dp"
+        android:padding="1.3dp"
+        app:strokeWidth="1.3dp"
         app:strokeColor="@color/blue500" />
 
     <androidx.appcompat.widget.AppCompatTextView
@@ -51,9 +51,9 @@
         app:layout_constraintStart_toStartOf="@+id/txtName"
         app:layout_constraintTop_toBottomOf="@+id/txtName"
         android:textStyle="bold"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textColor="@color/green_1"
-        android:text="Đã xác nhận"
+        tools:text="Đã xác nhận"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -64,7 +64,7 @@
         app:layout_constraintEnd_toEndOf="parent"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:text="0.3 BNB"
+        tools:text="0.3 BNB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -1,12 +1,10 @@
 package com.example.omniwalletapp.repository
 
 import android.text.TextUtils
-import com.example.omniwalletapp.BuildConfig
 import com.example.omniwalletapp.base.Erc20TokenWrapper
 import com.example.omniwalletapp.entity.NetworkInfo
 import com.example.omniwalletapp.util.BalanceUtil
 import com.example.omniwalletapp.util.BalanceUtil.convertTogEstimateGasEth
-import com.example.omniwalletapp.util.Constants
 import io.reactivex.Observable
 import org.web3j.abi.FunctionEncoder
 import org.web3j.abi.datatypes.Address
@@ -19,6 +17,7 @@ import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.Transaction
+import org.web3j.protocol.core.methods.response.EthBlock
 import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
@@ -37,28 +36,10 @@ import java.util.*
 import javax.inject.Inject
 
 
-class NetworkRepository @Inject constructor(val preferencesRepository: PreferencesRepository) {
-
-    private val NETWORKS = arrayOf(
-        NetworkInfo(
-            name = Constants.BSC_TESTNET,
-            rpcServerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545/",
-            chainId = 97,
-            symbol = Constants.BSC_SYMBOL,
-            scanUrl = "https://testnet.bscscan.com",
-            backendUrl = "https://api-testnet.bscscan.com",
-            apiKey = BuildConfig.BSC_API
-        ),
-        NetworkInfo(
-            name = Constants.ROPSTEN_NETWORK_NAME,
-            rpcServerUrl = "https://ropsten.infura.io/v3/5c74f1278e2a4c87ab5b46e3aa8cb30b",
-            chainId = 3,
-            symbol = Constants.ETH_SYMBOL,
-            scanUrl = "https://ropsten.etherscan.io",
-            backendUrl = "https://api-ropsten.etherscan.io",
-            apiKey = BuildConfig.Etherscan_API
-        )
-    )
+class NetworkRepository @Inject constructor(
+    val preferencesRepository: PreferencesRepository,
+    val NETWORKS: List<NetworkInfo>
+) {
 
     private var defaultNetwork = getByName(preferencesRepository.getDefaultNetwork()) ?: NETWORKS[0]
 
@@ -179,15 +160,23 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
 
             val weiValue: BigInteger = Convert.toWei(amount, Convert.Unit.ETHER).toBigInteger()
 
-            val function = Function("transfer", listOf(Address(toAddress), Uint256(weiValue)), emptyList())
+            val function =
+                Function("transfer", listOf(Address(toAddress), Uint256(weiValue)), emptyList())
             val txData: String = FunctionEncoder.encode(function)
 
             val gasPrice = web3j.ethGasPrice().send().gasPrice
 
-            val toAddress2 = contractAddress.takeIf { it.isNotEmpty() }?:toAddress
+            val toAddress2 = contractAddress.takeIf { it.isNotEmpty() } ?: toAddress
 
-            val transaction = Transaction.createFunctionCallTransaction(fromAddress,
-                BigInteger.ONE,  gasPrice, DefaultGasProvider.GAS_LIMIT, toAddress2, BigInteger.ZERO, txData)
+            val transaction = Transaction.createFunctionCallTransaction(
+                fromAddress,
+                BigInteger.ONE,
+                gasPrice,
+                DefaultGasProvider.GAS_LIMIT,
+                toAddress2,
+                BigInteger.ZERO,
+                txData
+            )
 
             val estimateGas = web3j.ethEstimateGas(transaction).sendAsync().get().amountUsed
 
@@ -329,29 +318,5 @@ class NetworkRepository @Inject constructor(val preferencesRepository: Preferenc
         }
     }
 
-/*    fun createTransaction(
-        from: Wallet, toAddress: String, subUnitAmount: BigInteger,
-        gasPrice: BigInteger, gasLimit: Long, password: String
-    ): Single<String> {
-
-        return Single.fromCallable<Long> {
-            web3j.ethGetTransactionCount(from.address, DefaultBlockParameterName.LATEST)
-                .send().transactionCount.toLong()
-        }.flatMap<ByteArray> {
-            accountManager.signTransaction(
-                from, password, toAddress, subUnitAmount, gasPrice, gasLimit,
-                it, getDefaultNetwork().chainId.toLong()
-            )
-        }.flatMap {
-            Single.fromCallable {
-                val raw = web3j.ethSendRawTransaction(Numeric.toHexString(it)).send()
-
-                if (raw.hasError())
-                    throw Exception(raw.error.message)
-
-                raw.transactionHash
-            }
-        }.subscribeOn(Schedulers.io())
-    }*/
 
 }

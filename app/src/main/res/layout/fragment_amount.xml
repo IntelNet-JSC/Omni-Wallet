@@ -121,7 +121,6 @@
 
         <androidx.appcompat.widget.AppCompatEditText
             android:id="@+id/edtAmountToken"
-            android:text="100"
             android:inputType="numberDecimal"
             android:background="@null"
             android:textStyle="bold"
@@ -139,7 +138,7 @@
             android:layout_marginTop="24dp"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="Số dư: 0.0995 BNB"
+            tools:text="Số dư: 0.0995 BNB"
             android:textColor="@color/black"
             android:textSize="14sp"
             app:layout_constraintEnd_toEndOf="parent"

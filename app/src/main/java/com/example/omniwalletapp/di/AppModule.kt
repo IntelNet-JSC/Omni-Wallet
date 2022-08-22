@@ -3,6 +3,7 @@ package com.example.omniwalletapp.di
 import android.content.Context
 import android.content.SharedPreferences
 import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.entity.NetworkInfo
 import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.util.Constants
 import com.google.gson.Gson
@@ -39,12 +40,17 @@ object AppModule {
     private class BasicAuthInterceptor : Interceptor {
         override fun intercept(chain: Interceptor.Chain): Response {
             val request: Request = chain.request()
-            val newRequest = request.newBuilder().addHeader("Content-Type", "text/plain").build()
+            val newRequest = request.newBuilder()
+//                .addHeader("Content-Type", "text/plain")
+                .addHeader("User-Agent", "Mozilla/5.0")
+                .build()
             return chain.proceed(newRequest)
         }
     }
 
-    private fun httpClient(): OkHttpClient {
+    @Provides
+    @Singleton
+    fun httpClient(): OkHttpClient {
         val httpLoggingInterceptor = HttpLoggingInterceptor(HttpLoggingInterceptor.Logger.DEFAULT)
         val clientBuilder = OkHttpClient.Builder()
         if (BuildConfig.DEBUG) {
@@ -75,6 +81,31 @@ object AppModule {
     fun provideGson(): Gson {
         return Gson()
     }
+
+    @Provides
+    @Singleton
+    fun provideBaseNetworks() = listOf(
+        NetworkInfo(
+            name = Constants.BSC_TESTNET,
+            rpcServerUrl = "https://data-seed-prebsc-1-s1.binance.org:8545/",
+            chainId = 97,
+            symbol = Constants.BSC_SYMBOL,
+            scanUrl = "https://testnet.bscscan.com",
+            backendUrl = "https://api-testnet.bscscan.com",
+            apiKey = BuildConfig.BSC_API
+        ),
+        NetworkInfo(
+            name = Constants.ROPSTEN_NETWORK_NAME,
+            rpcServerUrl = "https://ropsten.infura.io/v3/5c74f1278e2a4c87ab5b46e3aa8cb30b",
+            chainId = 3,
+            symbol = Constants.ETH_SYMBOL,
+            scanUrl = "https://ropsten.etherscan.io",
+            backendUrl = "https://api-ropsten.etherscan.io",
+            apiKey = BuildConfig.Etherscan_API
+        )
+    )
+
+
 
     @Provides
     fun provideKeyStoreFile(@ApplicationContext context: Context): File {

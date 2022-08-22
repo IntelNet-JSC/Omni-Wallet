@@ -84,7 +84,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         android:textColor="@color/green_1"
-        android:text="Đã xác nhận"
+        tools:text="Đã xác nhận"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -138,7 +138,7 @@
         android:layout_marginTop="8dp"
         android:textSize="15sp"
         android:textColor="@color/black"
-        android:text="0x39fB...F5cF"
+        tools:text="0x39fB...F5cF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -149,7 +149,7 @@
         app:layout_constraintEnd_toEndOf="@+id/guidelineEnd"
         android:textColor="@color/black"
         android:textSize="15sp"
-        android:text="0x39fB...F5cF"
+        tools:text="0x39fB...F5cF"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -181,7 +181,7 @@
         android:layout_marginTop="8dp"
         android:textSize="15sp"
         android:textColor="@color/black"
-        android:text="#1"
+        tools:text="#1"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
@@ -211,12 +211,17 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtAmount"
+            android:layout_marginStart="8dp"
+            android:gravity="end"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            app:layout_constraintStart_toEndOf="@+id/txtTextAmount"
             app:layout_constraintTop_toTopOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="15sp"
             android:textColor="@color/black"
-            android:text="0.3 BNB"
-            android:layout_width="wrap_content"
+            tools:text="0.3 BNB"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -232,13 +237,18 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtGas"
+            android:gravity="end"
+            android:singleLine="true"
+            android:ellipsize="marquee"
             android:layout_marginTop="16dp"
+            android:layout_marginStart="8dp"
+            app:layout_constraintStart_toEndOf="@+id/txtTextGas"
             app:layout_constraintTop_toBottomOf="@+id/txtAmount"
             app:layout_constraintEnd_toEndOf="parent"
             android:textSize="15sp"
             android:textColor="@color/black"
-            android:text="0.00025 BNB"
-            android:layout_width="wrap_content"
+            tools:text="0.00025 BNB"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"/>
 
         <View
@@ -263,13 +273,21 @@
 
         <androidx.appcompat.widget.AppCompatTextView
             android:id="@+id/txtTotalAmount"
-            android:layout_width="wrap_content"
+            android:gravity="end"
+            android:singleLine="true"
+            android:ellipsize="marquee"
+            android:marqueeRepeatLimit="marquee_forever"
+            android:focusable="true"
+            android:focusableInTouchMode="true"
+            android:layout_width="0dp"
             android:layout_height="wrap_content"
+            android:layout_marginStart="8dp"
             android:layout_marginTop="16dp"
-            android:text="0.30025 BNB"
+            tools:text="0.30025 BNB"
             android:textColor="@color/black"
             android:textSize="15sp"
             android:textStyle="bold"
+            app:layout_constraintStart_toEndOf="@+id/txtTextTotalAmount"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/view3" />
 

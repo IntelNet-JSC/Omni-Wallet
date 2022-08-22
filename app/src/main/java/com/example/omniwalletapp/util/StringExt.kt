@@ -1,5 +1,7 @@
 package com.example.omniwalletapp.util
 
+import java.net.URL
+
 fun String.isValidEmail() =
     isNotEmpty() && android.util.Patterns.EMAIL_ADDRESS.matcher(this).matches()
 
@@ -12,4 +14,9 @@ fun String.getStringAddressFromScan():String{
         this.substring(startPos, endPos)
     }else
         this.substring(startPos)
+}
+
+fun String.getHostName():String{
+    val url = URL(this)
+    return url.host
 }

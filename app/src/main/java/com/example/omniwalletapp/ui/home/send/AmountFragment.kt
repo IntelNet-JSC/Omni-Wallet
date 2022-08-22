@@ -12,6 +12,7 @@ import com.example.omniwalletapp.databinding.FragmentAmountBinding
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import dagger.hilt.android.AndroidEntryPoint
+import java.math.BigDecimal
 
 
 @AndroidEntryPoint
@@ -65,7 +66,7 @@ class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
             val amount = binding.edtAmountToken.text.toString()
             if(amount.isNotEmpty())
                 navigate(
-                    AmountFragmentDirections.actionAmountFragmentToConfirmFragment(args.toAddress, indexToken, amount)
+                    AmountFragmentDirections.actionAmountFragmentToConfirmFragment(args.toAddress, indexToken, BigDecimal(amount).toPlainString())
                 )
             else
                 showToast("Please Input Amount!")

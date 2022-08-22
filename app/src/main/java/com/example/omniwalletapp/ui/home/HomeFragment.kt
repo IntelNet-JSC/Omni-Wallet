@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -30,8 +29,8 @@ import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.web3j.crypto.WalletUtils
 import timber.log.Timber
+import java.io.File
 import java.math.BigDecimal
-import java.math.BigInteger
 import javax.inject.Inject
 
 
@@ -175,9 +174,18 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         }
 
         binding.txtLock.setOnClickListener {
-            preferencesRepository.clearData()
-            navigate(
-                HomeFragmentDirections.actionHomeFragmentToLoginLaterFragment()
+            showAlertDialog(
+                title = "",
+                content = getString(R.string.lock_title),
+                confirmButtonTitle = "CÓ",
+                cancelButtonTitle = "KHÔNG",
+                confirmCallback = {
+                    preferencesRepository.clearDataAddressWallet()
+                    (requireActivity() as HomeActivity).restart()
+                },
+                cancelCallback = {
+
+                }
             )
         }
     }
@@ -217,7 +225,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             Timber.d("Address home: $it")
 
             binding.txtAddress.text = it.formatAddressWallet()
-            Identicon(binding.imgAvaterWallet, it)
+            Identicon(binding.imgAvatarWallet, it)
 
         }
     }

@@ -7,7 +7,6 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
 import org.web3j.protocol.core.methods.response.Transaction
-import java.math.BigDecimal
 import javax.inject.Inject
 
 typealias EventTransaction = Event<Data<Transaction>>
@@ -20,8 +19,8 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     val fetchLiveData: LiveData<Data<Void>> = _fetchLiveData
 
     // loading liveData
-    protected val _transactionLiveData = MutableLiveData<EventTransaction>()
-    val transactionLiveData: LiveData<EventTransaction> = _transactionLiveData
+    protected val _listenLiveData = MutableLiveData<EventTransaction>()
+    val listenLiveData: LiveData<EventTransaction> = _listenLiveData
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 

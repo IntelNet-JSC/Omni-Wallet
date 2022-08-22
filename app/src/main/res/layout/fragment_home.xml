@@ -99,7 +99,6 @@
             android:id="@+id/nestedScrollView"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:scrollbars="vertical"
             android:fillViewport="true"
             android:overScrollMode="never">
 
@@ -115,13 +114,28 @@
                     android:paddingHorizontal="24dp"
                     android:paddingVertical="16dp">
 
-                    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
-                        android:id="@+id/imgAvaterWallet"
+                    <com.google.android.material.imageview.ShapeableImageView
+                        android:id="@+id/shapeImage"
+                        android:padding="2dp"
+                        app:strokeWidth="2dp"
+                        app:strokeColor="@color/blue500"
+                        app:shapeAppearanceOverlay="@style/Circular"
                         android:layout_width="55dp"
                         android:layout_height="55dp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
                         app:layout_constraintTop_toTopOf="parent" />
+
+                    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+                        android:id="@+id/imgAvatarWallet"
+                        android:layout_margin="2dp"
+                        android:layout_width="0dp"
+                        android:layout_height="0dp"
+                        app:radius="100"
+                        app:layout_constraintTop_toTopOf="@+id/shapeImage"
+                        app:layout_constraintBottom_toBottomOf="@+id/shapeImage"
+                        app:layout_constraintStart_toStartOf="@+id/shapeImage"
+                        app:layout_constraintEnd_toEndOf="@+id/shapeImage"/>
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtNameWallet"
@@ -133,7 +147,7 @@
                         android:textSize="26sp"
                         app:layout_constraintEnd_toEndOf="parent"
                         app:layout_constraintStart_toStartOf="parent"
-                        app:layout_constraintTop_toBottomOf="@+id/imgAvaterWallet" />
+                        app:layout_constraintTop_toBottomOf="@+id/shapeImage" />
 
                     <androidx.appcompat.widget.AppCompatTextView
                         android:id="@+id/txtAmount"

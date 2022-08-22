@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
-    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="@color/white"
+    xmlns:tools="http://schemas.android.com/tools"
     android:orientation="vertical"
-    tools:context=".ui.home.detailToken.DetailTokenFragment">
+    android:background="@color/white"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".ui.home.detailToken.SmartContractDetailFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
@@ -33,18 +33,6 @@
             android:tint="@color/blue500"
             app:layout_constraintBottom_toBottomOf="@id/txtNet"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@+id/txtSymbolToken" />
-
-        <androidx.appcompat.widget.AppCompatImageView
-            android:id="@+id/imgMenu"
-            android:layout_width="30dp"
-            android:layout_height="30dp"
-            android:background="?attr/selectableItemBackgroundBorderless"
-            android:padding="2dp"
-            android:src="@drawable/ic_baseline_more_horiz_24"
-            android:tint="@color/blue500"
-            app:layout_constraintBottom_toBottomOf="@id/txtNet"
-            app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintTop_toTopOf="@+id/txtSymbolToken" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -87,21 +75,5 @@
             app:shapeAppearanceOverlay="@style/Circular" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
-
-    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
-        android:id="@+id/swipeRefreshLayout"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="1">
-
-        <androidx.recyclerview.widget.RecyclerView
-            android:id="@+id/rvHistoryTransaction"
-            android:scrollbars="vertical"
-            android:overScrollMode="never"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            tools:itemCount="3"
-            tools:listitem="@layout/item_history_token" />
-    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </LinearLayout>

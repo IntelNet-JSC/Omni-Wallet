@@ -37,6 +37,8 @@ class HomeViewModel @Inject constructor(
 
     init {
         Timber.d("INIT HOME VIEWMODEL")
+//        listenerTransfer()
+
         preferencesRepository.getListTokenAddress(Constants.BSC_SYMBOL) ?: kotlin.run {
             preferencesRepository.setListTokenAddress(
                 listOf(
@@ -172,7 +174,7 @@ class HomeViewModel @Inject constructor(
                     _fetchLiveData.value = Data(responseType = Status.SUCCESSFUL)
 
                 }, { error ->
-                    Timber.e("On Error Called, ${error.message}")
+                    Timber.d("On Error Called, ${error.message}")
                     _fetchLiveData.value =
                         Data(Status.ERROR, null, error = Error(error.message))
                 }, {
@@ -237,9 +239,7 @@ class HomeViewModel @Inject constructor(
     }
 
     fun getSymbolNetworkDefault() = networkRepository.getDefaultNetwork().symbol
-
-    fun getBalanceFormatWithSymbol() = StringBuilder().append(balanceETH)
-        .append(" ${getSymbolNetworkDefault()}").toString()
+    fun getScanUrlNetworkDefault() = networkRepository.getDefaultNetwork().scanUrl
 
     private fun convertBalanceETH(response: BigInteger): BigDecimal {
         balanceETH = BalanceUtil.subunitToBase(response)
@@ -286,7 +286,7 @@ class HomeViewModel @Inject constructor(
         addDisposable(disposable)
     }
 
-    fun loadInforToken(address: String, buttonClick: Boolean) {
+    fun loadInforToken(address: String) {
         val disposable = networkRepository.getInforToken(credentials!!, address)
             .map {
                 val isExist =
@@ -307,15 +307,11 @@ class HomeViewModel @Inject constructor(
                 { response ->
                     Timber.d("On Next Called: $response")
 
-                    val map = response.apply {
-                        put("button_click", buttonClick.toString())
-                    }
-
                     _tokenLiveData.value =
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
-                                data = map
+                                data = response
                             )
                         )
 
@@ -336,38 +332,39 @@ class HomeViewModel @Inject constructor(
         amount: String,
         contractAddress: String
     ) {
-        val disposable = networkRepository.getEstimateGas(fromAddress, toAddress, amount, contractAddress)
-            .subscribeOn(Schedulers.io())
-            .observeOn(AndroidSchedulers.mainThread())
-            .doOnSubscribe {
-                _estimateLiveData.value = Event(Data(responseType = Status.LOADING))
-            }
-            .doOnComplete {
-                Timber.d("Close waitting dialog")
-            }
-            .subscribe(
-                { response ->
-                    Timber.d("On Next Called: $response")
-
-                    gasPrice = response.first
-                    gasLimit = response.second
-
-                    _estimateLiveData.value =
-                        Event(
-                            Data(
-                                responseType = Status.SUCCESSFUL,
-                                data = response.third
-                            )
-                        )
-
-                }, { error ->
-                    Timber.e("On Error Called, ${error.message}")
-                    _estimateLiveData.value =
-                        Event(Data(Status.ERROR, null, error = Error(error.message)))
-                }, {
-                    Timber.d("On Complete Called: getEstimateGas")
+        val disposable =
+            networkRepository.getEstimateGas(fromAddress, toAddress, amount, contractAddress)
+                .subscribeOn(Schedulers.io())
+                .observeOn(AndroidSchedulers.mainThread())
+                .doOnSubscribe {
+                    _estimateLiveData.value = Event(Data(responseType = Status.LOADING))
                 }
-            )
+                .doOnComplete {
+                    Timber.d("Close waitting dialog")
+                }
+                .subscribe(
+                    { response ->
+                        Timber.d("On Next Called: $response")
+
+                        gasPrice = response.first
+                        gasLimit = response.second
+
+                        _estimateLiveData.value =
+                            Event(
+                                Data(
+                                    responseType = Status.SUCCESSFUL,
+                                    data = response.third
+                                )
+                            )
+
+                    }, { error ->
+                        Timber.e("On Error Called, ${error.message}")
+                        _estimateLiveData.value =
+                            Event(Data(Status.ERROR, null, error = Error(error.message)))
+                    }, {
+                        Timber.d("On Complete Called: getEstimateGas")
+                    }
+                )
         addDisposable(disposable)
     }
 
@@ -421,12 +418,12 @@ class HomeViewModel @Inject constructor(
         addDisposable(disposable)
     }
 
-    fun listenerTransfer(){
+    private fun listenerTransfer() {
         networkRepository.transactionFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                _transactionLiveData.value = Event(Data(responseType = Status.LOADING))
+                _listenLiveData.value = Event(Data(responseType = Status.LOADING))
             }
             .doOnComplete {
                 Timber.d("Close waitting dialog")
@@ -435,7 +432,8 @@ class HomeViewModel @Inject constructor(
                 { response ->
                     Timber.d("On Next Called: $response")
 
-                    _transactionLiveData.value =
+
+                    _listenLiveData.value =
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
@@ -445,7 +443,7 @@ class HomeViewModel @Inject constructor(
 
                 }, { error ->
                     Timber.e("On Error Called, ${error.message}")
-                    _transactionLiveData.value =
+                    _listenLiveData.value =
                         Event(Data(Status.ERROR, null, error = Error(error.message)))
                 }, {
                     Timber.d("On Complete Called: listenerTransfer")

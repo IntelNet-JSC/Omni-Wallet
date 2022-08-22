@@ -3,6 +3,7 @@ package com.example.omniwalletapp.ui.home.send.adapter
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.recyclerview.widget.RecyclerView
+import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.databinding.ItemAddressRecentlyBinding
 import com.example.omniwalletapp.util.formatAddressWallet
 
@@ -38,6 +39,7 @@ class AddressRecentlyAdapter(
         fun bind(item: ItemAddress) {
             binding.apply {
                 txtAddress.text = item.name.formatAddressWallet()
+                Identicon(imgAddress, item.name)
             }
             itemView.setOnClickListener {
                 callBackItemClick.invoke(item)

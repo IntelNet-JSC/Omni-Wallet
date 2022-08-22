@@ -34,4 +34,10 @@ class HomeActivity : BaseActivity() {
         startActivity(Intent(this, AddWalletActivity::class.java))
         finish()
     }
+
+    fun restart(){
+        val mIntent = intent
+        finish()
+        startActivity(mIntent)
+    }
 }

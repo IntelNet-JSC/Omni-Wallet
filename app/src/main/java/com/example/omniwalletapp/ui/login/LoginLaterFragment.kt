@@ -49,6 +49,8 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                 cancelButtonTitle = "Hủy",
                 confirmCallback = {
 
+                    preferencesRepository.clearData()
+
                     val keydir = File(requireActivity().filesDir, "")
                     deleteDir(keydir)
 

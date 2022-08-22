@@ -43,6 +43,8 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
     private var _binding: B? = null
     protected val binding get() = _binding!!
 
+    protected var firstCallApi = false
+
     var callBackTransactionConfirmed: (Transaction) -> Unit = {}
 
     val fManager: FragmentManager by lazy {
@@ -70,7 +72,7 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         initEvent()
         initConfig()
 
-        viewModel.transactionLiveData.observe(viewLifecycleOwner) {
+        viewModel.listenLiveData.observe(viewLifecycleOwner) {
             it.getContentIfNotHandled()?.let { data ->
                 when (data.responseType) {
                     Status.ERROR -> {
