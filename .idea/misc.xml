@@ -76,6 +76,7 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/fragment_webview.xml" value="0.2" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_address_recently.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_choose_token.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_empty_transaction.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_header_transaction.xml" value="0.536" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_history_token.xml" value="0.536" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/item_import_token.xml" value="0.253125" />

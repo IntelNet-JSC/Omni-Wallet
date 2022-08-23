@@ -63,6 +63,21 @@
                 android:focusable="false"
                 android:nestedScrollingEnabled="false" />
 
+            <androidx.appcompat.widget.AppCompatTextView
+                android:id="@+id/txtCopyPhraseWord"
+                android:padding="4dp"
+                android:background="@drawable/bg_btn_wallet2"
+                android:layout_gravity="end"
+                android:layout_marginTop="8dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:drawableTint="@color/blue500"
+                android:drawablePadding="8dp"
+                android:drawableEnd="@drawable/ic_baseline_content_copy_24"
+                android:text="Sao chép"
+                android:textColor="@color/blue500"
+                android:textSize="14sp" />
+
             <androidx.appcompat.widget.AppCompatButton
                 android:id="@+id/btnContinue"
                 android:layout_width="match_parent"

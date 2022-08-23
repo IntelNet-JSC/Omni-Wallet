@@ -4,15 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import android.view.inputmethod.InputMethodManager
-import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.fragment.NavHostFragment
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseActivity
 import com.example.omniwalletapp.databinding.ActivityAddWalletBinding
+import com.example.omniwalletapp.ui.addWallet.createWallet.MemorizePhraseFragment
 import com.example.omniwalletapp.ui.home.HomeActivity
-import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 
 class AddWalletActivity : BaseActivity() {
 
@@ -22,7 +22,7 @@ class AddWalletActivity : BaseActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        binding=ActivityAddWalletBinding.inflate(layoutInflater)
+        binding = ActivityAddWalletBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
         val navHostFragment =
@@ -35,6 +35,11 @@ class AddWalletActivity : BaseActivity() {
                 finish()
 //                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
             }
+            /*else {
+                val fragment = getForegroundFragment()
+                if (fragment != null && fragment is MemorizePhraseFragment)
+                    deleteDir(File(filesDir, ""))
+            }*/
         }
     }
 
@@ -43,7 +48,7 @@ class AddWalletActivity : BaseActivity() {
         return navHostFragment?.childFragmentManager?.fragments?.get(0)
     }
 
-    fun navigateHomeActivity(){
+    fun navigateHomeActivity() {
         startActivity(Intent(this, HomeActivity::class.java))
         finish()
     }

@@ -50,6 +50,12 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
             prefs.edit().putString("list_token_address_eth", gson.toJson(lstAddress)).apply()
     }
 
+    fun hideTokenAddress(index:Int, type:String){
+        val lstToken = getListTokenAddress(type)?.toMutableList()?: return
+        lstToken.removeAt(index)
+        setListTokenAddress(lstToken, type)
+    }
+
     fun checkExistTokenAddress(address: String, type: String):Boolean{
         val lstTokenAddress = getListTokenAddress(type)?.toMutableList()?: mutableListOf()
         val index = lstTokenAddress.indexOfFirst { it.equals(address, true) }

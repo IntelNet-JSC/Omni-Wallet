@@ -167,9 +167,14 @@ class DetailTokenViewModel @Inject constructor(
                 type = ItemHistoryTokenAdapter.ITEM_DATA
             )
         }.take(29).toMutableList().apply {
-            add(
-                ItemTransaction.generateItemFooter()
-            )
+            if(size>1)
+                add(
+                    ItemTransaction.generateItemFooter()
+                )
+            else
+                add(
+                    ItemTransaction.generateItemEmpty()
+                )
         }
 
         lstItemTransaction.addAll(lstTemp)

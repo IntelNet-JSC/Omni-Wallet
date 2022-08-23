@@ -63,11 +63,11 @@ class CreatePassFragment : BaseFragment<FragmentCreatePassBinding, AddWalletView
     }
 
     private fun validateForm(pass: String, passConfirm: String): Boolean {
-        if(pass.isBlank() || passConfirm.isBlank()){
+        if (pass.isBlank() || passConfirm.isBlank()) {
             showToast("Vui lòng nhập mật khẩu!")
             return false
         }
-        if(pass.length<8){
+        if (pass.length < 8) {
             showToast("Mật khẩu phải ít nhất 8 ký tự!")
             return false
         }

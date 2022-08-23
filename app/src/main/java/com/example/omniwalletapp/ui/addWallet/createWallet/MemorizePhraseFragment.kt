@@ -5,7 +5,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
-import com.example.mylibrary.utils.identicon.Identicon
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.base.EmptyViewModel
 import com.example.omniwalletapp.databinding.FragmentMemorizePhraseBinding
@@ -44,6 +44,11 @@ class MemorizePhraseFragment :
                     args.wordPhrase
                 )
             )
+        }
+
+        binding.txtCopyPhraseWord.setOnClickListener {
+            copyToClipboard(args.wordPhrase)
+            showToast(getString(R.string.toast_word_phrase_copied))
         }
     }
 

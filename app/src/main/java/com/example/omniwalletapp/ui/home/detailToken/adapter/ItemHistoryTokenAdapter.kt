@@ -6,6 +6,7 @@ import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
 import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
+import com.example.omniwalletapp.databinding.ItemEmptyTransactionBinding
 import com.example.omniwalletapp.databinding.ItemHeaderTransactionBinding
 import com.example.omniwalletapp.databinding.ItemHistoryTokenBinding
 import com.example.omniwalletapp.databinding.ItemViewAllHistoryBinding
@@ -54,9 +55,17 @@ class ItemHistoryTokenAdapter(
                         false
                     )
                 )
-            else -> // ITEM_FOOTER
+            ITEM_FOOTER ->
                 ItemViewAllHolder(
                     ItemViewAllHistoryBinding.inflate(
+                        LayoutInflater.from(parent.context),
+                        parent,
+                        false
+                    )
+                )
+            else -> // ITEM_FOOTER
+                EmptyTransactionHolder(
+                    ItemEmptyTransactionBinding.inflate(
                         LayoutInflater.from(parent.context),
                         parent,
                         false
@@ -69,7 +78,8 @@ class ItemHistoryTokenAdapter(
         when (holder.itemViewType) {
             ITEM_HEADER -> (holder as ItemHeaderHolder).bind(lstItems[position].itemToken)
             ITEM_DATA -> (holder as ItemHistoryViewHolder).bind(lstItems[position])
-            else -> (holder as ItemViewAllHolder).bind() // ITEM_FOOTER
+            ITEM_FOOTER -> (holder as ItemViewAllHolder).bind()
+            else -> {}
         }
     }
 
@@ -136,6 +146,9 @@ class ItemHistoryTokenAdapter(
         }
     }
 
+    inner class EmptyTransactionHolder(val binding: ItemEmptyTransactionBinding) :
+        RecyclerView.ViewHolder(binding.root)
+
     inner class ItemHeaderHolder(val binding: ItemHeaderTransactionBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
@@ -160,6 +173,7 @@ class ItemHistoryTokenAdapter(
         const val ITEM_DATA = 0
         const val ITEM_FOOTER = 1
         const val ITEM_HEADER = 2
+        const val ITEM_EMPTY = 3
 
         const val CONFIRMED = 0
         const val FAILED = 1
@@ -185,6 +199,10 @@ data class ItemTransaction(
     companion object {
         fun generateItemFooter() = ItemTransaction(
             type = ItemHistoryTokenAdapter.ITEM_FOOTER
+        )
+
+        fun generateItemEmpty() = ItemTransaction(
+            type = ItemHistoryTokenAdapter.ITEM_EMPTY
         )
 
         fun generateItemHeader(item: ItemToken) = ItemTransaction(

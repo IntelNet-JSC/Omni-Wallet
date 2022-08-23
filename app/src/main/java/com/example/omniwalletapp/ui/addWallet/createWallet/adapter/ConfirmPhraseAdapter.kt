@@ -32,6 +32,7 @@ class ConfirmPhraseAdapter(
             binding.txtWordNumber.isVisible = true
 
             binding.txtNameWord.text = if(BuildConfig.DEBUG) item.name else item.fill
+//            binding.txtNameWord.text = item.fill
             binding.txtWordNumber.text = "${adapterPosition + 1}"
 
             binding.txtNameWord.background = when {
