@@ -167,7 +167,7 @@ class DetailTokenViewModel @Inject constructor(
                 type = ItemHistoryTokenAdapter.ITEM_DATA
             )
         }.take(29).toMutableList().apply {
-            if(size>1)
+            if(size>0)
                 add(
                     ItemTransaction.generateItemFooter()
                 )

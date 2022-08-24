@@ -14,6 +14,7 @@ import com.example.omniwalletapp.util.BalanceUtil
 import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.math.BigDecimal
 
 
@@ -77,7 +78,7 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         val balanceFormat = BalanceUtil.formatBalanceWithSymbol(item.amount, item.symbol)
         binding.txtBalance.text =
             getString(R.string.content_balance_from_send, balanceFormat) // layout from address
-        Identicon(binding.imgAvatarFrom, viewModel.credentials?.address)
+        Identicon(binding.imgAvatarFrom, addressWallet)
 
         // amount input
         binding.txtAmount.text = BalanceUtil.formatBalanceWithSymbol(amount, item.symbol)
@@ -146,9 +147,9 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
                         binding.btnSend.isEnabled = true
                         hideDialog()
                         data.data?.let {
-                            showToast("Giao dịch thành công!")
+                            Timber.d("$it")
                             navigate(
-                                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(args.indexToken)
+                                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(args.indexToken, true)
                             )
                         }
                     }
@@ -166,7 +167,7 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
 
     override fun initConfig() {
         viewModel.getEstimateGas(
-            fromAddress = viewModel.credentials!!.address,
+            fromAddress = addressWallet,
             toAddress = args.toAddress,
             amount = amount,
             contractAddress = itemToken.address

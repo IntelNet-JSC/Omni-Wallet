@@ -10,6 +10,7 @@ import androidx.navigation.fragment.NavHostFragment
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseActivity
 import com.example.omniwalletapp.databinding.ActivityAddWalletBinding
+import com.example.omniwalletapp.ui.addWallet.createWallet.ConfirmPhraseFragment
 import com.example.omniwalletapp.ui.addWallet.createWallet.MemorizePhraseFragment
 import com.example.omniwalletapp.ui.home.HomeActivity
 import java.io.File
@@ -34,12 +35,11 @@ class AddWalletActivity : BaseActivity() {
             if (!navController.popBackStack()) {
                 finish()
 //                overridePendingTransition(R.anim.enter_from_left, R.anim.exit_to_right)
-            }
-            /*else {
+            } else {
                 val fragment = getForegroundFragment()
-                if (fragment != null && fragment is MemorizePhraseFragment)
+                if (fragment != null && (fragment is MemorizePhraseFragment || fragment is ConfirmPhraseFragment))
                     deleteDir(File(filesDir, ""))
-            }*/
+            }
         }
     }
 
@@ -64,5 +64,18 @@ class AddWalletActivity : BaseActivity() {
                 currentFocusedView.windowToken, InputMethodManager.HIDE_NOT_ALWAYS
             )
         }
+    }
+
+    fun deleteDir(dir: File): Boolean {
+        if (dir.isDirectory) {
+            val childrens = dir.list() ?: return false
+            for (i in childrens.indices) {
+                val success = deleteDir(File(dir, childrens[i]))
+                if (!success) {
+                    return false
+                }
+            }
+        }
+        return dir.delete()
     }
 }

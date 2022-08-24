@@ -1,6 +1,8 @@
 package com.example.omniwalletapp.ui.home.detailToken
 
+import android.os.Handler
 import android.view.LayoutInflater
+import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
@@ -11,6 +13,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
+import com.example.omniwalletapp.databinding.CustomSnackbarViewBinding
 import com.example.omniwalletapp.databinding.FragmentDetailTokenBinding
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
@@ -18,33 +21,36 @@ import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemHistoryTokenAda
 import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemMenu
 import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemTransaction
 import com.example.omniwalletapp.util.Status
+import com.example.omniwalletapp.util.dpToPx
+import com.google.android.material.snackbar.Snackbar
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 
 
 @AndroidEntryPoint
 class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewModel>() {
+
+    private var handler: Handler?= null
 
     val viewModel2: DetailTokenViewModel by viewModels()
     override val viewModel: HomeViewModel by activityViewModels()
 
     private val args: DetailTokenFragmentArgs by navArgs()
 
-    private val index:Int by lazy {
+    var snackbar: Snackbar? = null
+
+    private val index: Int by lazy {
         args.indexToken
     }
 
-    private val addressWallet: String by lazy {
-        viewModel.credentials!!.address
-    }
-
-    private val lstItemMenu:MutableList<ItemMenu> by lazy {
+    private val lstItemMenu: MutableList<ItemMenu> by lazy {
         val lstItem = mutableListOf(
             ItemMenu(
                 name = getString(R.string.view_on_block_explorer),
                 action = ItemMenu.ACTION_VIEW_ON_EXPLORER
             )
         )
-        if(index!=0)
+        if (index != 0)
             lstItem.add(
                 ItemMenu(
                     name = getString(R.string.token_details),
@@ -117,18 +123,22 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewMod
                 fManager,
                 lstItemMenu,
                 callbackAction = {
-                    when(it){
-                        ItemMenu.ACTION_VIEW_ON_EXPLORER ->{
+                    when (it) {
+                        ItemMenu.ACTION_VIEW_ON_EXPLORER -> {
                             val url = StringBuilder(viewModel.getScanUrlNetworkDefault())
-                            if(index!=0)
+                            if (index != 0)
                                 url.append("/token/").append(viewModel.lstToken[index].address)
                             navigate(
-                                DetailTokenFragmentDirections.actionDetailTokenFragmentToWebViewFragment(url.toString())
+                                DetailTokenFragmentDirections.actionDetailTokenFragmentToWebViewFragment(
+                                    url.toString()
+                                )
                             )
                         }
                         else -> {
                             navigate(
-                                DetailTokenFragmentDirections.actionDetailTokenFragmentToSmartContractDetailFragment(index)
+                                DetailTokenFragmentDirections.actionDetailTokenFragmentToSmartContractDetailFragment(
+                                    index
+                                )
                             )
                         }
                     }
@@ -218,6 +228,52 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewMod
                 }
             }
         }
+
+        viewModel.listenLiveData.observe(viewLifecycleOwner) {
+            it.getContentIfNotHandled()?.let { data ->
+                when (data.responseType) {
+                    Status.ERROR -> {
+                        data.error?.message?.let {
+//                            showToast("Error: $it")
+                        }
+                    }
+
+                    Status.LOADING -> {
+
+                    }
+
+                    Status.SUCCESSFUL -> {
+                        data.data?.let {
+                            Timber.d("FROM: ${it.from}")
+                            Timber.d("TO: ${it.to}")
+
+                            if (addressWallet == it.from || addressWallet == it.to) {
+                                snackbar?.dismiss()
+                                Timber.d("GOOD JOB")
+                                viewModel.refresh()
+                                viewModel2.loadTransaction(addressWallet)
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+    }
+
+    private fun showSnackbar(duration:Int) {
+        if(snackbar==null){
+            snackbar = Snackbar.make(binding.root, "", duration)
+
+            val customSnackView1: View = CustomSnackbarViewBinding.inflate(layoutInflater, binding.root, false).root
+
+            val snackbarLayout = snackbar?.view as Snackbar.SnackbarLayout
+
+            snackbarLayout.setPadding(16.dpToPx, 16.dpToPx, 16.dpToPx, 16.dpToPx)
+
+            snackbarLayout.addView(customSnackView1, 0)
+        }
+        snackbar?.show()
     }
 
     private fun initBalanceUiFormat(item: ItemToken) {
@@ -232,12 +288,25 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewMod
     override fun initConfig() {
         if (!firstCallApi) {
             firstCallApi = true
+            if(args.awaitTransaction){
+                handler= Handler()
+                handler?.postDelayed(object : Runnable {
+                    override fun run() {
+                        viewModel.refresh()
+                        viewModel2.loadTransaction(addressWallet)
+                        handler?.postDelayed(this, delay)
+                    }
+                }, delay)
+            }
             viewModel.refresh()
             viewModel2.loadTransaction(addressWallet)
         }
     }
 
     override fun onDestroyView() {
+        handler?.removeCallbacksAndMessages(null)
+        handler=null
+        snackbar=null
         binding.rvHistoryTransaction.adapter = null
         super.onDestroyView()
     }

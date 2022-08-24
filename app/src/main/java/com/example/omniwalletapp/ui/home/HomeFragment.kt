@@ -14,7 +14,6 @@ import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentHomeBinding
-import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
@@ -29,16 +28,11 @@ import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.web3j.crypto.WalletUtils
 import timber.log.Timber
-import java.io.File
 import java.math.BigDecimal
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
-
-    @Inject
-    lateinit var preferencesRepository: PreferencesRepository
 
     override val viewModel: HomeViewModel by activityViewModels()
 

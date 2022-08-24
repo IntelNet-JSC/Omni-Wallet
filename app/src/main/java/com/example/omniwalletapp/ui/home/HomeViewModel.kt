@@ -16,6 +16,7 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.functions.BiFunction
 import io.reactivex.schedulers.Schedulers
 import org.web3j.crypto.Credentials
+import org.web3j.protocol.core.methods.response.Transaction
 import timber.log.Timber
 import java.math.BigDecimal
 import java.math.BigInteger
@@ -26,6 +27,7 @@ typealias EventAddress = Event<Data<String>>
 typealias EventToken = Event<Data<MutableMap<String, String>>>
 typealias EventEstimate = Event<Data<BigDecimal>>
 typealias EventTransfer = Event<Data<String>>
+typealias EventTransaction = Event<Data<Transaction>>
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -84,6 +86,10 @@ class HomeViewModel @Inject constructor(
     private val _transferLiveData: MutableLiveData<EventTransfer> = MutableLiveData()
     val transferLiveData: LiveData<EventTransfer> = _transferLiveData
 
+    // loading liveData
+    private val _listenLiveData = MutableLiveData<EventTransaction>()
+    val listenLiveData: LiveData<EventTransaction> = _listenLiveData
+
     val lstItemNetwork: MutableList<ItemNetwork> by lazy {
         getNetWorkItemList().toMutableList()
     }
@@ -125,7 +131,9 @@ class HomeViewModel @Inject constructor(
                 { response ->
                     Timber.d("On Next Called: ${response.address}")
                     credentials = response
+
                     loadListToken()
+
                     _addressLiveData.value =
                         Event(
                             Data(
@@ -418,8 +426,8 @@ class HomeViewModel @Inject constructor(
         addDisposable(disposable)
     }
 
-    private fun listenerTransfer() {
-        networkRepository.transactionFlowable()
+    fun listenerTransfer() {
+        val disposable = networkRepository.transactionFlowable()
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
@@ -430,8 +438,7 @@ class HomeViewModel @Inject constructor(
             }
             .subscribe(
                 { response ->
-                    Timber.d("On Next Called: $response")
-
+//                    Timber.d("On Next Called: $response")
 
                     _listenLiveData.value =
                         Event(
@@ -449,6 +456,7 @@ class HomeViewModel @Inject constructor(
                     Timber.d("On Complete Called: listenerTransfer")
                 }
             )
+        addDisposable(disposable)
     }
 
     fun addContractAddressToPref(address: String) {

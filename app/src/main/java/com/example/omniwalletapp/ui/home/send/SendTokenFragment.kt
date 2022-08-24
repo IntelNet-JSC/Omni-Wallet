@@ -164,7 +164,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         val balanceFormat = StringBuilder().append(viewModel.balanceETH)
             .append(" ${viewModel.getSymbolNetworkDefault()}").toString()
         binding.txtBalance.text = getString(R.string.content_balance_from_send, balanceFormat)
-        Identicon(binding.imgAvatarFrom, viewModel.credentials?.address)
+        Identicon(binding.imgAvatarFrom, addressWallet)
     }
 
     private fun initUiToAddress(address: String?) {

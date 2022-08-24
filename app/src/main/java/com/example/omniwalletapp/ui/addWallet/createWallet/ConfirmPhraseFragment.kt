@@ -1,7 +1,9 @@
 package com.example.omniwalletapp.ui.addWallet.createWallet
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
@@ -18,6 +20,7 @@ import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.RandomPhraseA
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
+import java.io.File
 import java.util.regex.Pattern
 
 @AndroidEntryPoint
@@ -42,6 +45,20 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, EmptyVi
 
     private val lstSeedCodeShuffle: List<String> by lazy {
         lstSeedCode.shuffled()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if((requireActivity() as AddWalletActivity).deleteDir(File(requireContext().filesDir, "")))
+                {
+                    backToPrevious()
+                }
+            }
+        })
     }
 
     override fun getFragmentBinding(

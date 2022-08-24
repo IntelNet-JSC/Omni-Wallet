@@ -11,13 +11,13 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
     private var prefs =
         context.getSharedPreferences(Constants.LOCAL_SHARED_PREF, Context.MODE_PRIVATE)
 
-/*    fun isRememberLogin(): Boolean {
+    fun isRememberLogin(): Boolean {
         return prefs.getBoolean("is_remember_login", false)
     }
 
     fun setRememberLogin(remember: Boolean) {
         prefs.edit().putBoolean("is_remember_login", remember).apply()
-    }*/
+    }
 
     fun getAddress(): String {
         return prefs.getString("address_wallet", "") ?: ""
@@ -74,6 +74,7 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
 
 
     fun clearDataAddressWallet() {
+        prefs.edit().remove("is_remember_login").apply()
         prefs.edit().remove("address_wallet").apply()
     }
 

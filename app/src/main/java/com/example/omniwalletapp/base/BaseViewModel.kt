@@ -2,14 +2,11 @@ package com.example.omniwalletapp.base
 
 import androidx.lifecycle.*
 import com.example.omniwalletapp.util.Data
-import com.example.omniwalletapp.util.Event
 import dagger.hilt.android.lifecycle.HiltViewModel
 import io.reactivex.disposables.CompositeDisposable
 import io.reactivex.disposables.Disposable
-import org.web3j.protocol.core.methods.response.Transaction
+import timber.log.Timber
 import javax.inject.Inject
-
-typealias EventTransaction = Event<Data<Transaction>>
 
 @HiltViewModel
 open class BaseViewModel @Inject constructor() : ViewModel() {
@@ -17,10 +14,6 @@ open class BaseViewModel @Inject constructor() : ViewModel() {
     // loading liveData
     protected val _fetchLiveData = MutableLiveData<Data<Void>>()
     val fetchLiveData: LiveData<Data<Void>> = _fetchLiveData
-
-    // loading liveData
-    protected val _listenLiveData = MutableLiveData<EventTransaction>()
-    val listenLiveData: LiveData<EventTransaction> = _listenLiveData
 
     private val compositeDisposable: CompositeDisposable = CompositeDisposable()
 

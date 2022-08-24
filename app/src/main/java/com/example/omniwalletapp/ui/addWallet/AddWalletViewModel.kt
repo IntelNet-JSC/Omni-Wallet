@@ -45,8 +45,9 @@ constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called")
-                    if (remember)
-                        preferencesRepository.setAddress(response.first)
+                    preferencesRepository.setRememberLogin(remember)
+                    preferencesRepository.setAddress(response.first)
+
                     _phraseLiveData.value =
                         Event(
                             Data(
@@ -78,8 +79,9 @@ constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called: $response")
-                    if (remember)
-                        preferencesRepository.setAddress(response)
+                    preferencesRepository.setRememberLogin(remember)
+                    preferencesRepository.setAddress(response)
+
                     _addressLiveData.value =
                         Event(
                             Data(
@@ -111,8 +113,9 @@ constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called")
-                    if (remember)
-                        preferencesRepository.setAddress(response)
+                    preferencesRepository.setRememberLogin(remember)
+                    preferencesRepository.setAddress(response)
+
                     _addressLiveData.value =
                         Event(
                             Data(

@@ -17,7 +17,6 @@ import org.web3j.crypto.TransactionEncoder
 import org.web3j.protocol.Web3j
 import org.web3j.protocol.core.DefaultBlockParameterName
 import org.web3j.protocol.core.methods.request.Transaction
-import org.web3j.protocol.core.methods.response.EthBlock
 import org.web3j.protocol.core.methods.response.EthSendTransaction
 import org.web3j.protocol.http.HttpService
 import org.web3j.tx.RawTransactionManager
@@ -201,8 +200,6 @@ class NetworkRepository @Inject constructor(
     }
 
     fun transactionFlowable() = web3j.transactionFlowable()
-    fun ethPendingTransactionHashFlowable() = web3j.ethPendingTransactionHashFlowable()
-    fun pendingTransactionFlowable() = web3j.pendingTransactionFlowable()
 
     fun sendEther(
         credentials: Credentials,

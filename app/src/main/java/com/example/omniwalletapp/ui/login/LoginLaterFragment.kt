@@ -6,20 +6,15 @@ import androidx.fragment.app.viewModels
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentLoginLaterBinding
-import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 import java.io.File
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterViewModel>() {
 
     override val viewModel: LoginLaterViewModel by viewModels()
-
-    @Inject
-    lateinit var preferencesRepository: PreferencesRepository
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -28,7 +23,7 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
 
     override fun onStart() {
         super.onStart()
-        if (preferencesRepository.getAddress().isNotEmpty())
+        if (preferencesRepository.isRememberLogin())
             navigate(
                 LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
             )
@@ -91,8 +86,9 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                     Status.SUCCESSFUL -> {
                         hideDialog()
                         data.data?.let { address ->
-                            if (binding.swDefault.isChecked)
-                                preferencesRepository.setAddress(address)
+                            preferencesRepository.setRememberLogin(binding.swDefault.isChecked)
+                            preferencesRepository.setAddress(address)
+
                             navigate(
                                 LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment(address)
                             )

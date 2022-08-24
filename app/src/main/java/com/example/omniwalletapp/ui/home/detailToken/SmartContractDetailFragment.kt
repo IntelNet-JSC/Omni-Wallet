@@ -10,20 +10,15 @@ import com.example.mylibrary.utils.identicon.Identicon
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentInforSmartContractBinding
-import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.util.formatAddressWallet
 import dagger.hilt.android.AndroidEntryPoint
-import javax.inject.Inject
 
 
 @AndroidEntryPoint
 class SmartContractDetailFragment :
     BaseFragment<FragmentInforSmartContractBinding, HomeViewModel>() {
-
-    @Inject
-    lateinit var preferencesRepository: PreferencesRepository
 
     override val viewModel: HomeViewModel by activityViewModels()
 

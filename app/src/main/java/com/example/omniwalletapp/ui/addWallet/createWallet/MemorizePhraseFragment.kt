@@ -1,7 +1,9 @@
 package com.example.omniwalletapp.ui.addWallet.createWallet
 
+import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.activity.OnBackPressedCallback
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.GridLayoutManager
@@ -9,12 +11,12 @@ import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.base.EmptyViewModel
 import com.example.omniwalletapp.databinding.FragmentMemorizePhraseBinding
+import com.example.omniwalletapp.ui.addWallet.AddWalletActivity
 import com.example.omniwalletapp.ui.addWallet.createWallet.adapter.MemorizePhraseAdapter
 import com.example.omniwalletapp.util.dpToPx
 import com.example.omniwalletapp.view.GridSpacingItemDecoration
 import dagger.hilt.android.AndroidEntryPoint
-import org.web3j.crypto.MnemonicUtils
-import java.security.SecureRandom
+import java.io.File
 import java.util.regex.Pattern
 
 
@@ -30,6 +32,20 @@ class MemorizePhraseFragment :
 
     private val lstWord: List<String> by lazy {
         Pattern.compile(" ").split(args.wordPhrase).toList()
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+
+        requireActivity().onBackPressedDispatcher.addCallback(this, object :
+            OnBackPressedCallback(true) {
+            override fun handleOnBackPressed() {
+                if((requireActivity() as AddWalletActivity).deleteDir(File(requireContext().filesDir, "")))
+                {
+                    backToPrevious()
+                }
+            }
+        })
     }
 
     override fun getFragmentBinding(

@@ -22,19 +22,22 @@ import android.widget.Toast
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.lifecycle.ViewModel
 import androidx.navigation.NavDirections
 import androidx.navigation.NavOptions
 import androidx.navigation.fragment.findNavController
 import androidx.viewbinding.ViewBinding
-import com.example.omniwalletapp.util.Status
+import com.example.omniwalletapp.repository.PreferencesRepository
 import com.example.omniwalletapp.view.OmniLoadingDialog
 import dagger.hilt.android.internal.Contexts.getApplication
 import org.web3j.protocol.core.methods.response.Transaction
 import timber.log.Timber
+import javax.inject.Inject
+import javax.inject.Singleton
 
 
 abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
+
+    var delay:Long = 10000
 
     var dialog: DialogFragment? = null
 
@@ -51,9 +54,15 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         requireActivity().supportFragmentManager
     }
 
+    @Singleton
+    @Inject
+    lateinit var preferencesRepository: PreferencesRepository
+
     private val nameFragmentCurrent: String by lazy {
         this.findNavController().currentDestination?.label.toString()
     }
+
+    var addressWallet: String = ""
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -72,28 +81,6 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         initEvent()
         initConfig()
 
-        viewModel.listenLiveData.observe(viewLifecycleOwner) {
-            it.getContentIfNotHandled()?.let { data ->
-                when (data.responseType) {
-                    Status.ERROR -> {
-                        data.error?.message?.let {
-                            showToast("Error: $it")
-                        }
-                    }
-
-                    Status.LOADING -> {
-                        showToast("LOADING TRANSACTION...")
-                    }
-
-                    Status.SUCCESSFUL -> {
-                        data.data?.let {
-                            Timber.d("Transaction: $it")
-                            showToast("Transaction: $it")
-                        }
-                    }
-                }
-            }
-        }
     }
 
     protected abstract fun initControl()
@@ -120,7 +107,9 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        Timber.d("onCreate: Fragment=>$nameFragmentCurrent")
+        addressWallet = preferencesRepository.getAddress()
+        Timber.d("onCreate: Fragment=>$nameFragmentCurrent, address: $addressWallet")
+
     }
 
     override fun onDestroy() {
@@ -156,8 +145,8 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         Toast.makeText(requireContext(), message, Toast.LENGTH_SHORT).show()
     }
 
-    fun backToPrevious(desId:Int=-1, inclusive:Boolean=false) {
-        if(desId!=-1)
+    fun backToPrevious(desId: Int = -1, inclusive: Boolean = false) {
+        if (desId != -1)
             this.findNavController().popBackStack(desId, inclusive)
         else
             this.findNavController().popBackStack()
