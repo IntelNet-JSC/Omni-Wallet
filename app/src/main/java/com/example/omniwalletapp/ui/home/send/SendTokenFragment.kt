@@ -20,7 +20,6 @@ import com.example.omniwalletapp.databinding.FragmentSendTokenBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.send.adapter.AddressRecentlyAdapter
-import com.example.omniwalletapp.ui.home.send.adapter.ItemAddress
 import com.example.omniwalletapp.util.formatAddressWallet
 import com.example.omniwalletapp.util.getStringAddressFromScan
 import com.google.android.material.textfield.TextInputLayout
@@ -46,7 +45,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
     private val adapter: AddressRecentlyAdapter by lazy {
         AddressRecentlyAdapter(
             callBackItemClick = {
-                setTextInputFromAddress(it.name)
+                setTextInputFromAddress(it)
             }
         )
     }
@@ -85,6 +84,9 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         }
 
         binding.btnContinue.setOnClickListener {
+            if(toAddress==null)
+                return@setOnClickListener
+            setItemRecentAddress(toAddress!!)
             navigate(
                 SendTokenFragmentDirections.actionSendTokenFragmentToAmountFragment(
                     toAddress!!,
@@ -140,7 +142,7 @@ class SendTokenFragment : BaseFragment<FragmentSendTokenBinding, HomeViewModel>(
         binding.rvRecently.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = this@SendTokenFragment.adapter.also {
-                it.addAll(ItemAddress.generateListAddressRecently())
+                it.addAll(getListRecentlyAddress())
             }
             addItemDecoration(
                 DividerItemDecoration(requireContext(), RecyclerView.VERTICAL)

@@ -70,7 +70,7 @@ class NetworkRepository @Inject constructor(
 
     fun getWalletBalance(address: String): Observable<BigInteger> {
         return Observable.fromCallable {
-            web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).send().balance
+            web3j.ethGetBalance(address, DefaultBlockParameterName.LATEST).sendAsync().get().balance
         }
     }
 
@@ -87,10 +87,10 @@ class NetworkRepository @Inject constructor(
             transactionReceiptProcessor
         )
 
-        if (lstAddress == null)
-            Observable.just(mutableListOf<Map<String, String>>())
+        if (lstAddress.isEmpty())
+           return Observable.just(mutableListOf<Map<String, String>>())
         val lstObservable = mutableListOf<Observable<Map<String, String>>>()
-        lstAddress?.forEach {
+        lstAddress.forEach {
             val contract = Erc20TokenWrapper.load(
                 it, web3j,
                 transactionManager, BigInteger.ZERO, BigInteger.ZERO

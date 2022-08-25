@@ -39,24 +39,6 @@ class HomeViewModel @Inject constructor(
 
     init {
         Timber.d("INIT HOME VIEWMODEL")
-//        listenerTransfer()
-
-        preferencesRepository.getListTokenAddress(Constants.BSC_SYMBOL) ?: kotlin.run {
-            preferencesRepository.setListTokenAddress(
-                listOf(
-                    "0xaE18F6c514A500a30EaFf19F1d1B7B320986eB72"
-                ),
-                Constants.BSC_SYMBOL
-            )
-        }
-        preferencesRepository.getListTokenAddress(Constants.ETH_SYMBOL) ?: kotlin.run {
-            preferencesRepository.setListTokenAddress(
-                listOf(
-                    "0xaE18F6c514A500a30EaFf19F1d1B7B320986eB72"
-                ),
-                Constants.ETH_SYMBOL
-            )
-        }
     }
 
     lateinit var gasPrice: BigInteger

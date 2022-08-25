@@ -47,7 +47,7 @@
 
             <com.google.android.material.textfield.TextInputEditText
                 android:id="@+id/edtPass"
-                android:text="12345678"
+                tools:text="12345678"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="textPassword"
@@ -62,7 +62,7 @@
 
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtRemember"
-                android:layout_width="wrap_content"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
                 android:text="@string/remember"

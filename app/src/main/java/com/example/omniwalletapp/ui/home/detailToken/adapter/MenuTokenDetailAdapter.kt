@@ -2,12 +2,14 @@ package com.example.omniwalletapp.ui.home.detailToken.adapter
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
 import androidx.recyclerview.widget.RecyclerView
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.databinding.ItemMenuTokenDetailBinding
 
 class MenuTokenDetailAdapter(
     private val lstItem: MutableList<ItemMenu> = mutableListOf(),
-    private val callBackAction: (Int) -> Unit,
+    private val callBackAction: (Int) -> Unit
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -36,6 +38,11 @@ class MenuTokenDetailAdapter(
 
         fun bind(item: ItemMenu) {
             binding.txtNameAction.text = item.name
+            val color = ContextCompat.getColorStateList(
+                binding.root.context,
+                if (item.action != ItemMenu.ACTION_HIDE_TOKEN) R.color.blue500 else R.color.red1
+            )
+            binding.txtNameAction.setTextColor(color)
             itemView.setOnClickListener {
                 callBackAction.invoke(item.action)
             }
@@ -45,10 +52,11 @@ class MenuTokenDetailAdapter(
 
 data class ItemMenu(
     var name: String,
-    var action: Int,
+    var action: Int
 ) {
     companion object {
         const val ACTION_VIEW_ON_EXPLORER = 0
         const val ACTION_TOKEN_DETAIL = 1
+        const val ACTION_HIDE_TOKEN = 2
     }
 }

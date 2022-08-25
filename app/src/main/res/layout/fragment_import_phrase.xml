@@ -34,7 +34,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtPhrase"
-            android:text="@string/word_phrase_demo2"
+            tools:text="@string/word_phrase_demo2"
             android:inputType="textMultiLine"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -54,7 +54,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtNewPass"
-            android:text="12345678"
+            tools:text="12345678"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
@@ -74,7 +74,7 @@
 
         <com.google.android.material.textfield.TextInputEditText
             android:id="@+id/edtConfirmPass"
-            android:text="12345678"
+            tools:text="12345678"
             android:inputType="textPassword"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"

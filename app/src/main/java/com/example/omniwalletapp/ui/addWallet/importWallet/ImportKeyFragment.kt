@@ -1,9 +1,10 @@
 package com.example.omniwalletapp.ui.addWallet.importWallet
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentImportKeyBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
@@ -15,6 +16,7 @@ import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.web3j.crypto.WalletUtils
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ImportKeyFragment : BaseFragment<FragmentImportKeyBinding, AddWalletViewModel>() {
@@ -27,7 +29,7 @@ class ImportKeyFragment : BaseFragment<FragmentImportKeyBinding, AddWalletViewMo
         if (result.contents == null) {
             showToast("Cancelled")
         } else {
-            Log.d("XXX", "content: ${result.contents}")
+            Timber.d("content: ${result.contents}")
             if (WalletUtils.isValidPrivateKey(result.contents))
                 binding.edtKeyPrivate.setText(result.contents)
             else
@@ -62,7 +64,11 @@ class ImportKeyFragment : BaseFragment<FragmentImportKeyBinding, AddWalletViewMo
     }
 
     override fun initUI() {
-
+        if (BuildConfig.DEBUG) {
+            binding.edtNewPass.setText(getString(R.string.password_demo))
+            binding.edtConfirmPass.setText(getString(R.string.password_demo))
+            binding.edtKeyPrivate.setText(getString(R.string.private_key_demo))
+        }
     }
 
     override fun initEvent() {
@@ -75,8 +81,7 @@ class ImportKeyFragment : BaseFragment<FragmentImportKeyBinding, AddWalletViewMo
                     Status.SUCCESSFUL -> {
                         hideDialog()
                         data.data?.let { address ->
-                            showToast(address)
-//                            binding.txtTAndC.text = address
+                            Timber.d("Import private key, address: $address")
                             (requireActivity() as AddWalletActivity).navigateHomeActivity()
                         }
                     }

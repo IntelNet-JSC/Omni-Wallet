@@ -17,6 +17,8 @@ import com.example.omniwalletapp.databinding.FragmentHomeBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
 import com.example.omniwalletapp.ui.home.adapter.ItemTokenAdapter
+import com.example.omniwalletapp.ui.home.detailToken.ChooseMenuDialogFragment
+import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemMenu
 import com.example.omniwalletapp.ui.home.network.NetDialogFragment
 import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
@@ -41,9 +43,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     private var address: String? = null
 
     private val callBackToken: (Int, ItemToken) -> Unit = { i, data ->
+        Timber.d("Item Click $i")
         navigate(
             HomeFragmentDirections.actionHomeFragmentToDetailTokenFragment(i)
         )
+    }
+    private val callBackItemLongClick: (Int, ItemToken) -> Unit = { i, data ->
+        Timber.d("Item Long Click $i")
+        if (i != 0) {
+            ChooseMenuDialogFragment.newInstance(
+                fManager,
+                listOf(ItemMenu(getString(R.string.hide_token), ItemMenu.ACTION_HIDE_TOKEN)),
+                callbackAction = {
+                    when (it) {
+                        ItemMenu.ACTION_HIDE_TOKEN -> {
+                            preferencesRepository.hideTokenAddress(
+                                i-1,
+                                viewModel.getSymbolNetworkDefault()
+                            )
+                            viewModel.refresh()
+                        }
+                        else -> {}
+                    }
+                }
+            )
+        }
     }
     private val callBackImportToken: () -> Unit = {
         navigate(
@@ -55,7 +79,8 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         ItemTokenAdapter(
             mutableListOf(),
             callBackToken,
-            callBackImportToken
+            callBackImportToken,
+            callBackItemLongClick
         )
     }
 
@@ -127,7 +152,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 fManager,
                 viewModel.lstItemNetwork,
                 chooseNetworkListener = {
-                    if(it==-1)
+                    if (it == -1)
                         return@newInstance
                     viewModel.setDefaultNetworkInfo(it)
                     setUiDefaultNetWork()

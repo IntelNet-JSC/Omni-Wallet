@@ -13,7 +13,8 @@ import kotlinx.parcelize.Parcelize
 class ItemTokenAdapter(
     private val lstToken: MutableList<ItemToken> = mutableListOf(),
     private val callBackTokenClick: (Int, ItemToken) -> Unit,
-    private val callBackImportToken: (() -> Unit)? = null
+    private val callBackImportToken: (() -> Unit)? = null,
+    private val callBackTokenLongClick: ((Int, ItemToken) -> Unit)? =null
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
@@ -82,6 +83,11 @@ class ItemTokenAdapter(
 
             itemView.setOnClickListener {
                 callBackTokenClick.invoke(adapterPosition, item)
+            }
+
+            itemView.setOnLongClickListener{
+                callBackTokenLongClick?.invoke(adapterPosition, item)
+                true
             }
         }
     }

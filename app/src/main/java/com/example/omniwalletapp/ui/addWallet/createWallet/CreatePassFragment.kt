@@ -3,6 +3,8 @@ package com.example.omniwalletapp.ui.addWallet.createWallet
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentCreatePassBinding
 import com.example.omniwalletapp.ui.addWallet.AddWalletViewModel
@@ -30,7 +32,10 @@ class CreatePassFragment : BaseFragment<FragmentCreatePassBinding, AddWalletView
     }
 
     override fun initUI() {
-
+        if(BuildConfig.DEBUG){
+            binding.edtNewPass.setText(getString(R.string.password_demo))
+            binding.edtConfirmPass.setText(getString(R.string.password_demo))
+        }
     }
 
     override fun initEvent() {

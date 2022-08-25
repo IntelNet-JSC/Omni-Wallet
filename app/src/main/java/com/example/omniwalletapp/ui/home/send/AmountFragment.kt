@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.navArgs
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
@@ -18,12 +17,12 @@ import java.math.BigDecimal
 @AndroidEntryPoint
 class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
 
-//    override val viewModel: SendTokenViewModel by viewModels()
+    //    override val viewModel: SendTokenViewModel by viewModels()
     override val viewModel: HomeViewModel by activityViewModels()
 
-    private val args:AmountFragmentArgs by navArgs()
+    private val args: AmountFragmentArgs by navArgs()
 
-    private var indexToken:Int = 0
+    private var indexToken: Int = 0
 
     override fun getFragmentBinding(
         inflater: LayoutInflater,
@@ -50,7 +49,7 @@ class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
                 fManager,
                 viewModel.lstToken
             ) { index, item ->
-                if(index==-1)
+                if (index == -1)
                     return@newInstance
                 indexToken = index
                 binding.edtAmountToken.setText("")
@@ -63,13 +62,15 @@ class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
         }
 
         binding.btnContinue.setOnClickListener {
-            val amount = binding.edtAmountToken.text.toString()
-            if(amount.isNotEmpty())
+            val amountInput = binding.edtAmountToken.text.toString()
+            if (validateForm(amountInput, getDefaultItemToken().amount))
                 navigate(
-                    AmountFragmentDirections.actionAmountFragmentToConfirmFragment(args.toAddress, indexToken, BigDecimal(amount).toPlainString())
+                    AmountFragmentDirections.actionAmountFragmentToConfirmFragment(
+                        args.toAddress,
+                        indexToken,
+                        BigDecimal(amountInput).toPlainString()
+                    )
                 )
-            else
-                showToast("Please Input Amount!")
         }
     }
 
@@ -88,7 +89,7 @@ class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
         }
     }
 
-    private fun initBalance(item:ItemToken){
+    private fun initBalance(item: ItemToken) {
         binding.txtSymbolToken.text = item.symbol
         val balanceFormat = StringBuilder().append(item.amount)
             .append(" ${item.symbol}").toString()
@@ -101,6 +102,19 @@ class AmountFragment : BaseFragment<FragmentAmountBinding, HomeViewModel>() {
 
     override fun initConfig() {
 
+    }
+
+    private fun validateForm(amountInput: String, balance: String): Boolean {
+        if (amountInput.isBlank()) {
+            showToast(getString(R.string.please_input_amount))
+            return false
+        }
+        if (BigDecimal(amountInput) > BigDecimal(balance)) {
+            showToast(getString(R.string.balance_not_enough))
+            return false
+        }
+
+        return true
     }
 
 

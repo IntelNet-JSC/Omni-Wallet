@@ -8,12 +8,12 @@ import com.example.omniwalletapp.databinding.ItemAddressRecentlyBinding
 import com.example.omniwalletapp.util.formatAddressWallet
 
 class AddressRecentlyAdapter(
-    private val lstAddress: MutableList<ItemAddress> = mutableListOf(),
-    private val callBackItemClick: (ItemAddress) -> Unit,
+    private val lstAddress: MutableList<String> = mutableListOf(),
+    private val callBackItemClick: (String) -> Unit,
 ) :
     RecyclerView.Adapter<RecyclerView.ViewHolder>() {
 
-    fun addAll(listItem: List<ItemAddress>) {
+    fun addAll(listItem: List<String>) {
         lstAddress.clear()
         lstAddress.addAll(listItem)
         notifyDataSetChanged()
@@ -36,10 +36,10 @@ class AddressRecentlyAdapter(
     inner class ItemAddressViewHolder(val binding: ItemAddressRecentlyBinding) :
         RecyclerView.ViewHolder(binding.root) {
 
-        fun bind(item: ItemAddress) {
+        fun bind(item: String) {
             binding.apply {
-                txtAddress.text = item.name.formatAddressWallet()
-                Identicon(imgAddress, item.name)
+                txtAddress.text = item.formatAddressWallet()
+                Identicon(imgAddress, item)
             }
             itemView.setOnClickListener {
                 callBackItemClick.invoke(item)
@@ -47,17 +47,4 @@ class AddressRecentlyAdapter(
         }
     }
 
-}
-
-data class ItemAddress(
-    val id: Int,
-    var name: String
-){
-    companion object{
-        fun generateListAddressRecently() = listOf(
-            ItemAddress(0, "0x60Aef71878c7f0973DEb83C1b19Ca033DD271483"),
-            ItemAddress(1, "0x7106c6e10f1d165320172d3089cfc6cbb27b03c4"),
-            ItemAddress(2, "0x39fB0Ea8aAdc23683f2d237801e912f55536F5cF")
-        )
-    }
 }

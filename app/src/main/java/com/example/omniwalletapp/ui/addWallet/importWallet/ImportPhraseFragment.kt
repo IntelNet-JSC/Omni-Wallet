@@ -1,9 +1,10 @@
 package com.example.omniwalletapp.ui.addWallet.importWallet
 
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.omniwalletapp.BuildConfig
+import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentImportPhraseBinding
 import com.example.omniwalletapp.ui.AnyOrientationCaptureActivity
@@ -15,7 +16,7 @@ import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
 import dagger.hilt.android.AndroidEntryPoint
 import org.web3j.crypto.MnemonicUtils
-import org.web3j.crypto.WalletUtils
+import timber.log.Timber
 
 @AndroidEntryPoint
 class ImportPhraseFragment : BaseFragment<FragmentImportPhraseBinding, AddWalletViewModel>() {
@@ -28,7 +29,7 @@ class ImportPhraseFragment : BaseFragment<FragmentImportPhraseBinding, AddWallet
         if (result.contents == null) {
             showToast("Cancelled")
         } else {
-            Log.d("XXX", "content: ${result.contents}")
+            Timber.d("content: ${result.contents}")
             if (MnemonicUtils.validateMnemonic(result.contents))
                 binding.edtPhrase.setText(result.contents)
             else
@@ -53,22 +54,22 @@ class ImportPhraseFragment : BaseFragment<FragmentImportPhraseBinding, AddWallet
         }
 
         binding.btnAdd.setOnClickListener {
-            /*val checkText = binding.txtTAndC.text.toString()
-            if(checkText.contains("ue")){
-                (requireActivity() as AddWalletActivity).navigateHomeActivity()
-                return@setOnClickListener
-            }*/
             val pass = binding.edtNewPass.text.toString().trim()
             val passConfirm = binding.edtConfirmPass.text.toString().trim()
             val wordPhrase = binding.edtPhrase.text.toString().trim()
             val remember = binding.swDefault.isChecked
+
             if (validateForm(wordPhrase, pass, passConfirm))
                 viewModel.importWordPhrase(wordPhrase, passConfirm, remember)
         }
     }
 
     override fun initUI() {
-
+        if (BuildConfig.DEBUG) {
+            binding.edtNewPass.setText(getString(R.string.password_demo))
+            binding.edtConfirmPass.setText(getString(R.string.password_demo))
+            binding.edtPhrase.setText(getString(R.string.word_phrase_demo))
+        }
     }
 
     override fun initEvent() {
@@ -81,8 +82,7 @@ class ImportPhraseFragment : BaseFragment<FragmentImportPhraseBinding, AddWallet
                     Status.SUCCESSFUL -> {
                         hideDialog()
                         data.data?.let { address ->
-                            showToast(address)
-//                            binding.txtTAndC.text = address
+                            Timber.d("Import word phrase, address: $address")
                             (requireActivity() as AddWalletActivity).navigateHomeActivity()
                         }
                     }
@@ -98,16 +98,16 @@ class ImportPhraseFragment : BaseFragment<FragmentImportPhraseBinding, AddWallet
 
     }
 
-    private fun validateForm(wordPhrase:String, pass: String, passConfirm: String): Boolean {
-        if(!MnemonicUtils.validateMnemonic(wordPhrase)){
+    private fun validateForm(wordPhrase: String, pass: String, passConfirm: String): Boolean {
+        if (!MnemonicUtils.validateMnemonic(wordPhrase)) {
             showToast("Vui lòng nhập đúng Cụm từ khôi phục bí mật!")
             return false
         }
-        if(pass.isBlank() || passConfirm.isBlank()){
+        if (pass.isBlank() || passConfirm.isBlank()) {
             showToast("Vui lòng nhập mật khẩu!")
             return false
         }
-        if(pass.length<8){
+        if (pass.length < 8) {
             showToast("Mật khẩu phải ít nhất 8 ký tự!")
             return false
         }

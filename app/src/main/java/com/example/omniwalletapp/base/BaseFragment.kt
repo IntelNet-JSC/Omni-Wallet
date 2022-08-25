@@ -112,6 +112,10 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
 
     }
 
+    fun getListRecentlyAddress() = preferencesRepository.getRecentListAddress()
+
+    fun setItemRecentAddress(item:String) = preferencesRepository.setRecentAddress(item)
+
     override fun onDestroy() {
         Timber.d("onDestroy: Fragment=>$nameFragmentCurrent")
         super.onDestroy()

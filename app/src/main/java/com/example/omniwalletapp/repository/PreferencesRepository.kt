@@ -35,15 +35,15 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
         prefs.edit().putString("default_network_name", netName).apply()
     }
 
-    fun getListTokenAddress(type: String) : List<String>?{
+    fun getListTokenAddress(type: String) : List<String>{
         val json = prefs.getString(
             if (type == Constants.BSC_SYMBOL) "list_token_address_bnb" else "list_token_address_eth", null
-        ) ?: return null
+        ) ?: return listOf()
 //        val type1 = object : TypeToken<List<String?>?>() {}.type
         return fromJson(gson, json)
     }
 
-    fun setListTokenAddress(lstAddress: List<String>, type: String) {
+    private fun setListTokenAddress(lstAddress: List<String>, type: String) {
         if (type == Constants.BSC_SYMBOL)
             prefs.edit().putString("list_token_address_bnb", gson.toJson(lstAddress)).apply()
         else
@@ -51,21 +51,42 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
     }
 
     fun hideTokenAddress(index:Int, type:String){
-        val lstToken = getListTokenAddress(type)?.toMutableList()?: return
+        val lstToken = getListTokenAddress(type).toMutableList()
         lstToken.removeAt(index)
         setListTokenAddress(lstToken, type)
     }
 
     fun checkExistTokenAddress(address: String, type: String):Boolean{
-        val lstTokenAddress = getListTokenAddress(type)?.toMutableList()?: mutableListOf()
+        val lstTokenAddress = getListTokenAddress(type)
         val index = lstTokenAddress.indexOfFirst { it.equals(address, true) }
         return index!=-1
     }
 
     fun addTokenAddress(address: String, type: String){
-        val lstTokenAddress = getListTokenAddress(type)?.toMutableList()?: mutableListOf()
+        val lstTokenAddress = getListTokenAddress(type).toMutableList()
         lstTokenAddress.add(address)
         setListTokenAddress(lstTokenAddress, type)
+    }
+
+    fun getRecentListAddress(): List<String> {
+        val json = prefs.getString("list_recently_address", null) ?: return listOf()
+        return fromJson(gson, json)
+    }
+
+    private fun setRecentListAddress(lstAddress: List<String>) {
+        prefs.edit().putString("list_recently_address", gson.toJson(lstAddress)).apply()
+    }
+
+    fun setRecentAddress(item: String) {
+        val list = getRecentListAddress().toMutableList()
+
+        if (list.any { it == item })
+            return
+        list.add(0, item)
+        if (list.size > 5)
+            list.removeLast()
+
+        setRecentListAddress(list)
     }
 
     fun clearData() {

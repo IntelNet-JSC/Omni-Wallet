@@ -1,6 +1,8 @@
 <resources>
     <string name="app_name">Omni Wallet</string>
 
+    <string name="password_demo">12345678</string>
+
     <string name="welcome_to_wallet_app">Chào mừng bạn đến với \nOmni Wallet</string>
     <string name="label_intro_1">Omni Wallet là một ví an toàn được hàng triệu người tin dùng, giúp tất cả mọi người tiếp cận dễ dàng với thế giới web3.</string>
     <string name="start">Bắt đầu</string>
@@ -104,7 +106,7 @@
     <string name="date">Ngày</string>
     <string name="toast_address_copied">Đã sao chép địa chỉ công khai vào bộ nhớ đệm</string>
     <string name="toast_address_smart_contract_copied">Đã sao chép địa chỉ token</string>
-    <string name="toast_word_phrase_copied">Đã sao chép địa chỉ token</string>
+    <string name="toast_word_phrase_copied">Đã sao chép Cụm từ khôi phục bí mật</string>
     <string name="content_reset_wallet">Bạn có chắc là cài lại ví! Dữ liệu sẽ bị mất 😃</string>
 
     <string name="content_balance_from_send">Số dư: %s</string>
@@ -119,4 +121,7 @@
     <string name="view_on_block_explorer">Xem trên trình khám phá khối</string>
     <string name="token_details">Chi tiết token</string>
     <string name="lock_title">Bạn thực sự muốn khóa ví này?</string>
+    <string name="hide_token">Ẩn Token</string>
+    <string name="balance_not_enough">Số dư không đủ!</string>
+    <string name="please_input_amount">Vui lòng nhập số tiền!</string>
 </resources>

@@ -3,6 +3,7 @@ package com.example.omniwalletapp.ui.login
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.viewModels
+import com.example.omniwalletapp.BuildConfig
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentLoginLaterBinding
@@ -73,7 +74,9 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
     }
 
     override fun initUI() {
-
+        if (BuildConfig.DEBUG) {
+            binding.edtPass.setText(getString(R.string.password_demo))
+        }
     }
 
     override fun initEvent() {
