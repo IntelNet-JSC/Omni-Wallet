@@ -5,26 +5,34 @@ import android.content.Context
 import android.content.res.Resources
 import android.graphics.Color
 import android.graphics.drawable.ColorDrawable
+import android.text.SpannableStringBuilder
+import android.text.Spanned
+import android.text.TextPaint
+import android.text.method.LinkMovementMethod
+import android.text.style.ClickableSpan
+import android.text.style.ForegroundColorSpan
 import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
-import android.widget.Toast
-import androidx.fragment.app.Fragment
+import android.widget.TextView
+import androidx.core.content.ContextCompat
+import androidx.core.content.res.ResourcesCompat
+import com.example.omniwalletapp.view.CustomTypefaceSpan
 
-fun View.hide(){
+fun View.hide() {
     visibility = View.GONE
 }
 
-fun View.show(){
+fun View.show() {
     visibility = View.VISIBLE
 }
 
-fun View.disable(){
+fun View.disable() {
     isEnabled = false
 }
 
-fun View.enabled(){
+fun View.enabled() {
     isEnabled = true
 }
 
@@ -47,3 +55,67 @@ val Int.dpToPx: Int
 
 val Int.pxToDp: Int
     get() = (this / Resources.getSystem().displayMetrics.density).toInt()
+
+fun TextView.setSpan(
+    context: Context,
+    content: String,
+    text: String,
+    font: Int? = null,
+    color: Int? = null,
+    isUnderline: Boolean = false,
+    clickable: (() -> Unit)? = null
+) {
+    val stringBuilder = SpannableStringBuilder(content)
+
+    val start = content.indexOf(text)
+    if (start == -1) {
+        this.text = stringBuilder
+        return
+    }
+    val end = content.indexOf(text) + text.length
+
+    clickable?.let {
+
+        val clickableSpan: ClickableSpan = object : ClickableSpan() {
+            override fun onClick(textView: View) {
+                it.invoke()
+            }
+
+            override fun updateDrawState(ds: TextPaint) {
+                super.updateDrawState(ds)
+                ds.isUnderlineText = isUnderline
+            }
+        }
+
+        stringBuilder.setSpan(
+            clickableSpan,
+            start,
+            end,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+
+        this.movementMethod = LinkMovementMethod.getInstance()
+    }
+
+    font?.let {
+        ResourcesCompat.getFont(context, font)?.let { typeface ->
+            stringBuilder.setSpan(
+                CustomTypefaceSpan("", typeface),
+                start,
+                end,
+                Spanned.SPAN_INCLUSIVE_INCLUSIVE
+            )
+        }
+    }
+
+    color?.let {
+        stringBuilder.setSpan(
+            ForegroundColorSpan(ContextCompat.getColor(context, it)),
+            start,
+            end,
+            Spanned.SPAN_INCLUSIVE_INCLUSIVE
+        )
+    }
+
+    this.text = stringBuilder
+}

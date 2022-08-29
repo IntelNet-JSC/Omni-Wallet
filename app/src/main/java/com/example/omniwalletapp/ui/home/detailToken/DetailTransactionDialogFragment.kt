@@ -5,10 +5,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.FragmentManager
 import com.example.omniwalletapp.R
 import com.example.omniwalletapp.base.BaseDialogFragment
 import com.example.omniwalletapp.databinding.DialogTransactionDetailBinding
+import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemHistoryTokenAdapter
 import com.example.omniwalletapp.ui.home.detailToken.adapter.ItemTransaction
 import com.example.omniwalletapp.util.BalanceUtil
 import com.example.omniwalletapp.util.formatAddressWallet
@@ -41,7 +43,7 @@ class DetailTransactionDialogFragment(
 
         binding.txtTotalAmount.isSelected = true
 
-        val pair = if (item.status == 0)
+        val pair = if (item.status != ItemHistoryTokenAdapter.FAILED)
             Pair(getString(R.string.confirmed), R.color.green_1)
         else
             Pair(getString(R.string.failed), R.color.red1)
@@ -54,7 +56,11 @@ class DetailTransactionDialogFragment(
             )
         )
 
-        binding.txtChooseNetwork.text = getString(R.string.sent_to, item.symbol)
+        binding.txtChooseNetwork.text =
+            if (item.status != ItemHistoryTokenAdapter.RECEIVED) getString(
+                R.string.sent_to,
+                item.symbol
+            ) else getString(R.string.receive_from, item.symbol)
 
         binding.txtDateTime.text = item.formatDateTime
 
@@ -75,7 +81,7 @@ class DetailTransactionDialogFragment(
                 .append(" ${item.symbolNative}")
         }
 
-
+        binding.group.isVisible = item.status != ItemHistoryTokenAdapter.RECEIVED
     }
 
 

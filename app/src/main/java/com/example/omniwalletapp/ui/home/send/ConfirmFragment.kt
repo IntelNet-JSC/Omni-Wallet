@@ -1,5 +1,7 @@
 package com.example.omniwalletapp.ui.home.send
 
+import android.text.SpannableString
+import android.text.style.UnderlineSpan
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
@@ -10,9 +12,12 @@ import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentConfirmBinding
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
+import com.example.omniwalletapp.ui.home.send.dialog.EditGasDialogFragment
+import com.example.omniwalletapp.ui.home.send.dialog.InforDialogFragment
 import com.example.omniwalletapp.util.BalanceUtil
 import com.example.omniwalletapp.util.Status
 import com.example.omniwalletapp.util.formatAddressWallet
+import com.example.omniwalletapp.util.trimTrailingZero
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
 import java.math.BigDecimal
@@ -34,7 +39,7 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         viewModel.lstToken[args.indexToken]
     }
 
-    private val amount:String by lazy {
+    private val amount: String by lazy {
         args.amount
     }
 
@@ -55,6 +60,30 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
 
         binding.btnSend.setOnClickListener {
             viewModel.transfer(args.toAddress, amount, itemToken.address)
+        }
+
+        binding.txtTextGas.setOnClickListener {
+            InforDialogFragment.newInstance(
+                fm = fManager,
+                title = getString(R.string.what_is_gas),
+                content = getString(R.string.gas_education_1)
+            )
+        }
+
+        binding.txtGas.setOnClickListener {
+            EditGasDialogFragment.newInstance(
+                fManager,
+                viewModel.getSymbolNetworkDefault(),
+                viewModel.gasPrice,
+                viewModel.gasLimit,
+                callbackAction = { gasPrice, gasLimit ->
+
+                    viewModel.gasPrice = gasPrice
+                    viewModel.gasLimit = gasLimit
+
+                    initAmountEstimate()
+                }
+            )
         }
 
     }
@@ -91,12 +120,19 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
         }
     }
 
-    private fun initAmountEstimate(amountEstimateEth: BigDecimal) {
+    private fun initAmountEstimate() {
+        val amountEstimateEth =
+            BalanceUtil.convertTogEstimateGasEth(viewModel.gasPrice, viewModel.gasLimit)
+
         val estimateAmountEth = BalanceUtil.formatBalanceWithSymbol(
-            amountEstimateEth.toString(),
+            amountEstimateEth.toString().trimTrailingZero(),
             viewModel.getSymbolNetworkDefault()
         )
-        binding.txtGas.text = estimateAmountEth
+
+        val mSpannableString = SpannableString(estimateAmountEth)
+        mSpannableString.setSpan(UnderlineSpan(), 0, mSpannableString.length, 0)
+        binding.txtGas.text = mSpannableString
+
 
         if (isNativeToken) {
             val total = BigDecimal(amount) + amountEstimateEth
@@ -123,7 +159,7 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
                         binding.btnSend.isEnabled = true
                         hideDialog()
                         data.data?.let {
-                            initAmountEstimate(it)
+                            initAmountEstimate()
                         }
                     }
                     Status.ERROR -> {
@@ -149,7 +185,10 @@ class ConfirmFragment : BaseFragment<FragmentConfirmBinding, HomeViewModel>() {
                         data.data?.let {
                             Timber.d("$it")
                             navigate(
-                                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(args.indexToken, true)
+                                ConfirmFragmentDirections.actionConfirmFragmentToDetailTokenFragment(
+                                    args.indexToken,
+                                    true
+                                )
                             )
                         }
                     }

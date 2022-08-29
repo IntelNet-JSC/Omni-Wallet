@@ -108,7 +108,6 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
 
         address = args.address ?: preferencesRepository.getAddress()
         address?.let {
-            viewModel.loadCredentials(it)
             viewModel.loadBalance(it)
         }
 

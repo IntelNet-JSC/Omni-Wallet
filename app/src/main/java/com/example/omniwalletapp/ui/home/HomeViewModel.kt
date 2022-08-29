@@ -25,7 +25,7 @@ import javax.inject.Inject
 
 typealias EventAddress = Event<Data<String>>
 typealias EventToken = Event<Data<MutableMap<String, String>>>
-typealias EventEstimate = Event<Data<BigDecimal>>
+typealias EventEstimate = Event<Data<String>>
 typealias EventTransfer = Event<Data<String>>
 typealias EventTransaction = Event<Data<Transaction>>
 
@@ -104,7 +104,7 @@ class HomeViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
+//                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
             }
             .doOnComplete {
                 Timber.d("Close waitting dialog")
@@ -207,7 +207,7 @@ class HomeViewModel @Inject constructor(
             .subscribeOn(Schedulers.io())
             .observeOn(AndroidSchedulers.mainThread())
             .doOnSubscribe {
-
+                _addressLiveData.value = Event(Data(responseType = Status.LOADING))
             }
             .doOnComplete {
                 Timber.d("Close waitting dialog")
@@ -215,12 +215,14 @@ class HomeViewModel @Inject constructor(
             .subscribe(
                 { response ->
                     Timber.d("On Next Called: $response")
-
+                    loadCredentials(address)
                     _balanceLiveData.value =
                         Event(convertBalanceETH(response))
 
                 }, { error ->
                     Timber.e("On Error Called, ${error.message}")
+                    _addressLiveData.value =
+                        Event(Data(Status.ERROR, null, error = Error(error.message)))
                 }, {
                     Timber.d("On Complete Called: loadBalance")
                 }
@@ -343,7 +345,7 @@ class HomeViewModel @Inject constructor(
                             Event(
                                 Data(
                                     responseType = Status.SUCCESSFUL,
-                                    data = response.third
+                                    data = "success"
                                 )
                             )
 

@@ -23,7 +23,7 @@
         app:layout_constraintTop_toTopOf="@+id/txtName"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintBottom_toBottomOf="@id/txtStatus"
-        android:src="@drawable/ic_baseline_call_made_24"
+        android:src="@drawable/ic_send_24"
         android:tint="@color/blue500"
         android:layout_width="32dp"
         android:layout_height="32dp"
@@ -41,7 +41,7 @@
         android:layout_marginTop="10dp"
         android:textSize="16sp"
         android:textColor="@color/black"
-        android:text="Đã gửi BNB"
+        tools:text="Đã gửi BNB"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 

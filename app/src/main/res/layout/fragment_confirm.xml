@@ -265,6 +265,8 @@
             android:layout_height="wrap_content">
             <androidx.appcompat.widget.AppCompatTextView
                 android:id="@+id/txtTextGas"
+                android:drawablePadding="4dp"
+                android:drawableEnd="@drawable/ic_baseline_info_24"
                 app:layout_constraintTop_toTopOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 android:textStyle="bold"

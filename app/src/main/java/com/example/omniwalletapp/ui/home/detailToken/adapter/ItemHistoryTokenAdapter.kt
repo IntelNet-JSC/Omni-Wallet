@@ -29,9 +29,9 @@ class ItemHistoryTokenAdapter(
     }
 
     fun addHeader(item: ItemTransaction) {
-        if(lstItems.isNotEmpty()){
-            lstItems[0]=item
-        }else{
+        if (lstItems.isNotEmpty()) {
+            lstItems[0] = item
+        } else {
             lstItems.add(item)
         }
         notifyItemChanged(0)
@@ -96,26 +96,48 @@ class ItemHistoryTokenAdapter(
 
         fun bind(item: ItemTransaction) {
             binding.apply {
-                val colorTint = if (item.status == CONFIRMED) R.color.blue500 else R.color.red1
+                val colorTint = if (item.status != FAILED) R.color.blue500 else R.color.red1
 
-                txtName.text = root.context.getString(R.string.sent_to, item.symbol)
+                val (icon, title, content) = when (item.status) {
+                    SELF or CONFIRMED -> Triple(
+                        R.drawable.ic_send_24,
+                        root.context.getString(R.string.sent_to, item.symbol),
+                        root.context.getString(R.string.confirmed)
+                    )
+                    RECEIVED -> Triple(
+                        R.drawable.ic_receive_24,
+                        root.context.getString(R.string.receive_from, item.symbol),
+                        root.context.getString(R.string.confirmed)
+                    )
+                    CONFIRMED -> Triple(
+                        R.drawable.ic_send_24,
+                        root.context.getString(R.string.sent_to, item.symbol),
+                        root.context.getString(R.string.confirmed)
+                    )
+                    else -> Triple(
+                        R.drawable.ic_send_24,
+                        root.context.getString(R.string.sent_to, item.symbol),
+                        root.context.getString(R.string.failed)
+                    )
+                }
+
+                txtName.text = title
 
                 txtDateTime.text =
                     StringBuilder("#${item.nonce}").append(" - ").append(item.formatDateTime)
 
                 txtAmount.text = BalanceUtil.formatBalanceWithSymbol(item.symbol, item.amount)
 
-                txtStatus.text =
-                    if (item.status == CONFIRMED) root.context.getString(R.string.confirm) else root.context.getString(
-                        R.string.failed
-                    )
+                txtStatus.text = content
 
                 txtStatus.setTextColor(
                     ContextCompat.getColorStateList(
                         root.context,
-                        if (item.status == CONFIRMED) R.color.green_1 else R.color.red1
+                        if (item.status != FAILED) R.color.green_1 else R.color.red1
                     )
                 )
+
+                imgAction.setImageDrawable(ContextCompat.getDrawable(root.context, icon))
 
                 imgAction.strokeColor = ContextCompat.getColorStateList(
                     root.context,
@@ -177,6 +199,8 @@ class ItemHistoryTokenAdapter(
 
         const val CONFIRMED = 0
         const val FAILED = 1
+        const val RECEIVED = 2
+        const val SELF = 3
     }
 }
 
@@ -194,7 +218,7 @@ data class ItemTransaction(
     val status: Int = 0,
     val type: Int,
 
-    val itemToken: ItemToken?=null
+    val itemToken: ItemToken? = null
 ) {
     companion object {
         fun generateItemFooter() = ItemTransaction(

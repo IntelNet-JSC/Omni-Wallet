@@ -4,6 +4,7 @@
     <option name="filePathToZoomLevelMap">
       <map>
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/bg_btn_selected.xml" value="0.2595" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/bg_layout_edit_estimate_gas.xml" value="0.186" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/bg_txt_copy.xml" value="0.2595" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable-v24/ic_launcher_foreground.xml" value="0.202" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/bg_baseline.xml" value="0.2595" />
@@ -31,8 +32,11 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/border_top_bottom.xml" value="0.176" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_arrow_back_24.xml" value="0.2065" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_arrow_forward_ios_24.xml" value="0.2065" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_arrow_send_24.xml" value="0.1785" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_call_made_24.xml" value="0.1785" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_call_received_24.xml" value="0.203" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_check_24.xml" value="0.2225" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_info_24.xml" value="0.186" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_arrow_down_24.xml" value="0.2065" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_arrow_right_24.xml" value="0.1815" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/drawable/ic_baseline_keyboard_tab_24.xml" value="0.1815" />
@@ -55,6 +59,9 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/custom_snackbar_view.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_choose_menu_token_detail.xml" value="0.24923076923076923" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_choose_token.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_edit_gas.xml" value="0.264" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_infor.xml" value="0.25416666666666665" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_loading_omni_wallet.xml" value="0.2175925925925926" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_net.xml" value="0.253125" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_omni_wallet.xml" value="0.253125" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_transaction_detail.xml" value="0.264" />

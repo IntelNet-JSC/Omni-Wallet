@@ -37,8 +37,6 @@ import javax.inject.Singleton
 
 abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
 
-    var delay:Long = 10000
-
     var dialog: DialogFragment? = null
 
     protected abstract val viewModel: VM

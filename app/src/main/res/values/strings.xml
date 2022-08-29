@@ -116,7 +116,7 @@
     <string name="confirmed">Đã xác nhận</string>
     <string name="failed">Đã thất bại</string>
     <string name="sent_to">Đã gửi %s</string>
-
+    <string name="receive_from">Đã nhận %s</string>
 
     <string name="view_on_block_explorer">Xem trên trình khám phá khối</string>
     <string name="token_details">Chi tiết token</string>
@@ -124,4 +124,15 @@
     <string name="hide_token">Ẩn Token</string>
     <string name="balance_not_enough">Số dư không đủ!</string>
     <string name="please_input_amount">Vui lòng nhập số tiền!</string>
+
+    <string name="title_edit_gas">Sửa phí gas</string>
+    <string name="estimate_gas">Giới hạn gas</string>
+    <string name="gas_price">Giá gas</string>
+    <string name="save">Lưu</string>
+
+    <string name="what_is_gas">Phí gas là gì?</string>
+
+    <string name="gas_education_1">Phí gas được trả cho thợ đào tiền mã hóa xử lý giao dịch trên Ethereum. <b>Omni Wallet không thu lợi từ phí gas.</b> \n\nPhí gas dao động theo lưu lượng truy cập mạng và độ phức tạp của giao dịch.</string>
+    <string name="learn_more_gas_limit">Giới hạn gas là số đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là một hệ số nhân với \"Phí ưu tiên tối đa\" và \"Phí tối đa\".</string>
+    <string name="learn_more_gas_price">Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền tối đa bạn sẵn sàng trả cho mỗi đơn vị gas.</string>
 </resources>

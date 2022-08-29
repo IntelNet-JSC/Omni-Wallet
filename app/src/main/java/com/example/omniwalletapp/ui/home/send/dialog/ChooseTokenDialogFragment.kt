@@ -1,4 +1,4 @@
-package com.example.omniwalletapp.ui.home.send
+package com.example.omniwalletapp.ui.home.send.dialog
 
 import android.content.DialogInterface
 import android.os.Bundle

@@ -126,7 +126,7 @@ class DetailTokenViewModel @Inject constructor(
         lstItemTransaction.addAll(lstHead)
 
         val lstFilter = response.result.toMutableList().filter {
-            it.from == walletAddress && if (contractAddress.isNotEmpty()) it.to.equals(
+            if (contractAddress.isNotEmpty()) it.to.equals(
                 contractAddress,
                 true
             ) else if(it.functionName.contains("transfer")) lstToken.any { token-> token.address.equals(it.to, true) } else true
@@ -138,7 +138,7 @@ class DetailTokenViewModel @Inject constructor(
             var amount: String
             val estimate = BalanceUtil.convertTogEstimateGasEth(
                 BigInteger(trans.gasPrice),
-                BigInteger(trans.gasUsed)
+                BigInteger(trans.gas)
             ).toPlainString()
 
             if (trans.functionName.contains("transfer")) { // send token
@@ -153,6 +153,12 @@ class DetailTokenViewModel @Inject constructor(
                 amount = BalanceUtil.weiToEth(BigInteger(trans.value)).toPlainString()
             }
 
+            val status = when{
+                trans.from == trans.to -> ItemHistoryTokenAdapter.SELF
+                trans.to == walletAddress -> ItemHistoryTokenAdapter.RECEIVED
+                else -> trans.isError.toInt()
+            }
+
             ItemTransaction(
                 hash = trans.hash,
                 nonce = trans.nonce,
@@ -163,7 +169,7 @@ class DetailTokenViewModel @Inject constructor(
                 from = trans.from,
                 to = to,
                 formatDateTime = dateFormat,
-                status = trans.isError.toInt(),
+                status = status,
                 type = ItemHistoryTokenAdapter.ITEM_DATA
             )
         }.take(29).toMutableList().apply {

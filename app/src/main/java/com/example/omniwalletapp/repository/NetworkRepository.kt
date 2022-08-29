@@ -153,7 +153,7 @@ class NetworkRepository @Inject constructor(
         toAddress: String,
         amount: String,
         contractAddress: String,
-    ): Observable<Triple<BigInteger, BigInteger, BigDecimal>> {
+    ): Observable<Pair<BigInteger, BigInteger>> {
 
         return Observable.fromCallable {
 
@@ -187,7 +187,7 @@ class NetworkRepository @Inject constructor(
 
             Timber.d("amountEstimateEth: $amountEstimateEth")
 
-            Triple(gasPrice, estimateGas, amountEstimateEth)
+            Pair(gasPrice, estimateGas)
         }
     }
 

@@ -10,6 +10,7 @@ import com.example.omniwalletapp.base.BaseFragment
 import com.example.omniwalletapp.databinding.FragmentAmountBinding
 import com.example.omniwalletapp.ui.home.HomeViewModel
 import com.example.omniwalletapp.ui.home.adapter.ItemToken
+import com.example.omniwalletapp.ui.home.send.dialog.ChooseTokenDialogFragment
 import dagger.hilt.android.AndroidEntryPoint
 import java.math.BigDecimal
 

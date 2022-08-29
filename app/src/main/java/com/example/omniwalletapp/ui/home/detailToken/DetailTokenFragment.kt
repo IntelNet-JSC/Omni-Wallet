@@ -289,15 +289,18 @@ class DetailTokenFragment : BaseFragment<FragmentDetailTokenBinding, HomeViewMod
         if (!firstCallApi) {
             firstCallApi = true
             if(args.awaitTransaction){
-                handler= Handler()
-                handler?.postDelayed(object : Runnable {
-                    override fun run() {
-                        viewModel.refresh()
-                        viewModel2.loadTransaction(addressWallet)
-                        handler?.postDelayed(this, delay)
-                    }
-                }, delay)
+                showSnackbar(4000)
             }
+            handler= Handler()
+            handler?.postDelayed(object : Runnable {
+                override fun run() {
+                    snackbar?.dismiss()
+                    viewModel.refresh()
+                    viewModel2.loadTransaction(addressWallet)
+
+                    handler?.postDelayed(this, 10000)
+                }
+            }, 10000)
             viewModel.refresh()
             viewModel2.loadTransaction(addressWallet)
         }

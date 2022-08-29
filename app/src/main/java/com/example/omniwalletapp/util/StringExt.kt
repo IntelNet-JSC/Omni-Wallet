@@ -20,3 +20,11 @@ fun String.getHostName():String{
     val url = URL(this)
     return url.host
 }
+
+fun String.trimTrailingZero(): String {
+    return if (this.indexOf(".") < 0) {
+        this
+    } else {
+        this.replace("0*$".toRegex(), "").replace("\\.$".toRegex(), "")
+    }
+}
