@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".ui.addWallet.createWallet.ConfirmPhraseFragment">
 
-    <com.example.omniwalletapp.view.StepCreateWalletView
+    <com.intelnet.omniwallet.view.StepCreateWalletView
         android:id="@+id/stepCreateWallet"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"

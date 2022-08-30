@@ -126,7 +126,7 @@
             app:layout_constraintStart_toEndOf="@+id/barrier2"
             app:layout_constraintTop_toTopOf="parent">
 
-            <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+            <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
                 android:id="@+id/imgAvatarFrom"
                 android:layout_width="42dp"
                 android:layout_height="42dp"
@@ -181,7 +181,7 @@
             app:layout_constraintStart_toStartOf="@+id/layoutFromAddress"
             app:layout_constraintTop_toBottomOf="@+id/layoutFromAddress">
 
-            <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+            <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
                 android:id="@+id/imgAvatarTo"
                 android:layout_width="42dp"
                 android:layout_height="42dp"

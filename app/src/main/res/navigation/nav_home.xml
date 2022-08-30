@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/homeFragment"
-        android:name="com.example.omniwalletapp.ui.home.HomeFragment"
+        android:name="com.intelnet.omniwallet.ui.home.HomeFragment"
         android:label="fragment_home"
         tools:layout="@layout/fragment_home">
         <action
@@ -54,17 +54,17 @@
     </fragment>
     <fragment
         android:id="@+id/addNetworkFragment"
-        android:name="com.example.omniwalletapp.ui.home.network.AddNetworkFragment"
+        android:name="com.intelnet.omniwallet.ui.home.network.AddNetworkFragment"
         android:label="fragment_add_network"
         tools:layout="@layout/fragment_add_network" />
     <fragment
         android:id="@+id/addTokenFragment"
-        android:name="com.example.omniwalletapp.ui.home.addToken.AddTokenFragment"
+        android:name="com.intelnet.omniwallet.ui.home.addToken.AddTokenFragment"
         android:label="fragment_add_token"
         tools:layout="@layout/fragment_add_token" />
     <dialog
         android:id="@+id/receiveTokenDialogFragment"
-        android:name="com.example.omniwalletapp.ui.home.receive.ReceiveTokenDialogFragment"
+        android:name="com.intelnet.omniwallet.ui.home.receive.ReceiveTokenDialogFragment"
         android:label="fragment_receive_token"
         tools:layout="@layout/fragment_receive_token">
         <argument
@@ -73,7 +73,7 @@
     </dialog>
     <fragment
         android:id="@+id/loginLaterFragment"
-        android:name="com.example.omniwalletapp.ui.login.LoginLaterFragment"
+        android:name="com.intelnet.omniwallet.ui.login.LoginLaterFragment"
         android:label="fragment_login_later"
         tools:layout="@layout/fragment_login_later">
         <action
@@ -84,7 +84,7 @@
     </fragment>
     <fragment
         android:id="@+id/sendTokenFragment"
-        android:name="com.example.omniwalletapp.ui.home.send.SendTokenFragment"
+        android:name="com.intelnet.omniwallet.ui.home.send.SendTokenFragment"
         android:label="fragment_send_token"
         tools:layout="@layout/fragment_send_token">
         <argument
@@ -106,7 +106,7 @@
     </fragment>
     <fragment
         android:id="@+id/amountFragment"
-        android:name="com.example.omniwalletapp.ui.home.send.AmountFragment"
+        android:name="com.intelnet.omniwallet.ui.home.send.AmountFragment"
         android:label="fragment_amount"
         tools:layout="@layout/fragment_amount">
         <action
@@ -130,7 +130,7 @@
     </fragment>
     <fragment
         android:id="@+id/confirmFragment"
-        android:name="com.example.omniwalletapp.ui.home.send.ConfirmFragment"
+        android:name="com.intelnet.omniwallet.ui.home.send.ConfirmFragment"
         android:label="fragment_confirm"
         tools:layout="@layout/fragment_confirm">
         <action
@@ -158,7 +158,7 @@
     </fragment>
     <fragment
         android:id="@+id/detailTokenFragment"
-        android:name="com.example.omniwalletapp.ui.home.detailToken.DetailTokenFragment"
+        android:name="com.intelnet.omniwallet.ui.home.detailToken.DetailTokenFragment"
         android:label="fragment_detail_token"
         tools:layout="@layout/fragment_detail_token">
         <argument
@@ -195,7 +195,7 @@
     </fragment>
     <fragment
         android:id="@+id/webViewFragment"
-        android:name="com.example.omniwalletapp.ui.webview.WebViewFragment"
+        android:name="com.intelnet.omniwallet.ui.webview.WebViewFragment"
         android:label="fragment_webview"
         tools:layout="@layout/fragment_webview">
         <argument
@@ -204,7 +204,7 @@
     </fragment>
     <fragment
         android:id="@+id/smartContractDetailFragment"
-        android:name="com.example.omniwalletapp.ui.home.detailToken.SmartContractDetailFragment"
+        android:name="com.intelnet.omniwallet.ui.home.detailToken.SmartContractDetailFragment"
         android:label="fragment_infor_smart_contract"
         tools:layout="@layout/fragment_infor_smart_contract">
         <argument

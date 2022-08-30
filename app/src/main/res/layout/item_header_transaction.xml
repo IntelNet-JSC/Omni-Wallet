@@ -7,7 +7,7 @@
     android:background="@color/white"
     android:padding="16dp">
 
-    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+    <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
         android:id="@+id/imgToken"
         android:layout_width="55dp"
         android:layout_height="55dp"

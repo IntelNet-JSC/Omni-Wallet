@@ -19,7 +19,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>
 
-    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+    <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
         android:id="@+id/imgToken"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

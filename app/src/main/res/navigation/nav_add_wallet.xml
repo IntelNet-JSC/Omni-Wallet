@@ -7,7 +7,7 @@
 
     <fragment
         android:id="@+id/addWalletFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.AddWalletFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.AddWalletFragment"
         android:label="fragment_add_wallet"
         tools:layout="@layout/fragment_add_wallet" >
         <action
@@ -34,17 +34,17 @@
     </fragment>
     <fragment
         android:id="@+id/importKeyFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.importWallet.ImportKeyFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.importWallet.ImportKeyFragment"
         android:label="fragment_import_key"
         tools:layout="@layout/fragment_import_key" />
     <fragment
         android:id="@+id/importPhraseFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.importWallet.ImportPhraseFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.importWallet.ImportPhraseFragment"
         android:label="fragment_import_phrase"
         tools:layout="@layout/fragment_import_phrase" />
     <fragment
         android:id="@+id/createPassFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.CreatePassFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.createWallet.CreatePassFragment"
         android:label="fragment_create_pass"
         tools:layout="@layout/fragment_create_pass" >
         <action
@@ -58,7 +58,7 @@
     </fragment>
     <fragment
         android:id="@+id/memorizePhraseFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.MemorizePhraseFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.createWallet.MemorizePhraseFragment"
         android:label="fragment_memorize_phrase"
         tools:layout="@layout/fragment_memorize_phrase" >
         <action
@@ -74,7 +74,7 @@
     </fragment>
     <fragment
         android:id="@+id/confirmPhraseFragment"
-        android:name="com.example.omniwalletapp.ui.addWallet.createWallet.ConfirmPhraseFragment"
+        android:name="com.intelnet.omniwallet.ui.addWallet.createWallet.ConfirmPhraseFragment"
         android:label="fragment_confirm_phrase"
         tools:layout="@layout/fragment_confirm_phrase" >
 

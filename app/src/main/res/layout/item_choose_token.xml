@@ -9,7 +9,7 @@
     android:background="?attr/selectableItemBackground"
     xmlns:app="http://schemas.android.com/apk/res-auto">
 
-    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+    <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
         android:id="@+id/imgToken"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"

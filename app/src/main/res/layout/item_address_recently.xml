@@ -10,7 +10,7 @@
     android:paddingVertical="16dp"
     android:paddingHorizontal="16dp">
 
-    <com.example.mylibrary.utils.identicon.BlockiesIdenticon
+    <com.intelnet.mylibrary.utils.identicon.BlockiesIdenticon
         android:id="@+id/imgAddress"
         app:shapeAppearanceOverlay="@style/Circular"
         android:layout_width="38dp"
