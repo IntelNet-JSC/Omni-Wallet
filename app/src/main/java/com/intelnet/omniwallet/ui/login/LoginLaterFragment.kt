@@ -2,6 +2,8 @@ package com.intelnet.omniwallet.ui.login
 
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.biometric.BiometricPrompt
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.viewModels
 import com.intelnet.omniwallet.BuildConfig
 import com.intelnet.omniwallet.R
@@ -9,7 +11,9 @@ import com.intelnet.omniwallet.base.BaseFragment
 import com.intelnet.omniwallet.databinding.FragmentLoginLaterBinding
 import com.intelnet.omniwallet.util.Status
 import dagger.hilt.android.AndroidEntryPoint
+import timber.log.Timber
 import java.io.File
+import java.util.concurrent.Executor
 
 
 @AndroidEntryPoint
@@ -17,20 +21,26 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
 
     override val viewModel: LoginLaterViewModel by viewModels()
 
+    private var executor: Executor? = null
+    private var biometricPrompt: BiometricPrompt? = null
+    private var promptInfo: BiometricPrompt.PromptInfo? = null
+
+    private val startHome:Boolean by lazy {
+        requireActivity().intent.getBooleanExtra("start_home", false)
+    }
+
     override fun getFragmentBinding(
         inflater: LayoutInflater,
         container: ViewGroup?
     ) = FragmentLoginLaterBinding.inflate(inflater, container, false)
 
-    override fun onStart() {
-        super.onStart()
-        if (preferencesRepository.isRememberLogin())
+    override fun initControl() {
+        if(startHome){
             navigate(
                 LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
             )
-    }
+        }
 
-    override fun initControl() {
         binding.btnUnlock.setOnClickListener {
             val pass = binding.edtPass.text.toString()
             if (validateForm(pass))
@@ -77,6 +87,52 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         if (BuildConfig.DEBUG) {
             binding.edtPass.setText(getString(R.string.password_demo))
         }
+
+        binding.swDefault.isChecked = preferencesRepository.isRememberLogin()
+        if (preferencesRepository.isRememberLogin()&&!startHome) {
+            executor = ContextCompat.getMainExecutor(requireContext())
+            biometricPrompt = BiometricPrompt(this, executor!!,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError(
+                        errorCode: Int,
+                        errString: CharSequence,
+                    ) {
+                        super.onAuthenticationError(errorCode, errString)
+                        Timber.d("Error code: $errorCode")
+                        Timber.d("Authentication error: $errString")
+
+                        if (errorCode != 10 && errorCode != 13) {
+                            binding.swDefault.isChecked = false
+                            showToast("$errString")
+                        }
+                    }
+
+                    override fun onAuthenticationSucceeded(
+                        result: BiometricPrompt.AuthenticationResult,
+                    ) {
+                        super.onAuthenticationSucceeded(result)
+                        Timber.d("Authentication succeeded!")
+                        navigate(
+                            LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
+                        )
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+
+                        Timber.d("Authentication failed")
+                    }
+                })
+
+            promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+                .setNegativeButtonText("Cancel")
+                .build()
+
+            biometricPrompt?.authenticate(promptInfo!!)
+
+        }
     }
 
     override fun initEvent() {
@@ -93,7 +149,9 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                             preferencesRepository.setAddress(address)
 
                             navigate(
-                                LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment(address)
+                                LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment(
+                                    address
+                                )
                             )
                         }
                     }
@@ -123,6 +181,17 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         }
 
         return true
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        biometricPrompt = null
+        promptInfo = null
+        executor = null
+        super.onDestroy()
     }
 
 }

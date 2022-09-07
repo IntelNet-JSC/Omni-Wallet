@@ -15,6 +15,7 @@ import android.view.Gravity
 import android.view.View
 import android.view.Window
 import android.view.WindowManager
+import android.widget.CompoundButton
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
@@ -118,4 +119,10 @@ fun TextView.setSpan(
     }
 
     this.text = stringBuilder
+}
+
+fun CompoundButton.setCustomChecked(value: Boolean, listener: CompoundButton.OnCheckedChangeListener) {
+    setOnCheckedChangeListener(null)
+    isChecked = value
+    setOnCheckedChangeListener(listener)
 }

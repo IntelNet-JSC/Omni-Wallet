@@ -2,16 +2,18 @@ package com.intelnet.omniwallet.base
 
 import android.app.Activity
 import android.app.AlertDialog
-import android.content.ClipData
-import android.content.ClipboardManager
-import android.content.Context
+import android.content.*
 import android.net.ConnectivityManager
 import android.net.ConnectivityManager.TYPE_ETHERNET
 import android.net.ConnectivityManager.TYPE_WIFI
 import android.net.NetworkCapabilities.*
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
 import android.provider.ContactsContract.CommonDataKinds.Phone.TYPE_MOBILE
+import android.provider.Settings
+import android.provider.Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -19,6 +21,7 @@ import android.view.WindowManager
 import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.Toast
+import androidx.biometric.BiometricManager
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -112,7 +115,7 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
 
     fun getListRecentlyAddress() = preferencesRepository.getRecentListAddress()
 
-    fun setItemRecentAddress(item:String) = preferencesRepository.setRecentAddress(item)
+    fun setItemRecentAddress(item: String) = preferencesRepository.setRecentAddress(item)
 
     override fun onDestroy() {
         Timber.d("onDestroy: Fragment=>$nameFragmentCurrent")
@@ -235,6 +238,7 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         val dialog = builder
             .setTitle(title)
             .setMessage(content)
+            .setCancelable(false)
             .setPositiveButton(confirmButtonTitle) { dialog, _ ->
                 confirmCallback.invoke()
             }
@@ -258,6 +262,71 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
                 R.color.button_in_alert_dialog_color
             )
         )*/
+    }
+
+    fun openUrlTandC(url: String = "https://www.freeprivacypolicy.com/live/3b3e2ec3-76b7-4da2-822b-e20b323a8212") {
+        if (url.isEmpty()) return
+        val browserIntent = Intent(Intent.ACTION_VIEW, Uri.parse(url))
+        try {
+            startActivity(browserIntent)
+        } catch (e: Exception) {
+            //update late avoid user delete browser
+        }
+    }
+
+    fun checkDeviceHasBiometric(validateCallback: (String) -> Unit) {
+        val biometricManager = BiometricManager.from(requireActivity())
+        when (biometricManager.canAuthenticate(BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL)) {
+            BiometricManager.BIOMETRIC_SUCCESS -> {
+                Log.d("MY_APP_TAG", "App can authenticate using biometrics.")
+                validateCallback.invoke("")
+            }
+            BiometricManager.BIOMETRIC_ERROR_NO_HARDWARE -> {
+                Log.e("MY_APP_TAG", "No biometric features available on this device.")
+                validateCallback.invoke("No biometric features available on this device.")
+            }
+            BiometricManager.BIOMETRIC_ERROR_HW_UNAVAILABLE -> {
+                Log.e("MY_APP_TAG", "Biometric features are currently unavailable.")
+                validateCallback.invoke("Biometric features are currently unavailable.")
+            }
+            BiometricManager.BIOMETRIC_ERROR_NONE_ENROLLED -> {
+                // Prompts the user to create credentials that your app accepts.
+                val enrollIntent = Intent(Settings.ACTION_BIOMETRIC_ENROLL).apply {
+                    putExtra(
+                        Settings.EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                        BiometricManager.Authenticators.BIOMETRIC_STRONG or BiometricManager.Authenticators.DEVICE_CREDENTIAL
+                    )
+                }
+
+                startActivityForResult(enrollIntent, 100)
+            }
+            else -> {
+                Log.e("MY_APP_TAG", "Not Thing.")
+                validateCallback.invoke("")
+            }
+        }
+    }
+
+    open fun launchFingerprint() {
+        val intent: Intent = when {
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.R -> {
+                Intent(Settings.ACTION_BIOMETRIC_ENROLL).putExtra(
+                    EXTRA_BIOMETRIC_AUTHENTICATORS_ALLOWED,
+                    BiometricManager.Authenticators.BIOMETRIC_STRONG
+                )
+            }
+            Build.VERSION.SDK_INT >= Build.VERSION_CODES.P -> {
+                Intent(Settings.ACTION_FINGERPRINT_ENROLL)
+            }
+            else -> {
+                Intent(Settings.ACTION_SECURITY_SETTINGS)
+            }
+        }
+        try {
+            startActivityForResult(intent, 100)
+        } catch (error: ActivityNotFoundException) {
+            startActivityForResult(Intent(Settings.ACTION_SETTINGS), 100)
+        }
     }
 
 }

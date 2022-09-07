@@ -49,7 +49,9 @@ class AddWalletActivity : BaseActivity() {
     }
 
     fun navigateHomeActivity() {
-        startActivity(Intent(this, HomeActivity::class.java))
+        val intent = Intent(this, HomeActivity::class.java)
+        intent.putExtra("start_home", true)
+        startActivity(intent)
         finish()
     }
 

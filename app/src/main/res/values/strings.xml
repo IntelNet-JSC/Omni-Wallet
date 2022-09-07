@@ -27,7 +27,7 @@
     <string name="add">Thêm</string>
     <string name="input">Nhập</string>
     <string name="least_8_character">Phải dài ít nhất 8 ký tự</string>
-    <string name="remember">Ghi nhớ</string>
+    <string name="login_by_biometric">Đăng nhập bằng sinh trắc học</string>
     <string name="label_create_password">Tạo mật khẩu</string>
     <string name="label_create_password2">Mở mật khẩu này sẽ chỉ mở khóa Omni Wallet của bạn trên thiết bị này.</string>
 
@@ -135,4 +135,10 @@
     <string name="gas_education_1">Phí gas được trả cho thợ đào tiền mã hóa xử lý giao dịch trên Ethereum. <b>Omni Wallet không thu lợi từ phí gas.</b> \n\nPhí gas dao động theo lưu lượng truy cập mạng và độ phức tạp của giao dịch.</string>
     <string name="learn_more_gas_limit">Giới hạn gas là số đơn vị gas tối đa mà bạn sẵn sàng sử dụng. Đơn vị gas là một hệ số nhân với \"Phí ưu tiên tối đa\" và \"Phí tối đa\".</string>
     <string name="learn_more_gas_price">Mạng này yêu cầu trường \"Giá gas\" khi gửi giao dịch. Giá gas là số tiền tối đa bạn sẵn sàng trả cho mỗi đơn vị gas.</string>
+
+    <string name="please_login_again">Vui lòng đăng nhập lại!!!</string>
+
+    <string name="toast_no_address_public">Không tìm thấy địa chỉ công khai</string>
+    <string name="turn_off_biometric">Bạn sẽ tắt tính năng đăng nhập bằng sinh trắc học. Bạn có muốn tiếp tục?</string>
+
 </resources>

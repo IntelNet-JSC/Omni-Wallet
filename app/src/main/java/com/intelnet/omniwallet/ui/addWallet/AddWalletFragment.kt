@@ -38,7 +38,7 @@ class AddWalletFragment : BaseFragment<FragmentAddWalletBinding, EmptyViewModel>
         }
 
         binding.txtTAndC.setOnClickListener {
-            showToast("Điều khoản ...")
+            openUrlTandC()
         }
     }
 

@@ -1,9 +1,12 @@
 package com.intelnet.omniwallet.ui.home
 
+import android.app.Activity
+import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import android.widget.CompoundButton
+import androidx.biometric.BiometricPrompt
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.activityViewModels
 import androidx.navigation.fragment.navArgs
@@ -20,10 +23,7 @@ import com.intelnet.omniwallet.ui.home.adapter.ItemTokenAdapter
 import com.intelnet.omniwallet.ui.home.detailToken.ChooseMenuDialogFragment
 import com.intelnet.omniwallet.ui.home.detailToken.adapter.ItemMenu
 import com.intelnet.omniwallet.ui.home.network.NetDialogFragment
-import com.intelnet.omniwallet.util.Status
-import com.intelnet.omniwallet.util.formatAddressWallet
-import com.intelnet.omniwallet.util.getNavigationResult
-import com.intelnet.omniwallet.util.getStringAddressFromScan
+import com.intelnet.omniwallet.util.*
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
@@ -31,6 +31,7 @@ import dagger.hilt.android.AndroidEntryPoint
 import org.web3j.crypto.WalletUtils
 import timber.log.Timber
 import java.math.BigDecimal
+import java.util.concurrent.Executor
 
 
 @AndroidEntryPoint
@@ -41,6 +42,50 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     private val args: HomeFragmentArgs by navArgs()
 
     private var address: String? = null
+
+    private var count = 0
+
+    private var executor: Executor? = null
+    private var biometricPrompt: BiometricPrompt? = null
+    private var promptInfo: BiometricPrompt.PromptInfo? = null
+
+    private var listener: CompoundButton.OnCheckedChangeListener =
+        CompoundButton.OnCheckedChangeListener { buttonView, isChecked ->
+            if(!buttonView.isPressed)
+                return@OnCheckedChangeListener
+            count++
+            if (isChecked) {
+                if (count > 1) {
+                    showToast(getString(R.string.please_login_again))
+                    binding.swDefault.isChecked = false
+                } else {
+                    checkDeviceHasBiometric(
+                        validateCallback = {
+                            if (it.isNotEmpty()) {
+                                showToast(it)
+                                count--
+                                binding.swDefault.isChecked = false
+                            } else
+                                biometricPrompt?.authenticate(promptInfo!!)
+                        }
+                    )
+                }
+            } else {
+                showAlertDialog(
+                    title = "",
+                    content = getString(R.string.turn_off_biometric),
+                    confirmButtonTitle = "ok",
+                    cancelButtonTitle = "cancel",
+                    confirmCallback = {
+                        preferencesRepository.setRememberLogin(false)
+                    },
+                    cancelCallback = {
+                        count--
+                        binding.swDefault.isChecked = true
+                    }
+                )
+            }
+        }
 
     private val callBackToken: (Int, ItemToken) -> Unit = { i, data ->
         Timber.d("Item Click $i")
@@ -58,7 +103,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                     when (it) {
                         ItemMenu.ACTION_HIDE_TOKEN -> {
                             preferencesRepository.hideTokenAddress(
-                                i-1,
+                                i - 1,
                                 viewModel.getSymbolNetworkDefault()
                             )
                             viewModel.refresh()
@@ -91,15 +136,14 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         if (result.contents == null) {
             showToast("Cancelled")
         } else {
-            Log.d("XXX", ": ${result.contents}")
+            Timber.d("contents: ${result.contents}")
             val addressFormat = result.contents.getStringAddressFromScan()
-            Log.d("XXX", "format: $addressFormat")
             if (WalletUtils.isValidAddress(addressFormat))
                 navigate(
                     HomeFragmentDirections.actionHomeFragmentToSendTokenFragment(0, addressFormat)
                 )
             else
-                showToast("Not Address")
+                showToast(getString(R.string.toast_no_address_public))
         }
     }
 
@@ -206,12 +250,31 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 }
             )
         }
+
+        binding.swDefault.setCustomChecked(preferencesRepository.isRememberLogin(), listener)
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Timber.d("requestCode: $requestCode")
+        Timber.d("resultCode: $resultCode")
+
+        if (requestCode == 100 && (resultCode == Activity.DEFAULT_KEYS_SEARCH_LOCAL||resultCode == Activity.RESULT_FIRST_USER||resultCode == Activity.RESULT_OK)){
+            Timber.d("GOOD JOB")
+            preferencesRepository.setRememberLogin(true)
+        }
+        else{
+            count--
+            binding.swDefault.setCustomChecked(false, listener)
+        }
     }
 
     override fun initUI() {
         initAddressWallet()
         initBalanceWallet(viewModel.balanceETH)
         setUiDefaultNetWork()
+
+        initBiometric()
 
         binding.rvToken.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -228,6 +291,68 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             )
         )
 
+    }
+
+    private fun initBiometric() {
+        if (executor == null) {
+            executor = ContextCompat.getMainExecutor(requireContext())
+            biometricPrompt = BiometricPrompt(this, executor!!,
+                object : BiometricPrompt.AuthenticationCallback() {
+                    override fun onAuthenticationError(
+                        errorCode: Int,
+                        errString: CharSequence,
+                    ) {
+                        super.onAuthenticationError(errorCode, errString)
+                        Timber.d("Error code: $errorCode")
+                        Timber.d("Authentication error: $errString")
+
+                        if (errorCode != 10 && errorCode != 13) {
+                            if(errorCode==11){
+                                showAlertDialog(
+                                    title = "",
+                                    content = errString.toString(),
+                                    confirmButtonTitle = "setting",
+                                    cancelButtonTitle = "cancel",
+                                    confirmCallback = {
+                                        launchFingerprint()
+                                    },
+                                    cancelCallback = {
+                                        count--
+                                        binding.swDefault.setCustomChecked(false, listener)
+                                    }
+                                )
+                            }else{
+                                showToast("$errString")
+                                count--
+                                binding.swDefault.setCustomChecked(false, listener)
+                            }
+                        }else{
+                            count--
+                            binding.swDefault.setCustomChecked(false, listener)
+                        }
+                    }
+
+                    override fun onAuthenticationSucceeded(
+                        result: BiometricPrompt.AuthenticationResult,
+                    ) {
+                        super.onAuthenticationSucceeded(result)
+                        Timber.d("Authentication succeeded!")
+                        showToast("Authentication succeeded!")
+                        preferencesRepository.setRememberLogin(true)
+                    }
+
+                    override fun onAuthenticationFailed() {
+                        super.onAuthenticationFailed()
+                        Timber.d("Authentication failed")
+                    }
+                })
+
+            promptInfo = BiometricPrompt.PromptInfo.Builder()
+                .setTitle("Biometric login for my app")
+                .setSubtitle("Log in using your biometric credential")
+                .setNegativeButtonText("Cancel")
+                .build()
+        }
     }
 
     private fun setUiDefaultNetWork() {
@@ -249,9 +374,10 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     }
 
     private fun initBalanceWallet(ethBalance: BigDecimal) {
-        val balanceFormat = StringBuilder().append(ethBalance)
-            .append(" ${viewModel.getSymbolNetworkDefault()}").toString()
-        binding.txtAmount.text = balanceFormat
+        binding.txtAmount.text = BalanceUtil.formatBalanceWithSymbol(
+            ethBalance.toString().trimTrailingZero(),
+            viewModel.getSymbolNetworkDefault()
+        )
     }
 
     override fun initEvent() {
@@ -317,6 +443,13 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
     override fun onDestroyView() {
         binding.rvToken.adapter = null
         super.onDestroyView()
+    }
+
+    override fun onDestroy() {
+        biometricPrompt = null
+        promptInfo = null
+        executor = null
+        super.onDestroy()
     }
 
 }

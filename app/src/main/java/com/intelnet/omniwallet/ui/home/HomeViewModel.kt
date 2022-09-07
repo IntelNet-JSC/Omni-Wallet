@@ -181,13 +181,13 @@ class HomeViewModel @Inject constructor(
             val symbol = map["symbol"] ?: ""
             val balance = map["balance"] ?: ""
             val address = map["address"] ?: ""
-            ItemToken(symbol, balance, address, ItemToken.ITEM_DATA)
+            ItemToken(symbol, balance.trimTrailingZero(), address, ItemToken.ITEM_DATA)
         }.toMutableList().also {
             it.add(
                 0,
                 ItemToken.generateHeadItem(
                     getSymbolNetworkDefault(),
-                    balanceETH.toString()
+                    balanceETH.toString().trimTrailingZero()
                 )
             )
         }

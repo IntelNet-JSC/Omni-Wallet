@@ -56,6 +56,7 @@
         </com.google.android.material.textfield.TextInputLayout>
 
         <LinearLayout
+            android:visibility="invisible"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="16dp">
@@ -65,7 +66,7 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                android:text="@string/remember"
+                android:text="@string/login_by_biometric"
                 android:textColor="@color/black"
                 android:textSize="16sp" />
 
