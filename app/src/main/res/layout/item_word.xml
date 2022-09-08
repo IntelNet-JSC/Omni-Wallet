@@ -2,14 +2,14 @@
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:padding="8dp"
+    android:padding="5dp"
     android:background="@drawable/bg_btn_wallet2"
     xmlns:tools="http://schemas.android.com/tools">
     <androidx.appcompat.widget.AppCompatTextView
         android:id="@+id/txtNameWord"
         android:layout_gravity="center"
         tools:text="income"
-        android:textSize="14sp"
+        android:textSize="13sp"
         android:textColor="@color/black"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"/>

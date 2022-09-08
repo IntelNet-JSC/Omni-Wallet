@@ -4,9 +4,14 @@ import android.content.Context
 import com.intelnet.omniwallet.util.Constants
 import com.intelnet.omniwallet.util.fromJson
 import com.google.gson.Gson
+import timber.log.Timber
 import javax.inject.Inject
 
 class PreferencesRepository @Inject constructor(context: Context, val gson: Gson) {
+
+    init {
+        Timber.d("INIT PreferencesRepository")
+    }
 
     private var prefs =
         context.getSharedPreferences(Constants.LOCAL_SHARED_PREF, Context.MODE_PRIVATE)
@@ -94,9 +99,9 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
     }
 
 
-    fun clearDataAddressWallet() {
-        prefs.edit().remove("is_remember_login").apply()
-        prefs.edit().remove("address_wallet").apply()
-    }
+//    fun clearDataAddressWallet() {
+//        prefs.edit().remove("is_remember_login").apply()
+//        prefs.edit().remove("address_wallet").apply()
+//    }
 
 }

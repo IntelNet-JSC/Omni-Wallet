@@ -26,7 +26,7 @@ class MemorizePhraseFragment :
 
     override val viewModel: EmptyViewModel by viewModels()
 
-    private val args:MemorizePhraseFragmentArgs by navArgs()
+    private val args: MemorizePhraseFragmentArgs by navArgs()
 
     private val adapter = MemorizePhraseAdapter()
 
@@ -40,8 +40,13 @@ class MemorizePhraseFragment :
         requireActivity().onBackPressedDispatcher.addCallback(this, object :
             OnBackPressedCallback(true) {
             override fun handleOnBackPressed() {
-                if((requireActivity() as AddWalletActivity).deleteDir(File(requireContext().filesDir, "")))
-                {
+                if ((requireActivity() as AddWalletActivity).deleteDir(
+                        File(
+                            requireContext().filesDir,
+                            ""
+                        )
+                    )
+                ) {
                     backToPrevious()
                 }
             }
@@ -57,7 +62,8 @@ class MemorizePhraseFragment :
         binding.btnContinue.setOnClickListener {
             navigate(
                 MemorizePhraseFragmentDirections.actionMemorizePhraseFragmentToConfirmPhraseFragment(
-                    args.wordPhrase
+                    seedCode = args.wordPhrase,
+                    address = args.address
                 )
             )
         }

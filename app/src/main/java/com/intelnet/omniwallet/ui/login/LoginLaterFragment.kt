@@ -9,6 +9,7 @@ import com.intelnet.omniwallet.BuildConfig
 import com.intelnet.omniwallet.R
 import com.intelnet.omniwallet.base.BaseFragment
 import com.intelnet.omniwallet.databinding.FragmentLoginLaterBinding
+import com.intelnet.omniwallet.ui.home.HomeActivity
 import com.intelnet.omniwallet.util.Status
 import dagger.hilt.android.AndroidEntryPoint
 import timber.log.Timber
@@ -36,6 +37,8 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
 
     override fun initControl() {
         if(startHome){
+            (requireActivity() as HomeActivity).startHandlerTimeout()
+            requireActivity().intent.removeExtra("start_home")
             navigate(
                 LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
             )
@@ -57,11 +60,9 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
 
                     preferencesRepository.clearData()
 
-                    val keydir = File(requireActivity().filesDir, "")
-                    deleteDir(keydir)
+                    if(deleteDir(File(requireActivity().filesDir, "")))
+                        (requireActivity() as HomeActivity).navigateAddWalletActivity()
 
-                    requireActivity().finish()
-                    startActivity(requireActivity().intent)
                 },
                 cancelCallback = {
 
@@ -112,6 +113,7 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                     ) {
                         super.onAuthenticationSucceeded(result)
                         Timber.d("Authentication succeeded!")
+                        (requireActivity() as HomeActivity).startHandlerTimeout()
                         navigate(
                             LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
                         )
@@ -145,6 +147,8 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                     Status.SUCCESSFUL -> {
                         hideDialog()
                         data.data?.let { address ->
+
+                            (requireActivity() as HomeActivity).startHandlerTimeout()
                             preferencesRepository.setRememberLogin(binding.swDefault.isChecked)
                             preferencesRepository.setAddress(address)
 
@@ -183,9 +187,6 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         return true
     }
 
-    override fun onDestroyView() {
-        super.onDestroyView()
-    }
 
     override fun onDestroy() {
         biometricPrompt = null

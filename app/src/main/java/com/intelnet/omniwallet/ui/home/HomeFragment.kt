@@ -242,8 +242,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 confirmButtonTitle = "CÓ",
                 cancelButtonTitle = "KHÔNG",
                 confirmCallback = {
-                    preferencesRepository.clearDataAddressWallet()
-                    (requireActivity() as HomeActivity).restart()
+                    (requireActivity() as HomeActivity).backToLoginScreen()
                 },
                 cancelCallback = {
 

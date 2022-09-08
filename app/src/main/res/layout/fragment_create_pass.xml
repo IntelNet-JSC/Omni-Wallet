@@ -28,11 +28,11 @@
             android:id="@+id/txtTitle"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginTop="24dp"
+            android:layout_marginTop="16dp"
             android:gravity="center"
             android:text="@string/label_create_password"
             android:textColor="@color/black"
-            android:textSize="20sp"
+            android:textSize="18sp"
             android:textStyle="bold" />
 
         <androidx.appcompat.widget.AppCompatTextView
@@ -43,7 +43,7 @@
             android:gravity="center"
             android:text="@string/label_create_password2"
             android:textColor="@color/black"
-            android:textSize="16sp" />
+            android:textSize="15sp" />
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tiyNewPass"
@@ -110,7 +110,7 @@
             android:id="@+id/btnCreatePass"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize="16sp"
+            android:textSize="15sp"
             android:layout_marginTop="24dp"
             android:background="@drawable/bg_btn_wallet1"
             android:gravity="center"

@@ -129,11 +129,14 @@ class CreatePassFragment : BaseFragment<FragmentCreatePassBinding, AddWalletView
                     }
                     Status.SUCCESSFUL -> {
                         hideDialog()
-                        data.data?.let { wordPhrase ->
-                            showToast(wordPhrase)
+                        data.data?.let { pair ->
+                            showToast(pair.second)
 
                             navigate(
-                                CreatePassFragmentDirections.actionCreatePassFragmentToMemorizePhraseFragment(wordPhrase)
+                                CreatePassFragmentDirections.actionCreatePassFragmentToMemorizePhraseFragment(
+                                    wordPhrase = pair.second,
+                                    address = pair.first
+                                )
                             )
                         }
                     }

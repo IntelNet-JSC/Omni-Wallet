@@ -112,6 +112,7 @@ class ConfirmPhraseFragment : BaseFragment<FragmentConfirmPhraseBinding, EmptyVi
         binding.btnCompleteBackup.isEnabled = BuildConfig.DEBUG
 
         binding.btnCompleteBackup.setOnClickListener {
+            preferencesRepository.setAddress(args.address)
             (requireActivity() as AddWalletActivity).navigateHomeActivity()
         }
     }

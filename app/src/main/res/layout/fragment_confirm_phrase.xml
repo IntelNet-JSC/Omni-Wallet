@@ -49,10 +49,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginTop="16dp"
                 android:gravity="center"
-                android:lineHeight="22dp"
+                android:lineHeight="21dp"
                 android:text="@string/label_confirm_recovery_phrase2"
                 android:textColor="@color/black"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <androidx.recyclerview.widget.RecyclerView
                 android:id="@+id/rvBlankPhrase"
@@ -82,7 +82,7 @@
                 android:text="@string/complete_to_backup"
                 android:textAllCaps="false"
                 android:textColor="@color/white"
-                android:textSize="16sp" />
+                android:textSize="15sp" />
 
             <Space
                 android:layout_width="match_parent"

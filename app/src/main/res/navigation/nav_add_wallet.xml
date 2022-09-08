@@ -71,6 +71,8 @@
             app:popUpTo="@id/addWalletFragment" />
         <argument android:name="word_phrase"
             app:argType="string" />
+        <argument android:name="address"
+            app:argType="string" />
     </fragment>
     <fragment
         android:id="@+id/confirmPhraseFragment"
@@ -80,6 +82,8 @@
 
         <argument
             android:name="seed_code"
+            app:argType="string" />
+        <argument android:name="address"
             app:argType="string" />
     </fragment>
 

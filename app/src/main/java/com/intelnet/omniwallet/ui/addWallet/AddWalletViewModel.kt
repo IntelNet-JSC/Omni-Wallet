@@ -14,7 +14,7 @@ import io.reactivex.schedulers.Schedulers
 import timber.log.Timber
 import javax.inject.Inject
 
-typealias EventPhrase = Event<Data<String>>
+typealias EventPhrase = Event<Data<Pair<String, String>>>
 typealias EventAddress = Event<Data<String>>
 
 @HiltViewModel
@@ -46,13 +46,13 @@ constructor(
                 { response ->
                     Timber.d("On Next Called")
                     preferencesRepository.setRememberLogin(remember)
-                    preferencesRepository.setAddress(response.first)
+//                    preferencesRepository.setAddress(response.first)
 
                     _phraseLiveData.value =
                         Event(
                             Data(
                                 responseType = Status.SUCCESSFUL,
-                                data = response.second
+                                data = response
                             )
                         )
                 }, { error ->

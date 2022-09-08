@@ -104,7 +104,7 @@
             android:layout_height="wrap_content"
             android:text="@string/from"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/layoutFromAddress"
             app:layout_constraintStart_toStartOf="@id/guidelineStart"
             app:layout_constraintTop_toTopOf="@+id/layoutFromAddress" />
@@ -157,7 +157,7 @@
             android:layout_height="wrap_content"
             android:text="@string/to"
             android:textColor="@color/black"
-            android:textSize="18sp"
+            android:textSize="16sp"
             app:layout_constraintBottom_toBottomOf="@+id/tiySearchAddress"
             app:layout_constraintStart_toStartOf="@id/guidelineStart"
             app:layout_constraintTop_toTopOf="@+id/tiySearchAddress" />
