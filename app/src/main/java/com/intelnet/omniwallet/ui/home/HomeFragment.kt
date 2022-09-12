@@ -242,6 +242,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
                 confirmButtonTitle = "CÓ",
                 cancelButtonTitle = "KHÔNG",
                 confirmCallback = {
+                    preferencesRepository.setRememberLogin(false)
                     (requireActivity() as HomeActivity).backToLoginScreen()
                 },
                 cancelCallback = {
@@ -273,7 +274,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
         initBalanceWallet(viewModel.balanceETH)
         setUiDefaultNetWork()
 
-        initBiometric()
+//        initBiometric()
 
         binding.rvToken.apply {
             layoutManager = LinearLayoutManager(requireContext())

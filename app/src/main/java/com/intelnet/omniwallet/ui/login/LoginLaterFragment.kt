@@ -1,5 +1,7 @@
 package com.intelnet.omniwallet.ui.login
 
+import android.app.Activity
+import android.content.Intent
 import android.view.LayoutInflater
 import android.view.ViewGroup
 import androidx.biometric.BiometricPrompt
@@ -69,6 +71,13 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                 }
             )
         }
+
+        binding.imgFinger.setOnClickListener {
+            initBiometric()
+            biometricPrompt?.authenticate(promptInfo!!)
+        }
+
+        binding.swDefault.isChecked = preferencesRepository.isRememberLogin()
     }
 
     private fun deleteDir(dir: File): Boolean {
@@ -84,13 +93,8 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         return dir.delete()
     }
 
-    override fun initUI() {
-        if (BuildConfig.DEBUG) {
-            binding.edtPass.setText(getString(R.string.password_demo))
-        }
-
-        binding.swDefault.isChecked = preferencesRepository.isRememberLogin()
-        if (preferencesRepository.isRememberLogin()&&!startHome) {
+    private fun initBiometric(){
+        if(executor==null){
             executor = ContextCompat.getMainExecutor(requireContext())
             biometricPrompt = BiometricPrompt(this, executor!!,
                 object : BiometricPrompt.AuthenticationCallback() {
@@ -102,9 +106,24 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                         Timber.d("Error code: $errorCode")
                         Timber.d("Authentication error: $errString")
 
-                        if (errorCode != 10 && errorCode != 13) {
-                            binding.swDefault.isChecked = false
+                        if (errorCode == 11) {
+                            showAlertDialog(
+                                title = "",
+                                content = errString.toString(),
+                                confirmButtonTitle = "setting",
+                                cancelButtonTitle = "cancel",
+                                confirmCallback = {
+                                    launchFingerprint()
+                                },
+                                cancelCallback = {
+                                    binding.swDefault.isChecked = false
+                                    preferencesRepository.setRememberLogin(false)
+                                }
+                            )
+                        } else{
                             showToast("$errString")
+                            binding.swDefault.isChecked = false
+                            preferencesRepository.setRememberLogin(false)
                         }
                     }
 
@@ -113,6 +132,7 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                     ) {
                         super.onAuthenticationSucceeded(result)
                         Timber.d("Authentication succeeded!")
+                        preferencesRepository.setRememberLogin(true)
                         (requireActivity() as HomeActivity).startHandlerTimeout()
                         navigate(
                             LoginLaterFragmentDirections.actionLoginLaterFragmentToHomeFragment()
@@ -131,9 +151,17 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
                 .setSubtitle("Log in using your biometric credential")
                 .setNegativeButtonText("Cancel")
                 .build()
+        }
+    }
 
+    override fun initUI() {
+        if (BuildConfig.DEBUG) {
+            binding.edtPass.setText(getString(R.string.password_demo))
+        }
+
+        if (preferencesRepository.isRememberLogin()&&!startHome) {
+            initBiometric()
             biometricPrompt?.authenticate(promptInfo!!)
-
         }
     }
 
@@ -193,6 +221,20 @@ class LoginLaterFragment : BaseFragment<FragmentLoginLaterBinding, LoginLaterVie
         promptInfo = null
         executor = null
         super.onDestroy()
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        Timber.d("requestCode: $requestCode")
+        Timber.d("resultCode: $resultCode")
+
+        if (requestCode == 100 && (resultCode == Activity.DEFAULT_KEYS_SEARCH_LOCAL || resultCode == Activity.RESULT_FIRST_USER || resultCode == Activity.RESULT_OK)) {
+            Timber.d("GOOD JOB")
+            binding.swDefault.isChecked = true
+        } else{
+            binding.swDefault.isChecked = false
+            preferencesRepository.setRememberLogin(false)
+        }
+
     }
 
 }
