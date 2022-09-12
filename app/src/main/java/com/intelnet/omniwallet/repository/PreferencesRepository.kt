@@ -16,6 +16,14 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
     private var prefs =
         context.getSharedPreferences(Constants.LOCAL_SHARED_PREF, Context.MODE_PRIVATE)
 
+    fun getStartIntro(): Boolean {
+        return prefs.getBoolean("start_intro", false)
+    }
+
+    fun setStartIntro(start: Boolean) {
+        prefs.edit().putBoolean("start_intro", start).apply()
+    }
+
     fun isRememberLogin(): Boolean {
         return prefs.getBoolean("is_remember_login", false)
     }

@@ -31,6 +31,17 @@ class IntroActivity : BaseActivity() {
         binding = ActivityIntroBinding.inflate(layoutInflater)
         setContentView(binding.root)
 
+        if(preferencesRepository.getStartIntro())
+        {
+            if (keydir.exists() && keydir.list()?.isNotEmpty() == true&&preferencesRepository.getAddress().isNotEmpty())
+                startActivity(Intent(this, HomeActivity::class.java))
+            else
+                startActivity(Intent(this, AddWalletActivity::class.java))
+            finish()
+        }
+
+        preferencesRepository.setStartIntro(true)
+
         binding.btnStart.setOnClickListener {
             if (keydir.exists() && keydir.list()?.isNotEmpty() == true&&preferencesRepository.getAddress().isNotEmpty())
                 startActivity(Intent(this, HomeActivity::class.java))
