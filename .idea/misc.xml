@@ -55,6 +55,7 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_add_wallet.xml" value="0.264" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_home.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_intro.xml" value="0.2" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_main.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/activity_splash.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/custom_snackbar_view.xml" value="0.25416666666666665" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/layout/dialog_choose_menu_token_detail.xml" value="0.24923076923076923" />
@@ -101,6 +102,9 @@
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher.xml" value="0.202" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/mipmap-anydpi-v26/ic_launcher_round.xml" value="0.202" />
         <entry key="..\:/AndroidStudioProjects/OmniWalletApp/app/src/main/res/mipmap-anydpi/ic_app_launcher.xml" value="0.2115" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/omni-wallet-module/src/main/res/drawable/splash_image.xml" value="0.1535" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/omni-wallet-module/src/main/res/font/quicksand.xml" value="0.284375" />
+        <entry key="..\:/AndroidStudioProjects/OmniWalletApp/omni-wallet-module/src/main/res/layout/activity_intro.xml" value="0.25416666666666665" />
       </map>
     </option>
   </component>

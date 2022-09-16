@@ -3,14 +3,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     package="com.intelnet.omniwallet">
 
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
-    <uses-permission android:name="android.permission.INTERNET" />
-    <uses-permission android:name="android.permission.CAMERA"/>
-    <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"/>
-    <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"/>
 
     <application
-        android:name=".base.App"
+        android:name=".App"
         android:allowBackup="true"
         android:dataExtractionRules="@xml/data_extraction_rules"
         android:fullBackupContent="@xml/backup_rules"
@@ -18,43 +13,19 @@
         android:label="@string/app_name"
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
-        android:theme="@style/OmniWalletApp"
+        android:theme="@style/Theme.OmniWallet"
         android:hardwareAccelerated="true"
         tools:targetApi="31">
         <activity
-            android:name="com.intelnet.omniwallet.ui.addWallet.AddWalletActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden" />
-
-<!--        <meta-data
-            android:name="design_width_in_dp"
-            android:value="360" />
-        <meta-data
-            android:name="design_height_in_dp"
-            android:value="640" />-->
-
-        <activity
-            android:name="com.intelnet.omniwallet.ui.intro.IntroActivity"
-            android:exported="true"
-            android:theme="@style/splashScreenTheme">
+            android:name=".MainActivity"
+            android:theme="@style/splashScreenTheme"
+            android:exported="true">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.intelnet.omniwallet.ui.home.HomeActivity"
-            android:exported="false"
-            android:screenOrientation="portrait"
-            android:windowSoftInputMode="adjustPan|stateHidden"/>
-
-        <activity
-            android:name="com.intelnet.omniwallet.ui.AnyOrientationCaptureActivity"
-            android:screenOrientation="portrait"
-            android:stateNotNeeded="true"
-            android:theme="@style/zxing_CaptureTheme"/>
     </application>
 
 </manifest>
