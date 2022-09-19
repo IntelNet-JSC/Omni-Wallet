@@ -13,7 +13,6 @@ import androidx.navigation.fragment.navArgs
 import androidx.recyclerview.widget.DividerItemDecoration
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.intelnet.mylibrary.view.Identicon
 import com.intelnet.mylibrary.R
 import com.intelnet.mylibrary.base.BaseFragment
 import com.intelnet.mylibrary.databinding.FragmentHomeBinding
@@ -24,6 +23,7 @@ import com.intelnet.mylibrary.ui.home.detailToken.ChooseMenuDialogFragment
 import com.intelnet.mylibrary.ui.home.detailToken.adapter.ItemMenu
 import com.intelnet.mylibrary.ui.home.network.NetDialogFragment
 import com.intelnet.mylibrary.util.*
+import com.intelnet.mylibrary.view.Identicon
 import com.journeyapps.barcodescanner.ScanContract
 import com.journeyapps.barcodescanner.ScanIntentResult
 import com.journeyapps.barcodescanner.ScanOptions
@@ -190,6 +190,7 @@ class HomeFragment : BaseFragment<FragmentHomeBinding, HomeViewModel>() {
             }
         }*/
 
+        binding.viewClickNetWork.isEnabled = !viewModel.setting.disableNetwork
         binding.viewClickNetWork.setOnClickListener {
             NetDialogFragment.newInstance(
                 fManager,

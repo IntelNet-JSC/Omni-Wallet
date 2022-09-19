@@ -4,6 +4,7 @@ import android.content.Context
 import com.intelnet.mylibrary.util.Constants
 import com.intelnet.mylibrary.util.fromJson
 import com.google.gson.Gson
+import com.intelnet.mylibrary.entity.Setting
 import timber.log.Timber
 import javax.inject.Inject
 
@@ -90,6 +91,15 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
         prefs.edit().putString("list_recently_address", gson.toJson(lstAddress)).apply()
     }
 
+    fun getSetting(): Setting {
+        val json = prefs.getString("setting_omni_wallet", null) ?: return Setting()
+        return fromJson(gson, json)
+    }
+
+    fun setSetting(setting:Setting) {
+        prefs.edit().putString("setting_omni_wallet", gson.toJson(setting)).apply()
+    }
+
     fun setRecentAddress(item: String) {
         val list = getRecentListAddress().toMutableList()
 
@@ -103,7 +113,12 @@ class PreferencesRepository @Inject constructor(context: Context, val gson: Gson
     }
 
     fun clearData() {
-        prefs.edit().clear().apply()
+//        prefs.edit().clear().apply()
+        prefs.edit().remove("is_remember_login").apply()
+        prefs.edit().remove("address_wallet").apply()
+        prefs.edit().remove("list_recently_address").apply()
+        prefs.edit().remove("list_token_address_bnb").apply()
+        prefs.edit().remove("list_token_address_eth").apply()
     }
 
 

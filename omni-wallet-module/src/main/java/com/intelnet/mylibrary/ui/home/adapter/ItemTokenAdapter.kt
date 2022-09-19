@@ -67,7 +67,7 @@ class ItemTokenAdapter(
     override fun getItemViewType(position: Int): Int {
         if (callBackImportToken == null)
             return ItemToken.ITEM_CHOOSE
-        return if (lstToken.size - 1 != position) ItemToken.ITEM_DATA else ItemToken.ITEM_FOOTER
+        return lstToken[position].type
     }
 
     inner class ItemTokenViewHolder(val binding: ItemTokenBinding) :

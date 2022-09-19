@@ -55,7 +55,7 @@ abstract class BaseFragment<B : ViewBinding, VM : BaseViewModel> : Fragment() {
         requireActivity().supportFragmentManager
     }
 
-    @Singleton
+
     @Inject
     lateinit var preferencesRepository: PreferencesRepository
 

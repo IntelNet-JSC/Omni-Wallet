@@ -1,11 +1,11 @@
 package com.intelnet.mylibrary.di
 
 import android.content.Context
-import android.content.SharedPreferences
+import com.google.gson.Gson
 import com.intelnet.mylibrary.BuildConfig
 import com.intelnet.mylibrary.entity.NetworkInfo
+import com.intelnet.mylibrary.repository.PreferencesRepository
 import com.intelnet.mylibrary.util.Constants
-import com.google.gson.Gson
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -22,8 +22,8 @@ import java.io.File
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
-@InstallIn(SingletonComponent::class)
 @Module
+@InstallIn(SingletonComponent::class)
 object AppModule {
 
     @Provides
@@ -69,11 +69,18 @@ object AppModule {
     }
 
 
-    @Provides
+/*    @Provides
     @Singleton
     fun provideSharedPref(@ApplicationContext context: Context): SharedPreferences {
         return context.getSharedPreferences(Constants.LOCAL_SHARED_PREF, Context.MODE_PRIVATE)
+    }*/
+
+    @Provides
+    @Singleton
+    fun providePreferenceRepository(@ApplicationContext context: Context, gson:Gson): PreferencesRepository {
+        return PreferencesRepository(context, gson)
     }
+
 
     @Provides
     @Singleton

@@ -1,10 +1,9 @@
 package com.intelnet.omniwallet
 
-import android.content.Intent
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.widget.Button
-import com.intelnet.mylibrary.ui.intro.IntroActivity
+import androidx.appcompat.app.AppCompatActivity
+import com.intelnet.mylibrary.OmniWallet
 
 class MainActivity : AppCompatActivity() {
 
@@ -15,8 +14,9 @@ class MainActivity : AppCompatActivity() {
 
 
         findViewById<Button>(R.id.btnStart).setOnClickListener {
-            startActivity(Intent(this, IntroActivity::class.java))
-            finish()
+            OmniWallet
+                .with(this)
+                .start()
         }
     }
 }

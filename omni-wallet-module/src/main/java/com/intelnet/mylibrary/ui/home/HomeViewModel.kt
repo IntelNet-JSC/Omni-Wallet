@@ -4,6 +4,7 @@ import android.graphics.Color
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.intelnet.mylibrary.base.BaseViewModel
+import com.intelnet.mylibrary.entity.Setting
 import com.intelnet.mylibrary.repository.NetworkRepository
 import com.intelnet.mylibrary.repository.PreferencesRepository
 import com.intelnet.mylibrary.repository.WalletRepository
@@ -37,8 +38,11 @@ class HomeViewModel @Inject constructor(
 ) :
     BaseViewModel() {
 
+    var setting:Setting
+
     init {
         Timber.d("INIT HOME VIEWMODEL")
+        setting = preferencesRepository.getSetting()
     }
 
     lateinit var gasPrice: BigInteger
@@ -195,9 +199,10 @@ class HomeViewModel @Inject constructor(
             lstTemp
         )
         return lstTemp.also {
-            it.add(
-                ItemToken.generateFooterItem()
-            )
+            if(!setting.disableAddToken)
+                it.add(
+                    ItemToken.generateFooterItem()
+                )
         }
     }
 

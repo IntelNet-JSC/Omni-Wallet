@@ -40,6 +40,7 @@ class AddTokenFragment : BaseFragment<FragmentAddTokenBinding, HomeViewModel>() 
             checkAndCall(addressInput)
         }
 
+        binding.viewClickImportToken.isEnabled = !viewModel.setting.disableNetwork
         binding.viewClickImportToken.setOnClickListener {
             NetDialogFragment.newInstance(
                 fManager,
